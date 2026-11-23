@@ -10,7 +10,7 @@ function Yb({
   nested: o,
   refresh,
 }) {
-  let u = ne[t],
+  let u = t==='properties'?physicalPropertyModel():ne[t],
     r = l.data,
     c =
       (l.user.role === "admin" ||
@@ -72,7 +72,7 @@ function Yb({
           O.default.createElement(
             "strong",
             null,
-            Xe(d, e[d.key], r),
+            t==='properties' && ['elevator','storage_room'].includes(d.key) && !e[d.key] ? 'نامشخص' : Xe(d, e[d.key], r),
             d.type === "money" && e[d.key] != null
               ? " \u062A\u0648\u0645\u0627\u0646"
               : "",

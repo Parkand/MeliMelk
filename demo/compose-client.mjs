@@ -1,4 +1,5 @@
 // Reinsert local view declarations in their original lexical scope, once at server startup.
+import {catalog} from '../core/model.mjs';
 import { readFile } from 'node:fs/promises';
 const views = [
   "Workflow",
@@ -58,6 +59,7 @@ export async function composeClient() {
     const name = parts[i];
     if (!remaining.delete(name)) throw Error('Unknown or duplicate demo view: ' + name);
     parts[i] = await read('components/views/' + name + '.js');
+    if (name === 'RecordForm') parts[i] += '\nfunction physicalPropertyModel(){return '+JSON.stringify(catalog.properties)+';}';
     if (name === 'RecordForm') parts[i] += '\n' + await read('components/views/PropertyForm.js');
     if (name === 'Records') parts[i] += '\n' + await read('components/views/MaskanProperties.js');
     if (name === 'RecordDetail') parts[i] += '\n' + await read('components/views/TaskDetail.js');

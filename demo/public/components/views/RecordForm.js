@@ -8,7 +8,7 @@ function jb({
   close: i,
   nested: s,
 }) {
-  let o = ne[t],
+  let o = t==='properties'?physicalPropertyModel():ne[t],
     u = zt().slice(0, 10),
     [r, c] = (0, O.useState)(() =>
       Object.assign(
@@ -231,7 +231,7 @@ function jb({
           [
             "\u0645\u0634\u062E\u0635\u0627\u062A \u0648 \u0627\u0645\u06A9\u0627\u0646\u0627\u062A",
             "demands",
-            ["area", "rooms", "parking"],
+            ["area", "rooms", "parking", "built_year", "unit_floor", "floor_count", "elevator", "storage_room"],
           ],
         ]
       : [
