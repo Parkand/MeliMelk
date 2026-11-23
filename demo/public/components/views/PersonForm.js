@@ -1,4 +1,4 @@
-  function personSummary(h,v,ws) {
+  function personSummary(h,v,ws,accordion=false) {
     const pf=v.profile||{},roles=pf.roles||(v.category==='both'?['owner','customer']:[v.category]),names=Object.fromEntries(ws.data.contacts.map(x=>[x.id,x.name]));
     const full = [pf.first, pf.last].filter(Boolean).join(" ") || v.name;
     const title = [pf.salutation, full].filter(Boolean).join(" ") || "پروندهٔ شخص جدید";
@@ -11,10 +11,13 @@
       ["روابط",(v.links||[]).filter(l=>names[l.id]).map(l=>[names[l.id],l.draft ?? relText(l.kind)].filter(Boolean).join(" — ")).join("؛ ")],
       ["مشاور پیگیر",ws.team.find(x=>String(x.id)===String(v.assignee))?.name], ["برچسب‌ها",pf.tags], ["یادداشت داخلی",v.note]
     ].filter(([,value])=>value && String(value).trim());
+    const list = h("dl",null,...facts.map(([label,value])=>h("div",{key:label},h("dt",null,label),h("dd",null,h("bdi",null,value)))));
+    if (accordion) return h("details",{key:v.id,className:"pc-review",open:true,dir:"rtl"},
+      h("summary",null,h("strong",null,"خلاصهٔ اطلاعات مشتری"),text && h("span",null,text)),list);
     return h("article",{className:"ce-summary ce-wide",dir:"rtl"}, h("small",null,"پروندهٔ اشخاص  /  مرور اطلاعات"),
       h("h3",null,title), text && h("p",null,text),
       !full && !text && h("p",null,"با تکمیل فرم، اطلاعات شخص اینجا نمایش داده می‌شود."),
-      h("dl",null,...facts.map(([label,value])=>h("div",{key:label},h("dt",null,label),h("dd",null,h("bdi",null,value))))));
+      list);
   }
 function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
   const R = O.default,
