@@ -1,3 +1,4 @@
+import { composeClient } from './compose-client.mjs';
 // Offline local demo. No third-party server dependencies.
 import {networkInterfaces} from 'node:os';
 import {createServer} from 'node:http';
@@ -19,7 +20,7 @@ const addr=ips[0]?.address;if(!addr)throw Error('Connect to a private LAN first.
 const host=`${addr}:${port}`,origin=`http://${host}`;
 // Explicit single origin, regardless of proxy/production settings on this machine.
 process.env.APP_ORIGIN=origin;
-const assets=new Map([['/assets/app.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/app.js'))]],['/assets/app.css',['text/css; charset=utf-8',await readFile(join(base,'../app/globals.css'))]]]);
+const assets=new Map([['/assets/app.js',['text/javascript; charset=utf-8',await composeClient()]],['/assets/app.css',['text/css; charset=utf-8',await readFile(join(base,'../app/globals.css'))]]]);
 assets.set('/assets/components/MaskanModal.js',['text/javascript; charset=utf-8',await readFile(join(base,'../ui/MaskanModal.js'))]);
 assets.set('/assets/components/MaskanPersonCard.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/components/MaskanPersonCard.js'))]);
 assets.set('/assets/components/MaskanDataGrid.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/components/MaskanDataGrid.js'))]);
