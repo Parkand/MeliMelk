@@ -59,6 +59,7 @@ function Yb({
     O.default.createElement(
       "div",
       { className: "detail-grid property-facts" },
+      t==='properties' && e.latitude!=null && e.longitude!=null && O.default.createElement('a',{href:'https://www.openstreetmap.org/?mlat='+encodeURIComponent(e.latitude)+'&mlon='+encodeURIComponent(e.longitude)+'#map=17/'+encodeURIComponent(e.latitude)+'/'+encodeURIComponent(e.longitude),target:'_blank',rel:'noopener noreferrer'},'نمایش پین ملک در OpenStreetMap'),
       u.fields.map((d) =>
         O.default.createElement(
           "div",

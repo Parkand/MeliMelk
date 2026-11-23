@@ -190,6 +190,7 @@ function jb({
               inputMode: ["money", "number"].includes(E.type)
                 ? "numeric"
                 : void 0,
+              ...(t==='properties' && ['latitude','longitude'].includes(E.key) ? {dir:"ltr",placeholder:E.key==='latitude'?"35.6892":"51.3890"} : {}),
               maxLength: "240",
             }),
             ["date", "datetime"].includes(E.type) &&
@@ -226,7 +227,7 @@ function jb({
           [
             "\u0645\u0648\u0642\u0639\u06CC\u062A \u0648 \u0646\u0634\u0627\u0646\u06CC",
             "home",
-            ["district", "address"],
+            ["district", "address", "latitude", "longitude"],
           ],
           [
             "\u0645\u0634\u062E\u0635\u0627\u062A \u0648 \u0627\u0645\u06A9\u0627\u0646\u0627\u062A",
