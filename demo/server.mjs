@@ -17,6 +17,10 @@ const host=`127.0.0.1:${port}`,origin=`http://${host}`;
 // Explicit single origin, regardless of proxy/production settings on this machine.
 process.env.APP_ORIGIN=origin;
 const assets=new Map([['/assets/app.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/app.js'))]],['/assets/app.css',['text/css; charset=utf-8',await readFile(join(base,'../app/globals.css'))]]]);
+assets.set('/assets/components/MaskanModal.js',['text/javascript; charset=utf-8',await readFile(join(base,'../ui/MaskanModal.js'))]);
+assets.set('/assets/components/MaskanPersonCard.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/components/MaskanPersonCard.js'))]);
+assets.set('/assets/components/MaskanDataGrid.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/components/MaskanDataGrid.js'))]);
+assets.set('/assets/components/MaskanContacts.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/components/MaskanContacts.js'))]);
 assets.set('/assets/vendor/tabulator/6.3.1/tabulator.min.js', ['text/javascript; charset=utf-8', await readFile(join(base, 'public/vendor/tabulator/6.3.1/tabulator.min.js'))]);
 assets.set('/assets/styles/contacts-grid.css', ['text/css; charset=utf-8', await readFile(join(base, 'public/styles/contacts-grid.css'))]);
 assets.set('/fonts/Vazirmatn-variable.woff2', [
@@ -29,7 +33,7 @@ await mkdir(data,{recursive:true,mode:0o700});process.umask(0o077);
 const db=await connect('sqlite:'+join(data,'office.sqlite'));await migrate(db);
 const email='admin@daftar.test',password=process.env.DEMO_PASSWORD||randomBytes(15).toString('base64url');
 const fresh=await initialize(db,{name:'مدیر دفتر نمونه',email,password,sample:true});
-const page='<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>دفتر املاک | دموی محلی</title><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/styles/contacts-grid.css"><script src="/assets/vendor/tabulator/6.3.1/tabulator.min.js" defer></script><script src="/assets/app.js" defer></script></head><body><div id="root"></div></body></html>';
+const page='<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>دفتر املاک | دموی محلی</title><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/styles/contacts-grid.css"><script src="/assets/vendor/tabulator/6.3.1/tabulator.min.js" defer></script><script src="/assets/components/MaskanModal.js" defer></script><script src="/assets/components/MaskanPersonCard.js" defer></script><script src="/assets/components/MaskanDataGrid.js" defer></script><script src="/assets/components/MaskanContacts.js" defer></script><script src="/assets/app.js" defer></script></head><body><div id="root"></div></body></html>';
 const server=createServer(async(req,res)=>{try{
  const send=(status,body='',type='text/plain; charset=utf-8',headers={})=>{res.writeHead(status,{'Content-Type':type,...headers});res.end(body)};
  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Security-Policy',"default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");

@@ -1,3 +1,4 @@
+const createMaskanModal = (O) => {
 const mmViews=new WeakMap();
 function mmScope(entry,all,back){return {entry,all,back}}
 function MaskanModal({frame,title,heading,children,size='medium',expand=false,blocked=false,dirty=false,legacy=false,external,session,extra={}} ){
@@ -6,3 +7,5 @@ function MaskanModal({frame,title,heading,children,size='medium',expand=false,bl
  const leave=fn=>{if(!blocked&&(!dirty||window.confirm('تغییرات ذخیره نشده‌اند. بدون ذخیره خارج می‌شوید؟')))fn()};const btn=(label,path,fn,pressed)=>h('button',{type:'button',className:'mp-close',disabled:blocked,title:label,'aria-label':label,'aria-pressed':pressed,onClick:fn},h('svg',{width:19,height:19,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true},h('path',{d:path})));
  return h('dialog',{...extra,ref,dir:'rtl','aria-label':title,className:'mperson mm-shell '+(extra.className||'')+(legacy?' studio-dialog mm-child':'')+(big?' mm-big':''),'data-size':size,onCancel:e=>{e.preventDefault();leave(frame.entry.prev?frame.back:frame.all)}},h('div',{className:'mp-head'},heading||h('h2',null,title),h('div',{className:'mm-controls'},btn('بستن','M6 6l12 12M18 6L6 18',()=>leave(frame.all)),frame.entry.prev&&btn('بازگشت','M4 12h15m-6-6 6 6-6 6',()=>leave(frame.back)),expand&&btn(big?'اندازهٔ قبلی':'بزرگ‌کردن',big?'M5 10h5V5m9 9h-5v5':'M4 10V4h6m10 10v6h-6',()=>{view.big=!big;setBig(!big)},big))),children)
 }
+return {MaskanModal,mmScope};
+};
