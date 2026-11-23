@@ -18,6 +18,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     [tab, T] = R.useState(0),
     [err, E] = R.useState(""),
     [attempt, tried] = R.useState(false),
+    errorId = R.useId(),
     picker = R.useRef(null),
     [busy, B] = R.useState(false),
     dirty = JSON.stringify(base) !== JSON.stringify(v),
@@ -132,7 +133,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       E("");
       return;
     }
-    if (!e.currentTarget.reportValidity()) return;
+    if (v.links.some(l => !(l.draft ?? relText(l.kind))?.trim())) { T(3); E(""); return; }
     B(true);
     E("");
     try {
@@ -197,6 +198,28 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         ),
       );
     };
+  const messages = [...new Set([
+    attempt && !v.name?.trim() && "نام نمایشی را وارد کنید.",
+    attempt && !v.phone?.trim() && "موبایل اصلی را وارد کنید.",
+    attempt && v.links.some(l => !(l.draft ?? relText(l.kind))?.trim()) && "نوع رابطه را در تب آشنایی و روابط مشخص کنید.", err
+  ].filter(Boolean))];
+  function summary() {
+    const full = [pf.first, pf.last].filter(Boolean).join(" ") || v.name;
+    const title = [pf.salutation, full].filter(Boolean).join(" ") || "پروندهٔ شخص جدید";
+    const text = [pf.job && `حوزهٔ فعالیت: ${pf.job}`, pf.position && `سمت: ${pf.position}`, pf.company && `محل کار: ${pf.company}`].filter(Boolean).join(" • ");
+    const facts = [
+      ["نام نمایشی", v.name !== full && v.name], ["نام آشنا در دفتر", pf.alias], ["نقش‌ها",roles.map(k=>pcRoles[k]).filter(Boolean).join("، ")],
+      ["موبایل اصلی",v.phone], ["راه‌های تماس دیگر",v.methods.filter(m=>m.value).map(m=>[m.label || pcMethods[m.kind],m.value].filter(Boolean).join(": ")).join("؛ ")],
+      ["ترجیح تماس",[pf.preferred,pf.time].filter(Boolean).join("، ")], ["محدوده",[pf.city,pf.area].filter(Boolean).join("، ")],
+      ["تحصیلات",[pf.education,pf.major].filter(Boolean).join("، ")], ["جنسیت",pf.gender], ["شناسهٔ تکمیلی",pf.identifier], ["منبع آشنایی",v.source],
+      ["روابط",v.links.filter(l=>names[l.id]).map(l=>[names[l.id],l.draft ?? relText(l.kind)].filter(Boolean).join(" — ")).join("؛ ")],
+      ["مشاور پیگیر",ws.team.find(x=>String(x.id)===String(v.assignee))?.name], ["برچسب‌ها",pf.tags], ["یادداشت داخلی",v.note]
+    ].filter(([,value])=>value && String(value).trim());
+    return h("article",{className:"ce-summary ce-wide",dir:"rtl"}, h("small",null,"پروندهٔ اشخاص  /  مرور اطلاعات"),
+      h("h3",null,title), text && h("p",null,text),
+      !full && !text && h("p",null,"با تکمیل فرم، اطلاعات شخص اینجا نمایش داده می‌شود."),
+      h("dl",null,...facts.map(([label,value])=>h("div",{key:label},h("dt",null,label),h("dd",null,h("bdi",null,value))))));
+  }
   return h(
     mmDialog,
     {
@@ -229,6 +252,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
             "راه‌های ارتباط",
             "آشنایی و روابط",
             "پیگیری و سوابق",
+            "خلاصهٔ پرونده",
           ].map((s, i) =>
             h(
               "button",
@@ -245,11 +269,11 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         h(
           "section",
           null,
-          ...(tab === 0
+          ...(tab === 5 ? [summary()] : tab === 0
             ? [
                 ...[["name", "نام نمایشی", "نام نمایشی را وارد کنید."], ["phone", "موبایل اصلی", "موبایل اصلی را وارد کنید."]].map(([key, caption, message]) => {
                   const bad = attempt && !v[key]?.trim();
-                  return h("label", {key}, caption + " *", h("input", {type:key === "phone" ? "tel" : "text", dir:key === "phone" ? "ltr" : "rtl", value:v[key] || "", maxLength:240, "aria-required":true,"aria-invalid":bad,onChange:e=>put(key,e.target.value)}),bad && h("small",{role:"alert"},message));
+                  return h("label", {key}, caption + " *", h("input", {type:key === "phone" ? "tel" : "text", dir:key === "phone" ? "ltr" : "rtl", value:v[key] || "", maxLength:240, "aria-required":true,"aria-invalid":bad,"aria-describedby":bad ? errorId : undefined,onChange:e=>put(key,e.target.value)}));
                 }),
                 h(
                   "div",
@@ -444,7 +468,6 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                     ]),
         ),
       ),
-      err && h("p", { role: "alert" }, err),
       h(
         "footer",
         null,
@@ -454,6 +477,8 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
           busy ? "در حال ذخیره…" : "✓ ذخیره و بستن",
         ),
         button("انصراف", cancel),
+        h("div", {className:"ce-errors", id:errorId, role:"alert", dir:"rtl"},
+          ...messages.map(text => h("span",{key:text},text))),
       ),
     ),
   );
