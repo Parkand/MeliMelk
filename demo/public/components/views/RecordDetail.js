@@ -32,6 +32,7 @@ function Yb({
         .map((y) => [d, y]),
     ),
     f = t === "demands" ? Bb(e, r.listings, r.properties) : [];
+  if (t === "tasks") return O.default.createElement(TaskDetail, {frame, row:e, ws:l, related:h, canEdit:c, edit:n, create:i, open:s});
   if (t === "contacts")
     return O.default.createElement(MaskanPersonCard, {
       frame,

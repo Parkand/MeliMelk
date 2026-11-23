@@ -1,0 +1,22 @@
+.task-detail .task-heading {min-width:0;overflow-wrap:anywhere}
+.task-detail .task-heading small,.task-detail dt {color:var(--mp-muted)}
+.task-detail .task-content {display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:1rem;min-height:0;overflow:auto;color:var(--mp-text)}
+.task-detail .task-content section {padding:1rem;border:1px solid var(--mp-edge);border-radius:.8rem}
+.task-detail .task-content h3 {font-size:1rem;margin:0 0 .8rem}
+.task-detail .task-content dl {background:transparent;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem 1.5rem;margin:0}
+.task-detail dt {font-size:.85em}.task-detail dd {margin:.2rem 0 0;font-weight:650;overflow-wrap:anywhere}
+.task-detail .task-content p {margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.task-detail .task-content section>button {display:block;text-align:start;width:100%;margin-block:.35rem;overflow-wrap:anywhere}
+@media(max-width:480px){.task-detail .task-content dl{grid-template-columns:minmax(0,1fr)}}
+
+dialog.mm-shell[open]:has(> .task-content){display:flex;flex-direction:column;overflow:hidden}
+dialog.mm-shell[open]:has(> .task-content):not(.mm-big){height:min(35.5rem,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
+dialog.mm-shell:has(> .task-content) > .mp-head{box-sizing:border-box;align-items:center;padding:8px clamp(10px,2vw,24px);min-height:68px;flex:none}
+dialog.mm-shell .pc-card-heading .pc-card-avatar{width:52px;grid-row:1/span 2}dialog.mm-shell .pc-card-heading h2{font-size:1.25rem;margin:0}dialog.mm-shell .pc-card-heading{line-height:1.3}
+
+dialog.mm-shell.task-detail > .task-content{flex:1 1 0;padding:.85rem clamp(10px,2vw,24px);overscroll-behavior:contain}
+.task-detail .task-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;direction:rtl}
+.task-detail .task-pair section{margin:0;min-width:0;background:var(--mp-soft,var(--mp-bg))}
+dialog.mm-shell.task-detail > .mp-foot{box-sizing:border-box;padding:6px clamp(10px,2vw,24px);min-height:54px;align-items:center}
+dialog.mm-shell.task-detail .mp-foot button{min-height:40px;padding-block:4px}
+@media(max-width:640px){.task-detail .task-pair{grid-template-columns:minmax(0,1fr)}}
