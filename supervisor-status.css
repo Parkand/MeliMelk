@@ -1,0 +1,11 @@
+/* supervisor-status-v3 */
+.sv-grid [data-status=open]{--sc:#2059a8;--sd:#9ac7ff}
+.sv-grid [data-status=waiting]{--sc:#905000;--sd:#ffcb78}
+.sv-grid [data-status=help]{--sc:#833ba2;--sd:#e6b1ff}
+.sv-grid [data-status=done]{--sc:#0d7152;--sd:#84e0ba}
+.sv-grid [data-status=cancelled]{--sc:#934052;--sd:#ffb5c1}
+:root[data-theme=dark] .sv-grid [data-status]{--sc:var(--sd)}
+.shell .supervisor .sv-grid article.commitment[data-status]{border:1px solid color-mix(in srgb,var(--sc) 46%,var(--paper))!important;border-inline-start:4px solid var(--sc)!important;background:linear-gradient(to bottom,color-mix(in srgb,var(--sc) 7%,var(--paper)),var(--paper) 60%)!important}
+.shell .supervisor .sv-grid .commitment[data-status] h3 .link,.shell .supervisor .sv-grid .commitment .sc-label{color:var(--sc)!important}
+.shell .supervisor .sc-label{display:inline-block;border-radius:6px;background:color-mix(in srgb,var(--sc) 11%,var(--paper));padding:0 6px;font-weight:700}
+.shell .supervisor .sv-grid .sv-icon:not([data-count='0']){color:color-mix(in srgb,var(--accent) 70%,var(--ink))!important;background:color-mix(in srgb,var(--accent) 15%,var(--paper))!important;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--paper))!important}

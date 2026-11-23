@@ -1,0 +1,31 @@
+/* Focus stays visible on the outer search field without a second outline. */
+.shell .maskan-grid .tools .search input:focus{outline:none;box-shadow:none;border:0}
+.shell .maskan-grid .tools .search:focus-within{outline:none;box-shadow:none;border-color:var(--muted)}
+@media screen and (min-width:1024px){
+ /* The fixed create button floats over the footer instead of reserving a separate row. */
+ .shell[data-desk=contacts] .content:has(.maskan-grid):has(.desk-create-fab){padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+ .shell[data-desk=contacts] .maskan-grid>.pager{box-sizing:border-box;min-height:64px;padding-inline-end:11rem}
+ .shell[data-desk=contacts]:has(.maskan-grid){height:100vh;height:100dvh;min-height:0;grid-template-rows:minmax(0,1fr)}
+ .shell[data-desk=contacts] .workspace:has(.maskan-grid){display:flex;flex-direction:column;min-height:0}
+ .shell[data-desk=contacts] .content:has(.maskan-grid){display:flex;flex-direction:column;flex:1 1 0;min-height:0;width:100%;margin-block:0;box-sizing:border-box}
+ .shell[data-desk=contacts] .maskan-grid{display:flex;flex-direction:column;flex:1 1 0;min-height:0}
+ .shell[data-desk=contacts] .maskan-grid>.tabulator{height:0!important;flex:1 1 0;min-height:0}
+ .shell[data-desk=contacts] .maskan-grid>:is(.tools,.pager){flex:none}
+}
+/* Only shared grids opt into these theme rules. */
+.maskan-grid .tools{flex-wrap:wrap}
+.maskan-grid>.pager{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.maskan-grid .maskan-pages,.maskan-grid .maskan-pages .tabulator-pages{display:inline-flex;align-items:center;gap:.25rem;flex-wrap:wrap}
+.maskan-grid .maskan-pages .tabulator-page{font:inherit;background:var(--paper);color:var(--ink);border:1px solid var(--line);padding:.24rem .5rem;border-radius:.4rem}
+.maskan-grid .maskan-pages .tabulator-page.active{background:var(--tint);border-color:var(--ink);font-weight:bold}
+.maskan-grid .maskan-pages button:disabled{opacity:.5}
+.maskan-grid.ledger .tabulator,.maskan-grid .tabulator .tabulator-tableholder,.maskan-grid .tabulator .tabulator-table{font-family:inherit;background:var(--paper);color:var(--ink);border-color:var(--line)}
+.maskan-grid.ledger .tabulator .tabulator-header,.maskan-grid.ledger .tabulator .tabulator-header .tabulator-col,.maskan-grid .tabulator .tabulator-row.tabulator-group{background:var(--tint);color:var(--ink);border-color:var(--line)}
+.maskan-grid.ledger .tabulator .tabulator-row{background:var(--paper);color:var(--ink)}
+.maskan-grid.ledger .tabulator .tabulator-row.tabulator-row-even{background:color-mix(in srgb,var(--tint) 32%,var(--paper))}
+.maskan-grid.ledger .tabulator .tabulator-row.tabulator-group,.maskan-grid.ledger .tabulator .tabulator-row.tabulator-selectable:hover,.maskan-grid.ledger .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover{background:var(--tint);color:var(--ink)}
+.maskan-grid.ledger .tabulator .tabulator-row .tabulator-cell{padding:9px 10px;border-color:var(--line)}
+.maskan-grid .tabulator .tabulator-placeholder span{color:var(--muted)}
+.maskan-grid .tabulator :focus-visible{outline:2px solid var(--green);outline-offset:-2px}
+.maskan-grid .tabulator .tabulator-col[aria-sort=ascending] .tabulator-arrow{border-bottom-color:var(--green)}
+.maskan-grid .tabulator .tabulator-col[aria-sort=descending] .tabulator-arrow{border-top-color:var(--green)}

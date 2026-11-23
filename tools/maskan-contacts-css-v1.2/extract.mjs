@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+const [js,css,out]=process.argv.slice(2);
+const bundle=fs.readFileSync(js,'utf8');
+const prefix=';(()=>{const style=document.createElement("style");style.textContent=';
+const suffix=';document.head.appendChild(style)})();';
+const parts=bundle.split(prefix);
+if(!bundle.startsWith('/*! Maskan contacts grid v1; Tabulator 6.3.1')||parts.length!==2||!parts[1].includes(suffix))throw Error('Expected contacts v1.1 bundle not found');
+const rules=JSON.parse(parts[1].split(suffix)[0]);
+if(typeof rules!=='string'||!rules.includes('.tabulator-col')||!rules.includes('.tabulator-cell'))throw Error('Unexpected stylesheet');
+const old=fs.readFileSync(css);if(old.includes('/* maskan-contacts-css-1.2 */'))throw Error('Already patched');
+fs.writeFileSync(out,Buffer.concat([old,Buffer.from('\n/* maskan-contacts-css-1.2 */\n'+rules+'\n')]),{flag:'wx'});

@@ -1,0 +1,6 @@
+/* sv-status-tools-v1 */
+.shell .supervisor .stats>button.stat{box-sizing:border-box;min-height:140px;align-content:center;row-gap:8px}
+.sv-status-buttons{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.sv-status-buttons button{--c:var(--ink);display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:4px 9px;border-radius:8px;color:var(--c);background:color-mix(in srgb,var(--c) 7%,var(--paper));border:1px solid color-mix(in srgb,var(--c) 45%,var(--paper));font:inherit;cursor:pointer}
+.sv-status-buttons [data-key=open],.sv-status-buttons [data-key=onTime]{--c:#2059a8;--d:#9ac7ff}.sv-status-buttons [data-key=done]{--c:#0d7152;--d:#84e0ba}.sv-status-buttons [data-key=waiting]{--c:#905000;--d:#ffcb78}.sv-status-buttons [data-key=late]{--c:#a34716;--d:#ffb47e}.sv-status-buttons [data-key=help]{--c:#833ba2;--d:#e6b1ff}.sv-status-buttons [data-key=cancelled]{--c:#934052;--d:#ffb5c1}
+:root[data-theme=dark] .sv-status-buttons button{--c:var(--d,var(--ink))}.sv-status-buttons button[aria-pressed=true]{font-weight:700;box-shadow:inset 0 0 0 2px var(--c)}.sv-status-buttons button:focus-visible{outline:2px solid currentColor;outline-offset:2px}@media(pointer:coarse){.sv-status-buttons button{min-height:44px}}

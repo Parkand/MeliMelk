@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const [input,pkg,output]=process.argv.slice(2);
+const read=p=>fs.readFileSync(p,'utf8');
+const anchor='function Jb({k:t,ws:e,open:l,create:a}){';
+const branch='return t==="listings"?A.default.createElement(am,';
+let s=read(input);for(const a of [anchor,branch])if(s.split(a).length!==2)throw Error('Unexpected UI layout');
+const lib=JSON.parse(read(path.join(pkg,'package.json')));if(lib.name!=='tabulator-tables'||lib.version!=='6.3.1'||lib.license!=='MIT')throw Error('Unexpected vendor version/license');
+const vendor=p=>read(path.join(pkg,p)).replace(/^\/\/[#@] sourceMappingURL=.*$/gm,'');
+const css=vendor('dist/css/tabulator.min.css')+'\n.ledger .tabulator{font-family:inherit;background:white;border-color:#daddcf}.ledger .tabulator .tabulator-header,.ledger .tabulator .tabulator-col{background:#e7ecd9;color:#425438}.ledger .tabulator .tabulator-cell{padding:12px 8px}.ledger .tabulator-row.tabulator-row-even{background:#fafbf7}';
+const component=read(fileURLToPath(new URL('./contacts-grid.js',import.meta.url)));
+s=s.replace(branch,()=> 'return t==="contacts"?A.default.createElement(MaskanContacts,{ws:e,open:l,create:a}):'+branch.slice(7)).replace(anchor,()=>component+'\n'+anchor);
+const license=fs.readdirSync(pkg).find(p=>/^license(\.\w+)?$/i.test(p));if(!license)throw Error('Missing license');
+fs.writeFileSync(output,'/*! Maskan contacts grid v1; Tabulator 6.3.1\n'+read(path.join(pkg,license)).replaceAll('*/','* /')+' */\n'+vendor('dist/js/tabulator.min.js')+'\n;(()=>{const style=document.createElement("style");style.textContent='+JSON.stringify(css)+';document.head.appendChild(style)})();\n'+s,{flag:'wx'});

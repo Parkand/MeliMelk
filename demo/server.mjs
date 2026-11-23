@@ -1,0 +1,44 @@
+// Offline local demo. No third-party server dependencies.
+import {createServer} from 'node:http';
+import {randomBytes} from 'node:crypto';
+import {Readable} from 'node:stream';
+import {mkdir,readFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {join,resolve} from 'node:path';
+import {connect,migrate} from '../core/db.mjs';
+import {initialize} from '../core/seed.mjs';
+import {current} from '../core/service.mjs';
+import {api} from '../core/api.mjs';
+import {permitted,sections} from '../ui/nav.mjs';
+const base=fileURLToPath(new URL('.',import.meta.url));
+const data=process.env.DEMO_DATA_DIR?resolve(process.env.DEMO_DATA_DIR):join(base,'local');
+const port=Number(process.env.DEMO_PORT??3080);if(!Number.isInteger(port)||port<1||port>65535)throw Error('DEMO_PORT must be 1..65535');
+const host=`127.0.0.1:${port}`,origin=`http://${host}`;
+// Explicit single origin, regardless of proxy/production settings on this machine.
+process.env.APP_ORIGIN=origin;
+const assets=new Map([['/assets/app.js',['text/javascript; charset=utf-8',await readFile(join(base,'public/app.js'))]],['/assets/app.css',['text/css; charset=utf-8',await readFile(join(base,'../app/globals.css'))]]]);
+assets.set('/fonts/Vazirmatn-variable.woff2', [
+  'font/woff2', await readFile(join(base, '../public/fonts/Vazirmatn-variable.woff2'))
+]);
+for (const name of 'tasks visits contracts payments reports team contacts properties demands deals audit login home'.split(' ')) {
+  assets.set(`/banners/${name}.svg`, ['image/svg+xml', await readFile(join(base, `../public/banners/${name}.svg`))]);
+}
+await mkdir(data,{recursive:true,mode:0o700});process.umask(0o077);
+const db=await connect('sqlite:'+join(data,'office.sqlite'));await migrate(db);
+const email='admin@daftar.test',password=process.env.DEMO_PASSWORD||randomBytes(15).toString('base64url');
+const fresh=await initialize(db,{name:'مدیر دفتر نمونه',email,password,sample:true});
+const page='<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>دفتر املاک | دموی محلی</title><link rel="stylesheet" href="/assets/app.css"><script src="/assets/app.js" defer></script></head><body><div id="root"></div></body></html>';
+const server=createServer(async(req,res)=>{try{
+ const send=(status,body='',type='text/plain; charset=utf-8',headers={})=>{res.writeHead(status,{'Content-Type':type,...headers});res.end(body)};
+ res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Security-Policy',"default-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
+ if(req.headers.host!==host)return send(403,'Use '+origin);
+ const url=new URL(req.url,origin);if(url.origin!==origin)return send(400,'Bad request');
+ if(url.pathname.startsWith('/api/')){const headers=new Headers();for(const [k,v] of Object.entries(req.headers))if(v!==undefined)headers.set(k,String(v));const hasBody=!['GET','HEAD'].includes(req.method);const request=new Request(url,{method:req.method,headers,...(hasBody?{body:Readable.toWeb(req),duplex:'half'}:{})});const result=await api(request,db);res.writeHead(result.status,Object.fromEntries(result.headers));res.end(Buffer.from(await result.arrayBuffer()));return}
+ if(req.method!=='GET')return send(405);if(assets.has(url.pathname)){const [mime,bytes]=assets.get(url.pathname);return send(200,bytes,mime)}
+ if(url.pathname==='/')return send(302,'',undefined,{Location:'/desk/home'});if(url.pathname==='/login')return send(200,page,'text/html; charset=utf-8');
+ const section=/^\/desk\/([a-z]+)$/.exec(url.pathname)?.[1];if(!Object.hasOwn(sections,section))return send(404,'Not found');const token=req.headers.cookie?.match(/(?:^|;\s*)daftar_session=([0-9a-f]{64})(?:;|$)/)?.[1];let user;if(token){try{user=await db.tx(q=>current(q,token))}catch(e){if(e.status!==401)throw e}}if(!user)return send(302,'',undefined,{Location:'/login'});if(!permitted(section,user.role))return send(404,'Not found');send(200,page,'text/html; charset=utf-8');
+ }catch(e){console.error('Demo request failed:',e.name);if(!res.headersSent)res.writeHead(500);res.end()}});
+// Print initial credentials immediately: even if port binding fails, the DB was initialized.
+console.log(fresh?`Demo login: ${email}\nInitial demo password: ${password}\nSave this password; it is not printed on subsequent starts.`:'Existing demo retained. Use the password from the first start (or your changed password).');
+server.on('error',async e=>{console.error('Demo server:',e.message);await db.close();process.exitCode=1});server.listen(port,'127.0.0.1',()=>console.log(`Daftar demo: ${origin}/login`));
+for(const s of ['SIGINT','SIGTERM'])process.once(s,()=>server.close(async()=>{await db.close();process.exit(0)}));

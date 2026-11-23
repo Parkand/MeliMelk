@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 108" fill="none" stroke="#747da9" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+<title>طرح خطی معماری یک ساختمان مدرن دوطبقه</title>
+<!-- Cantilevered roof and upper glazing -->
+<path d="m42 32 92-22 49 17-91 23z M42 32v5l50 18 91-23v-5 M92 50v5 M49 40v22m48-8v22m79-42v22"/>
+<g stroke-width="1.2"><path d="m55 44 30 11v16L55 60z M69 49v16 M104 54l63-16v18l-63 16z M124 49v18m22-24v18"/></g>
+<!-- Projecting floor plate, entry and recessed ground-floor windows -->
+<path d="m40 60 52 18 94-24v5L92 83 40 65z M40 60l8-2m129-7 9 3 M92 78v5 M48 68v16l45 16 85-22V62 M93 83v17"/>
+<g stroke-width="1.2"><path d="m55 72 27 9v11l-27-9z M68 77v11 M103 83l17-4v13l-17 4z M128 77l42-11v12l-42 11z M149 72v12"/></g>
+<path opacity=".55" stroke-width="1.1" d="m19 90 29-6m45 16 12 4 96-25"/>
+</svg>
