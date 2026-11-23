@@ -751,3 +751,9 @@ dialog.mperson .mp-head .pc-card-heading{display:grid;grid-template-columns:auto
 dialog.mperson:has(.pc-card-heading) button{background:transparent!important;color:var(--mp-text,CanvasText)!important;border:1px solid var(--mp-edge,var(--mp-line,GrayText))!important;border-radius:10px;box-shadow:none!important;filter:none!important}
 dialog.mperson:has(.pc-card-heading) button[aria-label="بستن"] svg{color:var(--danger,#c33743)!important}dialog.mperson:has(.pc-card-heading) .mp-head button[aria-pressed] svg{color:var(--blue,#2775bf)!important}dialog.mperson:has(.pc-card-heading) button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 
+
+/* Shared MaskanModal header controls (including nested dialogs). */
+dialog.mm-shell > .mp-head > .mm-controls > .mm-control{position:static;flex:none;display:inline-grid;place-items:center;width:44px;height:44px;padding:0;color:var(--mp-text);background:var(--mp-bg);border:1px solid var(--mp-line);border-radius:9px}
+dialog.mm-shell > .mp-head > .mm-controls > .mm-control:hover:not(:disabled){background:var(--mp-soft)}
+dialog.mm-shell > .mp-head > .mm-controls > [data-action=close]{color:var(--danger,#ab3039);border-color:currentColor}
+[data-theme=dark] dialog.mm-shell > .mp-head > .mm-controls > [data-action=close]{color:var(--mm-danger-text,#ffabb1)}
