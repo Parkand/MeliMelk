@@ -191,8 +191,8 @@ function jb({
                 ? "numeric"
                 : void 0,
               ...(t==='properties' && ['latitude','longitude'].includes(E.key) ? {dir:"ltr",placeholder:E.key==='latitude'?"35.6892":"51.3890"} : {}),
-              maxLength: E.key==='photo_url' ? 2048 : 240,
-              ...(E.key==='photo_url'?{type:'url',dir:'ltr',placeholder:'https://example.com/photo.jpg'}:{}),
+              maxLength: ['photo_url','photo_url_2','photo_url_3'].includes(E.key) ? 2048 : 240,
+              ...(['photo_url','photo_url_2','photo_url_3'].includes(E.key)?{type:'url',dir:'ltr',placeholder:'https://example.com/photo.jpg'}:{}),
             }),
             ["date", "datetime"].includes(E.type) &&
               S &&
@@ -230,7 +230,7 @@ function jb({
             "home",
             ["district", "address", "latitude", "longitude"],
           ],
-          ["رسانهٔ ملک", "properties", ["photo_url"]],
+          ["رسانهٔ ملک", "properties", ["photo_url", "photo_url_2", "photo_url_3"]],
           [
             "\u0645\u0634\u062E\u0635\u0627\u062A \u0648 \u0627\u0645\u06A9\u0627\u0646\u0627\u062A",
             "demands",

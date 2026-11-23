@@ -11,7 +11,8 @@ function Yb({
   refresh,
 }) {
   function photoLink(value){if(typeof value!=='string')return null;let url;try{url=new URL(value)}catch{return null}return /^https:\/\//i.test(value)&&url.protocol==='https:'&&!url.username&&!url.password&&!/[\s\\]/.test(value)?url:null;}
-  const photo=t==='properties'?photoLink(e.photo_url):null;
+  const gallery=['photo_url','photo_url_2','photo_url_3'];
+  function renderPhoto(d){const photo=photoLink(e[d.key]);return photo ? O.default.createElement('a',{href:photo.href,target:'_blank',rel:'noopener noreferrer',dir:'auto'},d.label+' ('+photo.hostname+')') : 'ثبت نشده';}
   let u = t==='properties'?physicalPropertyModel():ne[t],
     r = l.data,
     c =
@@ -75,7 +76,7 @@ function Yb({
           O.default.createElement(
             "strong",
             null,
-            t==='properties' && d.key==='photo_url' ? (photo ? O.default.createElement('a',{href:photo.href,target:'_blank',rel:'noopener noreferrer',dir:'auto'},'باز کردن عکس ملک ('+photo.hostname+')') : 'ثبت نشده') : t==='properties' && ['elevator','storage_room'].includes(d.key) && !e[d.key] ? 'نامشخص' : Xe(d, e[d.key], r),
+            t==='properties' && gallery.includes(d.key) ? renderPhoto(d) : t==='properties' && ['elevator','storage_room'].includes(d.key) && !e[d.key] ? 'نامشخص' : Xe(d, e[d.key], r),
             d.type === "money" && e[d.key] != null
               ? " \u062A\u0648\u0645\u0627\u0646"
               : "",
