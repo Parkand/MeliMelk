@@ -738,7 +738,7 @@ dialog.mperson .mp-edit:hover {color:#be4004}
 :root[data-theme=dark][data-palette] dialog.mperson .mp-history h3 {border-bottom:1px solid var(--mp-edge);padding-bottom:5px}
 :root[data-theme=dark][data-palette] dialog.mperson :is(.mp-head small,dt,.mp-history button span) {color:var(--mp-muted)}
 :root[data-theme=dark][data-palette] dialog.mperson :is(.mp-foot button,.mp-close) {background:var(--p-paper);color:var(--mp-text);border-color:var(--mp-edge)}
-:root[data-theme=dark][data-palette] dialog.mperson button:hover {background:var(--mp-soft)}
+:root[data-theme=dark][data-palette] dialog.mperson button:not(.mm-control):hover {background:var(--mp-soft)}
 :root[data-theme=dark][data-palette] dialog.mperson .mp-foot .mp-edit {color:#ff9a61;border-color:currentColor;filter:none}
 :root[data-theme=dark][data-palette] dialog.mperson .mp-archive svg {color:#ff8089;stroke:currentColor}
 
@@ -746,5 +746,5 @@ dialog.mperson .mp-edit:hover {color:#be4004}
 
 dialog.mperson .mp-head .pc-card-heading{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:.2rem .8rem}
 .pc-card-heading>:not(.pc-card-avatar){grid-column:2}.pc-card-avatar{position:relative;grid-column:1;grid-row:1/span 3;display:grid;place-items:center;width:4.25rem;aspect-ratio:1;border:1px solid var(--mp-edge,var(--mp-line));border-radius:50%;overflow:hidden;color:var(--mp-text);font-size:1.4rem}.pc-card-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pc-card-avatar img[hidden]{display:none}
-dialog.mperson:has(.pc-card-heading) button{background:transparent!important;color:var(--mp-text,CanvasText)!important;border:1px solid var(--mp-edge,var(--mp-line,GrayText))!important;border-radius:10px;box-shadow:none!important;filter:none!important}
-dialog.mperson:has(.pc-card-heading) button[aria-label="بستن"] svg{color:var(--danger,#c33743)!important}dialog.mperson:has(.pc-card-heading) .mp-head button[aria-pressed] svg{color:var(--blue,#2775bf)!important}dialog.mperson:has(.pc-card-heading) button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+dialog.mperson:has(.pc-card-heading) button:not(.mm-control){background:transparent!important;color:var(--mp-text,CanvasText)!important;border:1px solid var(--mp-edge,var(--mp-line,GrayText))!important;border-radius:10px;box-shadow:none!important;filter:none!important}
+dialog.mperson:has(.pc-card-heading) button:not(.mm-control):focus-visible{outline:2px solid currentColor;outline-offset:2px}

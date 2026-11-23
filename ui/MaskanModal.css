@@ -19,3 +19,6 @@ dialog.mm-shell[open][data-size=wide] > .mp-head > :first-child{min-width:0;over
 dialog.mm-shell[open][data-size=wide] :is(.mp-foot,form > footer,.mm-child-body + footer),dialog.mm-shell[open][data-size=wide] > footer{box-sizing:border-box!important;display:flex;align-items:center;height:54px!important;min-height:54px!important;flex:0 0 54px!important;margin:0!important;padding:6px clamp(10px,2vw,24px)!important;background:var(--mp-bg);color:var(--mp-text);overflow:auto}
 dialog.mm-shell[open][data-size=wide] > :not(.mp-head,.mp-foot,footer){min-height:0;overflow:auto}
 dialog.mm-shell[open][data-size=wide] .mm-controls .mm-control svg{color:inherit!important;stroke:currentColor!important}
+
+/* Focus belongs to the shared header, not the view. */
+dialog.mm-shell > .mp-head > .mm-controls > .mm-control:focus-visible{outline:2px solid currentColor;outline-offset:2px}
