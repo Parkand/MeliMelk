@@ -4,6 +4,7 @@ function Xr({
   timed: l = !1,
   label: a,
   required: n,
+  popup = false,
 }) {
   let i = zt().slice(0, 10),
     s = t.slice(0, 10),
@@ -13,12 +14,13 @@ function Xr({
     [h, f] = (0, At.useState)(() => Gr(u)),
     d = Gr(h + 32 * qi),
     y = (new Date(h).getUTCDay() + 1) % 7;
+  const entry=At.useRef({}).current, dismiss=()=>c(false);
   function v(b) {
     (e(b ? (l ? b + "T" + o : b) : ""), c(!1));
   }
   return At.default.createElement(
     "div",
-    { className: "pd" },
+    { className: 'pd', onCancel: popup ? event=>event.stopPropagation() : undefined },
     At.default.createElement(
       "button",
       {
@@ -42,8 +44,8 @@ function Xr({
     ),
     r &&
       At.default.createElement(
-        "div",
-        {
+        popup ? MaskanModal : 'div',
+        popup ? {frame:{entry,back:dismiss,all:dismiss},title:'انتخاب تاریخ شمسی',extra:{className:'te-calendar'}} : {
           className: "pd-sheet",
           role: "group",
           "aria-label":
@@ -112,7 +114,7 @@ function Xr({
               { type: "button", onClick: () => v("") },
               "\u067E\u0627\u06A9 \u06A9\u0631\u062F\u0646",
             ),
-          At.default.createElement(
+          !popup && At.default.createElement(
             "button",
             { type: "button", onClick: () => c(!1) },
             "\u0628\u0633\u062A\u0646 \u062A\u0642\u0648\u06CC\u0645",

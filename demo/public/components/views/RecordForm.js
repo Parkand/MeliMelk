@@ -160,6 +160,7 @@ function jb({
             k ? " *" : "",
           ),
           O.default.createElement(Xr, {
+            popup: t === 'tasks' && !!e,
             label: E.label,
             required: k,
             value: S,
@@ -247,6 +248,16 @@ function jb({
   const mmCancel = () => {
     if (!m && (!frame || !mmDirty || confirm("بدون ذخیره خارج می‌شوید؟"))) i();
   };
+  const localEntry=O.useRef({prev:s}).current;
+  if(t==='tasks' && e){
+    const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','status','priority','due_at','contact_id','listing_id'];
+    return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:'ویرایش وظیفه',expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:'te13'}},
+      el('form',{onSubmit:M,className:'te-form'},el('div',{className:'modal-scroll te-body'},el('div',{className:'te-grid'},
+        ...keys.map(field),...o.fields.filter(z=>!keys.includes(z.key)&&z.key!=='result').map(T),el(Jd,{ws:a,row:e,form:r,set:c}),field('result'),
+        el('label',{className:'te-toggle'},el('input',{type:'checkbox',checked:h,onChange:event=>f(event.target.checked)}),'هم‌زمان وظیفهٔ پیگیری بعدی ساخته شود'),
+        h&&el('label',null,'عنوان پیگیری بعدی',el('input',{required:true,value:d,onChange:event=>y(event.target.value)})),h&&el('div',{className:'pd-field'},'موعد پیگیری بعدی *',el(Xr,{popup:true,label:'موعد پیگیری بعدی',timed:true,value:v,change:b,required:true}))),p&&el('p',{role:'alert',className:'error'},p)),
+      el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'))));
+  }
   return O.default.createElement(
     mmDialog,
     {
