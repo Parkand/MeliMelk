@@ -1,0 +1,18 @@
+/* Task editing only; calendar stays inside the dialog's scrolling body. */
+.mm-shell:has(form.task-edit):not(.mm-big){inline-size:min(52rem,calc(100vw - 1rem))}
+.mm-shell .task-edit .ms-sections{padding:clamp(.5rem,2vw,1rem);gap:.55rem}
+.mm-shell .task-edit .ms-card{padding:.7rem .85rem;min-inline-size:0}
+.mm-shell .task-edit .ms-card h3{margin:0 0 .55rem;font-size:.94rem}
+.mm-shell .task-edit .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));align-items:start;gap:.55rem .8rem}
+.mm-shell .task-edit .form-grid>.full{grid-column:1/-1}
+.mm-shell .task-edit textarea{min-height:3.5rem;resize:vertical}
+.mm-shell .task-edit .hint{margin:.15rem 1rem .6rem}
+.mm-shell .task-edit footer.mp-foot{direction:rtl;display:flex;justify-content:flex-end;align-items:center;gap:.5rem;padding:.45rem .9rem}
+.mm-shell .task-edit footer button{min-block-size:2.5rem;white-space:nowrap}
+.mm-shell .task-edit .pd-sheet{position:static;grid-column:1/-1;box-sizing:border-box;inline-size:min(100%,20rem);justify-self:start;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:.8rem;padding:.5rem;box-shadow:none}
+.mm-shell .task-edit .pd{display:grid;grid-template-columns:minmax(0,1fr)}
+.mm-shell .task-edit .pd-grid{direction:rtl;gap:2px;margin:.4rem 0}
+.mm-shell .task-edit .pd-grid button{min-width:0;min-height:2rem;padding:.15rem;border-radius:.45rem}
+.mm-shell .task-edit .pd-nav{gap:.25rem;flex-wrap:wrap}
+.mm-shell .task-edit .pd-nav button{font-size:.8rem;padding:.25rem .4rem;white-space:nowrap}
+@media(max-width:600px){.mm-shell .task-edit .form-grid{grid-template-columns:minmax(0,1fr)}.mm-shell .task-edit .ms-card{padding:.6rem}.mm-shell .task-edit .pd-sheet{justify-self:center}}

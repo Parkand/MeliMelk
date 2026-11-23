@@ -262,7 +262,7 @@ function jb({
     },
     O.default.createElement(
       "form",
-      { onSubmit: M },
+      { onSubmit: M, className: t === "tasks" && e ? "task-edit" : undefined },
       O.default.createElement(
         "div",
         { className: "ms-sections" },
@@ -386,7 +386,7 @@ function jb({
         O.default.createElement("p", { role: "alert", className: "error" }, p),
       O.default.createElement(
         "footer",
-        null,
+        t === "tasks" && e ? {className:"mp-foot"} : null,
         O.default.createElement(
           "button",
           { className: "primary", disabled: m },
