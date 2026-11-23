@@ -248,7 +248,7 @@ function jb({
     if (!m && (!frame || !mmDirty || confirm("بدون ذخیره خارج می‌شوید؟"))) i();
   };
   const localEntry=O.useRef({prev:s}).current;
-  if(t==='properties') return O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,fields:o.fields,renderField:T,team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p});
+  if(t==='properties') return O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,fields:o.fields,renderField:T,district:r.district,team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p});
   if(t==='tasks' && e){
     const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','status','priority','due_at','contact_id','listing_id'];
     return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:'ویرایش وظیفه',expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:'te13'}},
