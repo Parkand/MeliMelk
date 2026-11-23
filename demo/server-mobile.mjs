@@ -21,6 +21,8 @@ const host=`${addr}:${port}`,origin=`http://${host}`;
 process.env.APP_ORIGIN=origin;
 const maskanShellSource=await readFile(join(base,'../ui/MaskanModal.js'),'utf8');
 const assets=new Map([['/assets/app.js',['text/javascript; charset=utf-8',(await readFile(join(base,'public/app.js'),'utf8')).replace('/* @include ui/MaskanModal.js */',()=>maskanShellSource)]],['/assets/app.css',['text/css; charset=utf-8',await readFile(join(base,'../app/globals.css'))]]]);
+assets.set('/assets/vendor/tabulator/6.3.1/tabulator.min.js', ['text/javascript; charset=utf-8', await readFile(join(base, 'public/vendor/tabulator/6.3.1/tabulator.min.js'))]);
+assets.set('/assets/styles/contacts-grid.css', ['text/css; charset=utf-8', await readFile(join(base, 'public/styles/contacts-grid.css'))]);
 assets.set('/fonts/Vazirmatn-variable.woff2', [
   'font/woff2', await readFile(join(base, '../public/fonts/Vazirmatn-variable.woff2'))
 ]);
@@ -35,7 +37,7 @@ await db.tx(q=>q('SELECT id FROM users LIMIT 1'));
 await db.tx(q=>q('CREATE TABLE IF NOT EXISTS maskan_contact_state(contact_id TEXT PRIMARY KEY REFERENCES contacts(id), archived INTEGER NOT NULL CHECK(archived IN (0,1)))'));
 const fresh=false,email='',password='';
 console.log('Database: PostgreSQL / daftar_migration');
-const page='<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>دفتر املاک | دموی محلی</title><link rel="stylesheet" href="/assets/app.css"><script src="/assets/app.js" defer></script></head><body><div id="root"></div></body></html>';
+const page='<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>دفتر املاک | دموی محلی</title><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/styles/contacts-grid.css"><script src="/assets/vendor/tabulator/6.3.1/tabulator.min.js" defer></script><script src="/assets/app.js" defer></script></head><body><div id="root"></div></body></html>';
 const server=createServer(async(req,res)=>{try{
  const send=(status,body='',type='text/plain; charset=utf-8',headers={})=>{res.writeHead(status,{'Content-Type':type,...headers});res.end(body)};
  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Security-Policy',"default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
