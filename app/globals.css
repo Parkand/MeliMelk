@@ -742,18 +742,9 @@ dialog.mperson .mp-edit:hover {color:#be4004}
 :root[data-theme=dark][data-palette] dialog.mperson .mp-foot .mp-edit {color:#ff9a61;border-color:currentColor;filter:none}
 :root[data-theme=dark][data-palette] dialog.mperson .mp-archive svg {color:#ff8089;stroke:currentColor}
 
-dialog.mm-shell{resize:none;box-sizing:border-box}dialog.mm-shell[data-size=wide]{width:min(860px,calc(100vw - 24px))}dialog.mm-shell[data-size=medium]{width:min(600px,calc(100vw - 24px))}dialog.mm-shell.mm-big{width:calc(100vw - 16px);max-width:none;height:calc(100dvh - 16px);max-height:none}dialog.mm-shell .mm-controls{direction:ltr;display:flex;flex:none;gap:4px;align-items:center}dialog.mm-shell .mm-controls .mp-close{position:static;flex:none;aspect-ratio:1;padding:0}dialog.mm-shell .mp-head> :first-child{min-width:0}dialog.mm-shell .mp-body{overflow:auto}dialog.mm-big .mp-body{flex:1}dialog.mm-big .mp-scroll{max-height:none}dialog.mm-shell.mm-child[open]{display:flex;flex-direction:column}dialog.mm-child>.modal-scroll,dialog.mm-child>form>.modal-scroll{min-height:0;overflow:auto;flex:1;padding:12px}dialog.mm-child>form{display:flex;flex-direction:column;min-height:0;overflow:hidden;flex:1}dialog.mm-child footer{flex:none}dialog.mm-child .mp-head{flex:none}
 
-dialog.mm-shell:not([open]){display:none!important}dialog.mm-shell.sv-pop[open]{display:flex;flex-direction:column}dialog.mm-shell.sv-pop .td-body{min-height:0;overflow:auto}dialog.mm-shell.mm-big[open]{width:calc(100vw - 16px)!important;height:calc(100dvh - 16px)!important;max-width:none!important;max-height:none!important}dialog.mm-shell .mm-controls button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 
 dialog.mperson .mp-head .pc-card-heading{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:.2rem .8rem}
 .pc-card-heading>:not(.pc-card-avatar){grid-column:2}.pc-card-avatar{position:relative;grid-column:1;grid-row:1/span 3;display:grid;place-items:center;width:4.25rem;aspect-ratio:1;border:1px solid var(--mp-edge,var(--mp-line));border-radius:50%;overflow:hidden;color:var(--mp-text);font-size:1.4rem}.pc-card-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pc-card-avatar img[hidden]{display:none}
 dialog.mperson:has(.pc-card-heading) button{background:transparent!important;color:var(--mp-text,CanvasText)!important;border:1px solid var(--mp-edge,var(--mp-line,GrayText))!important;border-radius:10px;box-shadow:none!important;filter:none!important}
 dialog.mperson:has(.pc-card-heading) button[aria-label="بستن"] svg{color:var(--danger,#c33743)!important}dialog.mperson:has(.pc-card-heading) .mp-head button[aria-pressed] svg{color:var(--blue,#2775bf)!important}dialog.mperson:has(.pc-card-heading) button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-
-
-/* Shared MaskanModal header controls (including nested dialogs). */
-dialog.mm-shell > .mp-head > .mm-controls > .mm-control{position:static;flex:none;display:inline-grid;place-items:center;width:44px;height:44px;padding:0;color:var(--mp-text);background:var(--mp-bg);border:1px solid var(--mp-line);border-radius:9px}
-dialog.mm-shell > .mp-head > .mm-controls > .mm-control:hover:not(:disabled){background:var(--mp-soft)}
-dialog.mm-shell > .mp-head > .mm-controls > [data-action=close]{color:var(--danger,#ab3039);border-color:currentColor}
-[data-theme=dark] dialog.mm-shell > .mp-head > .mm-controls > [data-action=close]{color:var(--mm-danger-text,#ffabb1)}

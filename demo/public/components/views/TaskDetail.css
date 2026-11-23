@@ -10,7 +10,6 @@
 @media(max-width:480px){.task-detail .task-content dl{grid-template-columns:minmax(0,1fr)}}
 
 dialog.mm-shell[open]:has(> .task-content){display:flex;flex-direction:column;overflow:hidden}
-dialog.mm-shell[open]:has(> .task-content):not(.mm-big){height:min(35.5rem,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
 dialog.mm-shell:has(> .task-content) > .mp-head{box-sizing:border-box;align-items:center;padding:8px clamp(10px,2vw,24px);min-height:68px;flex:none}
 dialog.mm-shell .pc-card-heading .pc-card-avatar{width:52px;grid-row:1/span 2}dialog.mm-shell .pc-card-heading h2{font-size:1.25rem;margin:0}dialog.mm-shell .pc-card-heading{line-height:1.3}
 

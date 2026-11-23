@@ -1,0 +1,2 @@
+dialog.mm-shell.persian-calendar[data-size][open]{width:min(22rem,calc(100vw - 1.2rem));height:fit-content!important;min-height:0!important;max-height:calc(100dvh - 24px);overflow:auto;color:var(--mp-text);background:var(--mp-bg)}
+.persian-calendar .pd-nav,.persian-calendar .pd-grid{margin:.6rem .8rem}.persian-calendar .pd-nav{flex-wrap:wrap}.persian-calendar .pd-grid{direction:rtl;gap:3px}.persian-calendar .pd-grid button{padding:.15rem;min-width:0;min-height:2.1rem}.persian-calendar .pd-grid button[aria-pressed=true]{color:var(--mp-bg);background:var(--mp-action)}

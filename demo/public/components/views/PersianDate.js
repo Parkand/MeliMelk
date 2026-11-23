@@ -4,7 +4,7 @@ function Xr({
   timed: l = !1,
   label: a,
   required: n,
-  popup = false,
+  popup = true,
 }) {
   let i = zt().slice(0, 10),
     s = t.slice(0, 10),
@@ -45,7 +45,7 @@ function Xr({
     r &&
       At.default.createElement(
         popup ? MaskanModal : 'div',
-        popup ? {frame:{entry,back:dismiss,all:dismiss},title:'انتخاب تاریخ شمسی',extra:{className:'te-calendar'}} : {
+        popup ? {frame:{entry,back:dismiss,all:dismiss},title:'انتخاب تاریخ شمسی',size:'calendar',extra:{className:'persian-calendar'}} : {
           className: "pd-sheet",
           role: "group",
           "aria-label":

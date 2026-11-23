@@ -1,7 +1,7 @@
 const createMaskanModal = (O) => {
 const mmViews=new WeakMap();
 function mmScope(entry,all,back){return {entry,all,back}}
-function MaskanModal({frame,title,heading,children,size='medium',expand=false,blocked=false,dirty=false,legacy=false,external,session,extra={}} ){
+function MaskanModal({frame,title,heading,children,size='wide',expand=false,blocked=false,dirty=false,legacy=false,external,session,extra={}} ){
  const R=O.default,h=R.createElement,local=R.useRef(null),ref=external||local,view=R.useMemo(()=>{let v=mmViews.get(frame.entry);if(!v){v={big:false,scroll:[]};mmViews.set(frame.entry,v)}return v},[frame.entry]);const [big,setBig]=R.useState(view.big);
  R.useLayoutEffect(()=>{if(external){setBig(false);return}let el=ref.current;el.showModal();const areas=()=>Array.from(el.querySelectorAll('.mp-body,.mp-scroll,.modal-scroll'));areas().forEach((n,i)=>n.scrollTop=view.scroll[i]||0);const save=()=>{view.scroll=areas().map(n=>n.scrollTop)};el.addEventListener('scroll',save,true);return ()=>{el.removeEventListener('scroll',save,true);el.close()}},[view,session]);
  const leave=fn=>{if(!blocked&&(!dirty||window.confirm('تغییرات ذخیره نشده‌اند. بدون ذخیره خارج می‌شوید؟')))fn()};const btn=(role,label,path,fn,pressed)=>h('button',{type:'button',className:'mm-control','data-action':role,disabled:blocked,title:label,'aria-label':label,'aria-pressed':pressed,onClick:fn},h('svg',{width:19,height:19,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true},h('path',{d:path})));
