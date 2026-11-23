@@ -1,3 +1,21 @@
+  function personSummary(h,v,ws) {
+    const pf=v.profile||{},roles=pf.roles||(v.category==='both'?['owner','customer']:[v.category]),names=Object.fromEntries(ws.data.contacts.map(x=>[x.id,x.name]));
+    const full = [pf.first, pf.last].filter(Boolean).join(" ") || v.name;
+    const title = [pf.salutation, full].filter(Boolean).join(" ") || "پروندهٔ شخص جدید";
+    const text = [pf.job && `حوزهٔ فعالیت: ${pf.job}`, pf.position && `سمت: ${pf.position}`, pf.company && `محل کار: ${pf.company}`].filter(Boolean).join(" • ");
+    const facts = [
+      ["نام نمایشی", v.name !== full && v.name], ["نام آشنا در دفتر", pf.alias], ["نقش‌ها",roles.map(k=>pcRoles[k]).filter(Boolean).join("، ")],
+      ["موبایل اصلی",v.phone], ["راه‌های تماس دیگر",(v.methods||[]).filter(m=>m.value).map(m=>[m.label || pcMethods[m.kind],m.value].filter(Boolean).join(": ")).join("؛ ")],
+      ["ترجیح تماس",[pf.preferred,pf.time].filter(Boolean).join("، ")], ["محدوده",[pf.city,pf.area].filter(Boolean).join("، ")],
+      ["تحصیلات",[pf.education,pf.major].filter(Boolean).join("، ")], ["جنسیت",pf.gender], ["شناسهٔ تکمیلی",pf.identifier], ["منبع آشنایی",v.source],
+      ["روابط",(v.links||[]).filter(l=>names[l.id]).map(l=>[names[l.id],l.draft ?? relText(l.kind)].filter(Boolean).join(" — ")).join("؛ ")],
+      ["مشاور پیگیر",ws.team.find(x=>String(x.id)===String(v.assignee))?.name], ["برچسب‌ها",pf.tags], ["یادداشت داخلی",v.note]
+    ].filter(([,value])=>value && String(value).trim());
+    return h("article",{className:"ce-summary ce-wide",dir:"rtl"}, h("small",null,"پروندهٔ اشخاص  /  مرور اطلاعات"),
+      h("h3",null,title), text && h("p",null,text),
+      !full && !text && h("p",null,"با تکمیل فرم، اطلاعات شخص اینجا نمایش داده می‌شود."),
+      h("dl",null,...facts.map(([label,value])=>h("div",{key:label},h("dt",null,label),h("dd",null,h("bdi",null,value))))));
+  }
 function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
   const R = O.default,
     h = R.createElement,
@@ -203,23 +221,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     attempt && !v.phone?.trim() && "موبایل اصلی را وارد کنید.",
     attempt && v.links.some(l => !(l.draft ?? relText(l.kind))?.trim()) && "نوع رابطه را در تب آشنایی و روابط مشخص کنید.", err
   ].filter(Boolean))];
-  function summary() {
-    const full = [pf.first, pf.last].filter(Boolean).join(" ") || v.name;
-    const title = [pf.salutation, full].filter(Boolean).join(" ") || "پروندهٔ شخص جدید";
-    const text = [pf.job && `حوزهٔ فعالیت: ${pf.job}`, pf.position && `سمت: ${pf.position}`, pf.company && `محل کار: ${pf.company}`].filter(Boolean).join(" • ");
-    const facts = [
-      ["نام نمایشی", v.name !== full && v.name], ["نام آشنا در دفتر", pf.alias], ["نقش‌ها",roles.map(k=>pcRoles[k]).filter(Boolean).join("، ")],
-      ["موبایل اصلی",v.phone], ["راه‌های تماس دیگر",v.methods.filter(m=>m.value).map(m=>[m.label || pcMethods[m.kind],m.value].filter(Boolean).join(": ")).join("؛ ")],
-      ["ترجیح تماس",[pf.preferred,pf.time].filter(Boolean).join("، ")], ["محدوده",[pf.city,pf.area].filter(Boolean).join("، ")],
-      ["تحصیلات",[pf.education,pf.major].filter(Boolean).join("، ")], ["جنسیت",pf.gender], ["شناسهٔ تکمیلی",pf.identifier], ["منبع آشنایی",v.source],
-      ["روابط",v.links.filter(l=>names[l.id]).map(l=>[names[l.id],l.draft ?? relText(l.kind)].filter(Boolean).join(" — ")).join("؛ ")],
-      ["مشاور پیگیر",ws.team.find(x=>String(x.id)===String(v.assignee))?.name], ["برچسب‌ها",pf.tags], ["یادداشت داخلی",v.note]
-    ].filter(([,value])=>value && String(value).trim());
-    return h("article",{className:"ce-summary ce-wide",dir:"rtl"}, h("small",null,"پروندهٔ اشخاص  /  مرور اطلاعات"),
-      h("h3",null,title), text && h("p",null,text),
-      !full && !text && h("p",null,"با تکمیل فرم، اطلاعات شخص اینجا نمایش داده می‌شود."),
-      h("dl",null,...facts.map(([label,value])=>h("div",{key:label},h("dt",null,label),h("dd",null,h("bdi",null,value))))));
-  }
+
   return h(
     mmDialog,
     {
@@ -269,7 +271,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         h(
           "section",
           null,
-          ...(tab === 5 ? [summary()] : tab === 0
+          ...(tab === 5 ? [personSummary(h,v,ws)] : tab === 0
             ? [
                 ...[["name", "نام نمایشی", "نام نمایشی را وارد کنید."], ["phone", "موبایل اصلی", "موبایل اصلی را وارد کنید."]].map(([key, caption, message]) => {
                   const bad = attempt && !v[key]?.trim();

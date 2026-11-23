@@ -14,15 +14,6 @@ dialog.mm-shell:has(.customer-editor) .mp-head{align-items:center;padding:12px c
 .customer-editor .pc-form{padding:0}.customer-editor .pc-form nav{display:flex;width:100%;max-width:100%;gap:0;border-bottom:1px solid var(--mp-edge);align-items:stretch}.customer-editor .pc-form nav button{flex:1 0 auto}dialog.mm-shell:has(.customer-editor) .pc-form nav button{border:0!important;border-bottom:3px solid transparent!important;border-radius:0;padding:.8rem .45rem}dialog.mm-shell:has(.customer-editor) .pc-form nav button[aria-pressed=true]{border-bottom-color:currentColor!important;font-weight:750}.customer-editor h3.ce-wide{margin:1rem 0 .15rem}.customer-editor textarea{width:100%;min-height:5.75rem}.customer-editor .ce-stats>div{padding:1rem;background:var(--mp-bg);border-radius:.6rem}.customer-editor footer{display:flex!important;flex-direction:row!important;direction:ltr;justify-content:flex-start!important;gap:.6rem}.customer-editor footer button{direction:rtl}dialog.mm-shell:has(.customer-editor) .customer-editor footer button[type=submit]{color:#fff!important;background:#395b40!important}
 
 /* Tab content must not participate in sizing the dialog shell. */
-dialog.mm-shell[open]:has(> .customer-editor):not(.mm-big) {
-  box-sizing: border-box;
-  width: min(60rem, calc(100vw - 1rem)) !important;
-  height: min(32.2rem, calc(70dvh - .7rem)) !important;
-  max-height: none !important;
-}
-dialog.mm-shell[open]:has(> .customer-editor) {
-  display: flex; flex-direction: column; overflow: hidden;
-}
 dialog.mm-shell > .customer-editor > .modal-scroll {
   flex: 1 1 0; min-height: 0; overflow: auto; scrollbar-gutter: stable;
 }
@@ -30,3 +21,9 @@ dialog.mm-shell > .customer-editor > .modal-scroll {
 .customer-editor .ce-errors:not(:empty){margin-left:auto;min-width:0;max-height:4.5rem;overflow:auto;display:grid;gap:.18rem;border-inline-start:3px solid var(--danger,#cf6065);padding:.35rem .75rem;background:color-mix(in srgb,var(--danger,#cf6065) 12%,transparent);border-radius:.45rem;overflow-wrap:anywhere;text-align:right}
 .customer-editor .ce-errors:empty{display:none}.customer-editor footer{column-gap:clamp(.6rem,2vw,1.25rem)!important}
 .customer-editor .ce-summary{padding:clamp(1rem,3vw,2rem);border:1px solid var(--mp-edge);border-inline-start:4px solid var(--accent,#568c77);border-radius:1rem;background:linear-gradient(125deg,color-mix(in srgb,var(--accent,#568c77) 12%,transparent),transparent 70%);line-height:1.8;overflow-wrap:anywhere}.ce-summary h3{margin:.25rem 0;font-size:1.45rem}.ce-summary dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:.6rem 1.25rem}.ce-summary dl div{border-top:1px solid var(--mp-edge);padding-top:.4rem}.ce-summary dt{font-size:.83em;opacity:.8}.ce-summary dd{margin:0;white-space:pre-wrap}
+
+dialog.mm-shell[open]:has(> .customer-editor){display:flex;flex-direction:column;overflow:hidden}
+dialog.mm-shell[open]:has(> .customer-editor):not(.mm-big){height:min(35.5rem,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
+dialog.mm-shell:has(> .customer-editor) > .mp-head{box-sizing:border-box;align-items:center;padding:8px clamp(10px,2vw,24px);min-height:68px;flex:none}
+dialog.mm-shell > .customer-editor > footer{box-sizing:border-box;align-items:center;padding:6px clamp(10px,2vw,24px);min-height:54px;flex:none}
+dialog.mm-shell:has(.customer-editor) footer button{min-height:40px;padding-block:4px}
