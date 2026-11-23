@@ -58,6 +58,7 @@ export async function composeClient() {
     const name = parts[i];
     if (!remaining.delete(name)) throw Error('Unknown or duplicate demo view: ' + name);
     parts[i] = await read('components/views/' + name + '.js');
+    if (name === 'Records') parts[i] += '\n' + await read('components/views/MaskanProperties.js');
     if (name === 'RecordDetail') parts[i] += '\n' + await read('components/views/TaskDetail.js');
   }
   if (remaining.size) throw Error('Missing demo view markers: ' + [...remaining].join(', '));

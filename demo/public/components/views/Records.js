@@ -1,4 +1,7 @@
 function Jb({ k: t, ws: e, open: l, create: a }) {
+  return t === "properties" ? A.default.createElement(MaskanProperties,{ws:e,open:l,create:a}) : A.default.createElement(MaskanOtherRecords,{k:t,ws:e,open:l,create:a});
+}
+function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
   let n = ne[t],
     i = e.data,
     [s, o] = (0, A.useState)(""),
