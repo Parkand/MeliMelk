@@ -17,6 +17,8 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     [base] = R.useState(v),
     [tab, T] = R.useState(0),
     [err, E] = R.useState(""),
+    [attempt, tried] = R.useState(false),
+    picker = R.useRef(null),
     [busy, B] = R.useState(false),
     dirty = JSON.stringify(base) !== JSON.stringify(v),
     put = (key, val) => set((p) => ({ ...p, [key]: val })),
@@ -62,11 +64,11 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
               items.map((x, j) => (j === i ? { ...x, [f]: val } : x)),
             ),
           ),
-          button("حذف", () =>
+          h("button",{type:"button",title:"حذف ردیف","aria-label":"حذف ردیف",onClick:() =>
             put(
               key,
               items.filter((_, j) => j !== i),
-            ),
+            )}, "×",
           ),
         ),
       ),
@@ -124,11 +126,13 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
   async function save(e) {
     e.preventDefault();
     if (busy) return;
-    if (!v.name?.trim()) {
+    tried(true);
+    if (!v.name?.trim() || !v.phone?.trim()) {
       T(0);
-      E("نام شخص را وارد کنید.");
+      E("");
       return;
     }
+    if (!e.currentTarget.reportValidity()) return;
     B(true);
     E("");
     try {
@@ -199,14 +203,14 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       frame,
       nested,
       icon: "contacts",
-      title: row ? "ویرایش پرونده" : "ثبت شخص",
+      title: row ? "ویرایش پرونده" : "ایجاد مشتری جدید",
       dirty,
       blocked: busy,
       close: frame ? close : cancel,
     },
     h(
       "form",
-      { onSubmit: save },
+      { onSubmit: save, noValidate:true, dir: "rtl", className: "customer-editor" },
       h(
         "fieldset",
         { className: "pc-form", disabled: busy },
@@ -227,6 +231,9 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
             h("strong", null, v.name || "شخص جدید"),
             h("small", null, display || "پروندهٔ مشتری"),
           ),
+          h("input",{type:"file",hidden:true,ref:picker,accept:"image/png,image/jpeg,image/webp",onChange:photo}),
+          h("button",{type:"button",title:"تغییر تصویر","aria-label":"تغییر تصویر",onClick:()=>picker.current.click()},"✎"),
+          pf.photo && h("button",{type:"button",title:"حذف تصویر","aria-label":"حذف تصویر",onClick:()=>pr("photo","")},"×"),
         ),
         h(
           "nav",
@@ -255,21 +262,14 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
           null,
           ...(tab === 0
             ? [
-                field("name", "نام نمایشی *"),
-                field("phone", "موبایل اصلی", false, "tel"),
-                label(
-                  "تصویر مشتری",
-                  h("input", {
-                    type: "file",
-                    accept: "image/png,image/jpeg,image/webp",
-                    onChange: photo,
-                  }),
-                ),
-                pf.photo && button("حذف تصویر", () => pr("photo", "")),
+                ...[["name", "نام نمایشی", "نام نمایشی را وارد کنید."], ["phone", "موبایل اصلی", "موبایل اصلی را وارد کنید."]].map(([key, caption, message]) => {
+                  const bad = attempt && !v[key]?.trim();
+                  return h("label", {key}, caption + " *", h("input", {type:key === "phone" ? "tel" : "text", dir:key === "phone" ? "ltr" : "rtl", value:v[key] || "", maxLength:240, "aria-required":true,"aria-invalid":bad,onChange:e=>put(key,e.target.value)}),bad && h("small",{role:"alert"},message));
+                }),
                 h(
                   "div",
-                  null,
-                  "نقش‌ها",
+                  {className:"ce-wide"},
+                  h("strong", null, "نقش‌ها"),
                   ...Object.entries(pcRoles).map(([k, s]) =>
                     label(
                       s,
@@ -287,10 +287,11 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                     ),
                   ),
                 ),
-                h("small", null, "برای ذخیره فقط نام لازم است."),
+
               ]
             : tab === 1
               ? [
+                  ...personal.slice(0,2).map(([k,s])=>field(k,s,true)),
                   field("salutation", "نحوهٔ خطاب", true, "text", {
                     list: "pc-salute",
                   }),
@@ -324,10 +325,11 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                     "دکتری",
                     "سایر",
                   ]),
-                  ...personal.map(([k, s]) => field(k, s, true)),
+                  ...personal.slice(2).map(([k, s]) => field(k, s, true)),
                 ]
               : tab === 2
                 ? [
+                    h("div",{className:"ce-bar"},h("strong",null,"راه‌های تماس"),button("＋ افزودن",()=>put("methods",[...v.methods,{kind:"mobile",value:""}]))),
                     ...list("methods", v.methods, (m, change) => [
                       label(
                         "نوع",
@@ -351,12 +353,6 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                         }),
                       ),
                     ]),
-                    button("افزودن راه تماس", () =>
-                      put("methods", [
-                        ...v.methods,
-                        { kind: "mobile", value: "" },
-                      ]),
-                    ),
                     ...[
                       ["preferred", "روش تماس ترجیحی"],
                       ["time", "زمان مناسب تماس"],
@@ -381,13 +377,22 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                           ]),
                         ].map((s) => h("option", { key: s, value: s })),
                       ),
+                      h("strong",{className:"ce-wide"},"آشنایی"),
                       field("source", "منبع آشنایی"),
                       h(
                         "small",
                         null,
                         "شخص انتخابی چه نسبتی با صاحب این پرونده دارد؟",
                       ),
+                      h("strong",{className:"ce-wide"},"روابط"),
                       ...list("links", v.links, (l, change) => [
+                        label(
+                          "پروندهٔ مرتبط",
+                          select(l.id, (x) => change("id", x), {
+                            "": "انتخاب شخص",
+                            ...names,
+                          }),
+                        ),
                         label(
                           "نوع رابطه",
                           h("input", {
@@ -397,13 +402,6 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                             value: l.draft ?? relText(l.kind),
                             placeholder: "انتخاب یا نوشتن رابطه",
                             onChange: (e) => change("draft", e.target.value),
-                          }),
-                        ),
-                        label(
-                          "پروندهٔ مرتبط",
-                          select(l.id, (x) => change("id", x), {
-                            "": "انتخاب شخص",
-                            ...names,
                           }),
                         ),
                       ]),
@@ -423,15 +421,6 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                       ),
                     ]
                   : [
-                      field("tags", "برچسب‌ها", true),
-                      label(
-                        "یادداشت داخلی",
-                        h("textarea", {
-                          value: v.note || "",
-                          maxLength: 3000,
-                          onChange: (e) => put("note", e.target.value),
-                        }),
-                      ),
                       ws.user.role === "admin"
                         ? label(
                             "مشاور پیگیر",
@@ -452,10 +441,19 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                               (ws.team.find((x) => x.id === v.assignee)?.name ||
                                 ws.user.name),
                           ),
-                      history("tasks", "پیگیری"),
+                      field("tags", "برچسب‌ها", true),
+                      label(
+                        "یادداشت داخلی",
+                        h("textarea", {
+                          value: v.note || "",
+                          maxLength: 3000,
+                          onChange: (e) => put("note", e.target.value),
+                        }),
+                      ),
+                      h("div",{className:"ce-stats"},history("tasks", "پیگیری"),
                       history("demands", "تقاضا"),
                       history("visits", "بازدید"),
-                      history("deals", "معامله"),
+                      history("deals", "معامله")),
                     ]),
         ),
       ),
@@ -466,7 +464,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         h(
           "button",
           { type: "submit", disabled: busy },
-          busy ? "در حال ذخیره…" : "ذخیره و بستن",
+          busy ? "در حال ذخیره…" : "✓ ذخیره و بستن",
         ),
         button("انصراف", cancel),
       ),
