@@ -202,6 +202,12 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     {
       frame,
       nested,
+      heading: h("div",{className:"cl-identity"},
+        h("div",{className:"cl-avatar"},pf.photo ? h("img",{src:pf.photo,alt:"تصویر مشتری"}) : h("svg",{width:34,height:34,viewBox:"0 0 32 32",fill:"none",stroke:"currentColor","aria-hidden":true},h("circle",{cx:16,cy:10,r:6}),h("path",{d:"M3 29c1-13 25-13 26 0"})),
+          h("input",{hidden:true,type:"file",ref:picker,accept:"image/png,image/jpeg,image/webp",onChange:photo}),
+          h("button",{className:"cl-camera",type:"button",disabled:busy,title:"تغییر تصویر","aria-label":"تغییر تصویر",onClick:()=>picker.current.click()},h("svg",{width:14,height:14,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","aria-hidden":true},h("path",{d:"M2 7h5l2-3h6l2 3h5v14H2z"}),h("circle",{cx:12,cy:13,r:4})))),
+        h("div",null,h("strong",null,v.name || "شخص جدید"),h("small",null,display || "پروندهٔ مشتری")),
+        pf.photo && h("button",{type:"button",disabled:busy,onClick:()=>pr("photo","")},"حذف تصویر")),
       icon: "contacts",
       title: row ? "ویرایش پرونده" : "ایجاد مشتری جدید",
       dirty,
@@ -214,27 +220,6 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       h(
         "fieldset",
         { className: "pc-form", disabled: busy },
-        h(
-          "header",
-          { className: "pc-id" },
-          pf.photo
-            ? h("img", {
-                src: pf.photo,
-                alt: "تصویر مشتری",
-                width: 56,
-                height: 56,
-              })
-            : h("b", null, v.name?.trim().slice(0, 1) || "＋"),
-          h(
-            "div",
-            null,
-            h("strong", null, v.name || "شخص جدید"),
-            h("small", null, display || "پروندهٔ مشتری"),
-          ),
-          h("input",{type:"file",hidden:true,ref:picker,accept:"image/png,image/jpeg,image/webp",onChange:photo}),
-          h("button",{type:"button",title:"تغییر تصویر","aria-label":"تغییر تصویر",onClick:()=>picker.current.click()},"✎"),
-          pf.photo && h("button",{type:"button",title:"حذف تصویر","aria-label":"حذف تصویر",onClick:()=>pr("photo","")},"×"),
-        ),
         h(
           "nav",
           { "aria-label": "بخش‌های پرونده" },
@@ -421,6 +406,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                       ),
                     ]
                   : [
+                      h("h3",{className:"ce-wide"},"تنظیمات پیگیری"),
                       ws.user.role === "admin"
                         ? label(
                             "مشاور پیگیر",
@@ -450,6 +436,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                           onChange: (e) => put("note", e.target.value),
                         }),
                       ),
+                      h("h3",{className:"ce-wide"},"خلاصهٔ سوابق"),
                       h("div",{className:"ce-stats"},history("tasks", "پیگیری"),
                       history("demands", "تقاضا"),
                       history("visits", "بازدید"),

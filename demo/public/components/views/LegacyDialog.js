@@ -19,6 +19,7 @@ function mmLegacy(props) {
     {
       frame: props.frame,
       title: props.title,
+      heading: props.heading,
       legacy: true,
       expand: true,
       size: "wide",
