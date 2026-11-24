@@ -57,6 +57,7 @@ function jb({
         _(!1);
       }
     };
+  const [ownerMode,setOwnerMode]=O.useState(''), [query,setQuery]=O.useState(''), [added,setAdded]=O.useState([]);
   function T(E) {
     if (
       t === "tasks" &&
@@ -88,6 +89,13 @@ function jb({
         ),
       },
       K;
+    if(t==='properties' && E.key==='owner_id'){
+      const el=O.default.createElement, people=[...added.filter(p=>!a.data.contacts.some(q=>q.id===p.id)),...a.data.contacts].filter(p=>!p.archived||p.id===S);
+      const norm=v=>String(v??'').normalize('NFKC').replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[\s\u200c-]/g,'').toLowerCase();
+      const matches=people.filter(p=>[p.name,p.phone].some(v=>norm(v).includes(norm(query))));
+      const btn=(text,fn,props={})=>el('button',{type:'button',disabled:m,onClick:fn,...props},text);
+      return el('div',{key:E.key},el('div',{className:'pr-owner-actions'},el('label',null,E.label,el('select',B,el('option',{value:''},'انتخاب مالک'),people.map(p=>el('option',{key:p.id,value:p.id},p.name)))),btn('جست‌وجو',()=>{setQuery('');setOwnerMode(ownerMode==='search'?'':'search')},{'aria-expanded':ownerMode==='search'}),btn('＋ افزودن',()=>setOwnerMode('create'))),ownerMode==='search'&&el('div',null,el('input',{autoFocus:true,'aria-label':'جست‌وجوی مالک با نام یا موبایل',placeholder:'نام یا موبایل',value:query,onChange:ev=>setQuery(ev.target.value),onKeyDown:ev=>{if(ev.key==='Enter')ev.preventDefault();if(ev.key==='Escape'){ev.preventDefault();ev.stopPropagation();setOwnerMode('')}}}),el('div',{className:'pr-owner-results'},matches.length?matches.map(p=>btn([p.name,p.phone].filter(Boolean).join(' — '),()=>{x(E.key,p.id);setOwnerMode('')},{key:p.id})):'شخصی پیدا نشد.')));
+    }
     if (E.type === "ref") {
       let q = a.data[E.target];
       if (E.target === "contacts")
@@ -251,7 +259,7 @@ function jb({
     if (!m && (!frame || !mmDirty || confirm("بدون ذخیره خارج می‌شوید؟"))) i();
   };
   const localEntry=O.useRef({prev:s}).current;
-  if(t==='properties') return O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p});
+  if(t==='properties') return O.default.createElement(O.default.Fragment,null,O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p}),ownerMode==='create'&&O.default.createElement(pcForm,{ws:a,nested:true,preset:{category:'owner'},close:()=>setOwnerMode(''),onDone:(id,person)=>{setAdded(prev=>[...prev,{...person,id}]);x('owner_id',id);setOwnerMode('')}}));
   if(t==='tasks' && e){
     const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','status','priority','due_at','contact_id','listing_id'];
     return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:'ویرایش وظیفه',expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:'te13'}},

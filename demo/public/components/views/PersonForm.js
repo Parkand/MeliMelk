@@ -172,7 +172,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         row ? "PUT" : "POST",
         { ...body, category, profile: { ...pf, roles } },
       );
-      await onDone(result.id);
+      await onDone(result.id, {name:v.name.trim(), phone:v.phone.trim()});
     } catch (ex) {
       E(ex.message);
     } finally {
