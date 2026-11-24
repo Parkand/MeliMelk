@@ -1,72 +1,16 @@
-function am({
-  b: t,
-  rows: e,
-  fields: l,
-  selector: a,
-  query: n,
-  filter: i,
-  idx: s,
-  pages: o,
-  open: u,
-  create: r,
-  onQuery: c,
-  onFilter: h,
-  onPage: f,
-}) {
-  let d = t.listings,
-    y = d.length,
-    v = (m) => F.format(m),
-    b = s * 25,
-    p = e.slice(b, b + 25),
-    g = () =>
-      Yi("listings", [
-        l.map(
-          (m) =>
-            m.label +
-            (m.type === "money" ? " (\u062A\u0648\u0645\u0627\u0646)" : ""),
-        ),
-        ...e.map((m) => l.map((_) => Xe(_, m[_.key], t))),
-      ]);
-  return L.default.createElement(
-    "div",
-    { className: "lf" },
-    L.default.createElement(
-      "section",
-      { className: "lf-hero" },
-      L.default.createElement(
-        "div",
-        null,
-        L.default.createElement(
-          "small",
-          null,
-          "\u0639\u0645\u0644\u06CC\u0627\u062A \u062F\u0641\u062A\u0631 / \u0645\u062F\u06CC\u0631\u06CC\u062A \u0639\u0631\u0636\u0647",
-        ),
-        L.default.createElement(
-          "h1",
-          null,
-          "\u0641\u0627\u06CC\u0644\u200C\u0647\u0627\u06CC \u0639\u0631\u0636\u0647",
-        ),
-        L.default.createElement(
-          "p",
-          null,
-          "\u0641\u0627\u06CC\u0644\u200C\u0647\u0627\u06CC \u0641\u0631\u0648\u0634 \u0648 \u0627\u062C\u0627\u0631\u0647\u0654 \u062F\u0641\u062A\u0631 \u0631\u0627 \u0627\u06CC\u0646\u062C\u0627 \u067E\u06CC\u06AF\u06CC\u0631\u06CC \u06A9\u0646\u06CC\u062F.",
-        ),
-      ),
-      L.default.createElement(lE, null),
-    ),
-    L.default.createElement(
-      "button",
-      {
-        type: "button",
-        className: "primary lf-create-fab",
-        onClick: () => r("listings"),
-      },
-      L.default.createElement(j, { name: "plus", size: 20 }),
-      "\u062B\u0628\u062A \u0641\u0627\u06CC\u0644 \u062C\u062F\u06CC\u062F",
-    ),
+const listingArtwork=["data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyA+PHBvbHlnb24gZmlsbD0iI2I0YThmNyIgcG9pbnRzPSIxMiwyNS4zMyA1Niw0NC4yNSA1Niw4OS4yNSAxMiw3MC4zMyI+PC9wb2x5Z29uPjxwb2x5Z29uIGZpbGw9IiM4OTdhZDkiIHBvaW50cz0iNTYsNDQuMjUgODcsMzAuOTIgODcsNzUuOTIgNTYsODkuMjUiPjwvcG9seWdvbj48cG9seWdvbiBmaWxsPSIjZTdlMmZmIiBwb2ludHM9IjQzLDEyIDg3LDMwLjkyIDU2LDQ0LjI1IDEyLDI1LjMzIj48L3BvbHlnb24+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjNmE1Y2I0IiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw2Ni41NzM3NTQ4Mzg3MDk2OCAyMS42OCw2OS40MTE3NTQ4Mzg3MDk2OCAyMS42OCw2My40MTE3NTQ4Mzg3MDk2OCAxNS4wNzk5OTk5OTk5OTk5OTgsNjAuNTczNzU0ODM4NzA5Njc1Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNmE1Y2I0IiBwb2ludHM9IjI1LjQyLDcxLjAxOTk1NDgzODcwOTY4IDMyLjAxOTk5OTk5OTk5OTk5Niw3My44NTc5NTQ4Mzg3MDk2NyAzMi4wMTk5OTk5OTk5OTk5OTYsNjcuODU3OTU0ODM4NzA5NjcgMjUuNDIsNjUuMDE5OTU0ODM4NzA5NjgiPjwvcG9seWdvbj48L2c+PGcgPjxwb2x5Z29uIGZpbGw9IiM2YTVjYjQiIHBvaW50cz0iMzUuNzYwMDAwMDAwMDAwMDA1LDc1LjQ2NjE1NDgzODcwOTY4IDQyLjM2LDc4LjMwNDE1NDgzODcwOTY4IDQyLjM2LDcyLjMwNDE1NDgzODcwOTY4IDM1Ljc2MDAwMDAwMDAwMDAwNSw2OS40NjYxNTQ4Mzg3MDk2OCI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iIzZhNWNiNCIgcG9pbnRzPSI0Ni4wOTk5OTk5OTk5OTk5OTQsNzkuOTEyMzU0ODM4NzA5NjcgNTIuNjk5OTk5OTk5OTk5OTksODIuNzUwMzU0ODM4NzA5NjcgNTIuNjk5OTk5OTk5OTk5OTksNzYuNzUwMzU0ODM4NzA5NjcgNDYuMDk5OTk5OTk5OTk5OTk0LDczLjkxMjM1NDgzODcwOTY3Ij48L3BvbHlnb24+PC9nPjxwb2x5Z29uIGZpbGw9IiM2YTVjYjQiIHBvaW50cz0iODMuMjgsNzIuNDM4OTU0ODM4NzA5NjggNjAuMDMsODIuNDM2NDU0ODM4NzA5NjggNjAuMDMsNzguNTM2NDU0ODM4NzA5NjcgODMuMjgsNjguNTM4OTU0ODM4NzA5NjciPjwvcG9seWdvbj48L2c+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjNmE1Y2I0IiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw1Mi4wNTc2MjU4MDY0NTE2MSAyMS42OCw1NC44OTU2MjU4MDY0NTE2MiAyMS42OCw0OC44OTU2MjU4MDY0NTE2MiAxNS4wNzk5OTk5OTk5OTk5OTgsNDYuMDU3NjI1ODA2NDUxNjEiPjwvcG9seWdvbj48L2c+PGcgPjxwb2x5Z29uIGZpbGw9IiM2YTVjYjQiIHBvaW50cz0iMjUuNDIsNTYuNTAzODI1ODA2NDUxNjE2IDMyLjAxOTk5OTk5OTk5OTk5Niw1OS4zNDE4MjU4MDY0NTE2MSAzMi4wMTk5OTk5OTk5OTk5OTYsNTMuMzQxODI1ODA2NDUxNjEgMjUuNDIsNTAuNTAzODI1ODA2NDUxNjE2Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNmE1Y2I0IiBwb2ludHM9IjM1Ljc2MDAwMDAwMDAwMDAwNSw2MC45NTAwMjU4MDY0NTE2MiA0Mi4zNiw2My43ODgwMjU4MDY0NTE2MTQgNDIuMzYsNTcuNzg4MDI1ODA2NDUxNjE0IDM1Ljc2MDAwMDAwMDAwMDAwNSw1NC45NTAwMjU4MDY0NTE2MiI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iIzZhNWNiNCIgcG9pbnRzPSI0Ni4wOTk5OTk5OTk5OTk5OTQsNjUuMzk2MjI1ODA2NDUxNjEgNTIuNjk5OTk5OTk5OTk5OTksNjguMjM0MjI1ODA2NDUxNiA1Mi42OTk5OTk5OTk5OTk5OSw2Mi4yMzQyMjU4MDY0NTE2MDUgNDYuMDk5OTk5OTk5OTk5OTk0LDU5LjM5NjIyNTgwNjQ1MTYxIj48L3BvbHlnb24+PC9nPjxwb2x5Z29uIGZpbGw9IiM2YTVjYjQiIHBvaW50cz0iODMuMjgsNTcuOTIyODI1ODA2NDUxNjEgNjAuMDMsNjcuOTIwMzI1ODA2NDUxNjEgNjAuMDMsNjQuMDIwMzI1ODA2NDUxNjEgODMuMjgsNTQuMDIyODI1ODA2NDUxNjEiPjwvcG9seWdvbj48L2c+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjNmE1Y2I0IiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCwzNy41NDE0OTY3NzQxOTM1NSAyMS42OCw0MC4zNzk0OTY3NzQxOTM1NTUgMjEuNjgsMzQuMzc5NDk2Nzc0MTkzNTU1IDE1LjA3OTk5OTk5OTk5OTk5OCwzMS41NDE0OTY3NzQxOTM1NDciPjwvcG9seWdvbj48L2c+PGcgPjxwb2x5Z29uIGZpbGw9IiM2YTVjYjQiIHBvaW50cz0iMjUuNDIsNDEuOTg3Njk2Nzc0MTkzNTUgMzIuMDE5OTk5OTk5OTk5OTk2LDQ0LjgyNTY5Njc3NDE5MzU0NSAzMi4wMTk5OTk5OTk5OTk5OTYsMzguODI1Njk2Nzc0MTkzNTQ1IDI1LjQyLDM1Ljk4NzY5Njc3NDE5MzU1Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNmE1Y2I0IiBwb2ludHM9IjM1Ljc2MDAwMDAwMDAwMDAwNSw0Ni40MzM4OTY3NzQxOTM1NTYgNDIuMzYsNDkuMjcxODk2Nzc0MTkzNTUgNDIuMzYsNDMuMjcxODk2Nzc0MTkzNTUgMzUuNzYwMDAwMDAwMDAwMDA1LDQwLjQzMzg5Njc3NDE5MzU1NiI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iIzZhNWNiNCIgcG9pbnRzPSI0Ni4wOTk5OTk5OTk5OTk5OTQsNTAuODgwMDk2Nzc0MTkzNTUgNTIuNjk5OTk5OTk5OTk5OTksNTMuNzE4MDk2Nzc0MTkzNTQgNTIuNjk5OTk5OTk5OTk5OTksNDcuNzE4MDk2Nzc0MTkzNTQgNDYuMDk5OTk5OTk5OTk5OTk0LDQ0Ljg4MDA5Njc3NDE5MzU1Ij48L3BvbHlnb24+PC9nPjxwb2x5Z29uIGZpbGw9IiM2YTVjYjQiIHBvaW50cz0iODMuMjgsNDMuNDA2Njk2Nzc0MTkzNTUgNjAuMDMsNTMuNDA0MTk2Nzc0MTkzNTUgNjAuMDMsNDkuNTA0MTk2Nzc0MTkzNTUgODMuMjgsMzkuNTA2Njk2Nzc0MTkzNTUiPjwvcG9seWdvbj48L2c+PC9nPjwvc3ZnPg==", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyA+PHBvbHlnb24gZmlsbD0iIzk5ZDJjNSIgcG9pbnRzPSIxMiw0My4zMyA1Niw2Mi4yNSA1Niw4OS4yNSAxMiw3MC4zMyI+PC9wb2x5Z29uPjxwb2x5Z29uIGZpbGw9IiM2NGE5OWYiIHBvaW50cz0iNTYsNjIuMjUgODcsNDguOTIgODcsNzUuOTIgNTYsODkuMjUiPjwvcG9seWdvbj48cG9seWdvbiBmaWxsPSIjZGVmNmVkIiBwb2ludHM9IjQzLDMwIDg3LDQ4LjkyIDU2LDYyLjI1IDEyLDQzLjMzIj48L3BvbHlnb24+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw2OC42MDYwMTI5MDMyMjU4IDIxLjY4LDcxLjQ0NDAxMjkwMzIyNTgxIDIxLjY4LDY3Ljg0NDAxMjkwMzIyNTggMTUuMDc5OTk5OTk5OTk5OTk4LDY1LjAwNjAxMjkwMzIyNTgxIj48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjI1LjQyLDczLjA1MjIxMjkwMzIyNTgxIDMyLjAxOTk5OTk5OTk5OTk5Niw3NS44OTAyMTI5MDMyMjU4IDMyLjAxOTk5OTk5OTk5OTk5Niw3Mi4yOTAyMTI5MDMyMjU4MSAyNS40Miw2OS40NTIyMTI5MDMyMjU4MSI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iIzRiOTE4YiIgcG9pbnRzPSIzNS43NjAwMDAwMDAwMDAwMDUsNzcuNDk4NDEyOTAzMjI1ODEgNDIuMzYsODAuMzM2NDEyOTAzMjI1OCA0Mi4zNiw3Ni43MzY0MTI5MDMyMjU4MSAzNS43NjAwMDAwMDAwMDAwMDUsNzMuODk4NDEyOTAzMjI1ODIiPjwvcG9seWdvbj48L2c+PGcgPjxwb2x5Z29uIGZpbGw9IiM0YjkxOGIiIHBvaW50cz0iNDYuMDk5OTk5OTk5OTk5OTk0LDgxLjk0NDYxMjkwMzIyNTggNTIuNjk5OTk5OTk5OTk5OTksODQuNzgyNjEyOTAzMjI1OCA1Mi42OTk5OTk5OTk5OTk5OSw4MS4xODI2MTI5MDMyMjU3OSA0Ni4wOTk5OTk5OTk5OTk5OTQsNzguMzQ0NjEyOTAzMjI1OCI+PC9wb2x5Z29uPjwvZz48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjgzLjI4LDc0LjQ3MTIxMjkwMzIyNTggNjAuMDMsODQuNDY4NzEyOTAzMjI1OCA2MC4wMyw4Mi4xMjg3MTI5MDMyMjU4IDgzLjI4LDcyLjEzMTIxMjkwMzIyNTgiPjwvcG9seWdvbj48L2c+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw1OS44OTYzMzU0ODM4NzA5NiAyMS42OCw2Mi43MzQzMzU0ODM4NzA5NyAyMS42OCw1OS4xMzQzMzU0ODM4NzA5NyAxNS4wNzk5OTk5OTk5OTk5OTgsNTYuMjk2MzM1NDgzODcwOTYiPjwvcG9seWdvbj48L2c+PGcgPjxwb2x5Z29uIGZpbGw9IiM0YjkxOGIiIHBvaW50cz0iMjUuNDIsNjQuMzQyNTM1NDgzODcwOTYgMzIuMDE5OTk5OTk5OTk5OTk2LDY3LjE4MDUzNTQ4Mzg3MDk1IDMyLjAxOTk5OTk5OTk5OTk5Niw2My41ODA1MzU0ODM4NzA5NiAyNS40Miw2MC43NDI1MzU0ODM4NzA5NyI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iIzRiOTE4YiIgcG9pbnRzPSIzNS43NjAwMDAwMDAwMDAwMDUsNjguNzg4NzM1NDgzODcwOTcgNDIuMzYsNzEuNjI2NzM1NDgzODcwOTYgNDIuMzYsNjguMDI2NzM1NDgzODcwOTcgMzUuNzYwMDAwMDAwMDAwMDA1LDY1LjE4ODczNTQ4Mzg3MDk3Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjQ2LjA5OTk5OTk5OTk5OTk5NCw3My4yMzQ5MzU0ODM4NzA5NyA1Mi42OTk5OTk5OTk5OTk5OSw3Ni4wNzI5MzU0ODM4NzA5NiA1Mi42OTk5OTk5OTk5OTk5OSw3Mi40NzI5MzU0ODM4NzA5NiA0Ni4wOTk5OTk5OTk5OTk5OTQsNjkuNjM0OTM1NDgzODcwOTYiPjwvcG9seWdvbj48L2c+PHBvbHlnb24gZmlsbD0iIzRiOTE4YiIgcG9pbnRzPSI4My4yOCw2NS43NjE1MzU0ODM4NzA5NyA2MC4wMyw3NS43NTkwMzU0ODM4NzA5NyA2MC4wMyw3My40MTkwMzU0ODM4NzA5NyA4My4yOCw2My40MjE1MzU0ODM4NzA5NyI+PC9wb2x5Z29uPjwvZz48ZyA+PGcgPjxwb2x5Z29uIGZpbGw9IiM0YjkxOGIiIHBvaW50cz0iMTUuMDc5OTk5OTk5OTk5OTk4LDUxLjE4NjY1ODA2NDUxNjEyIDIxLjY4LDU0LjAyNDY1ODA2NDUxNjEzIDIxLjY4LDUwLjQyNDY1ODA2NDUxNjEzIDE1LjA3OTk5OTk5OTk5OTk5OCw0Ny41ODY2NTgwNjQ1MTYxMiI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iIzRiOTE4YiIgcG9pbnRzPSIyNS40Miw1NS42MzI4NTgwNjQ1MTYxMyAzMi4wMTk5OTk5OTk5OTk5OTYsNTguNDcwODU4MDY0NTE2MTIgMzIuMDE5OTk5OTk5OTk5OTk2LDU0Ljg3MDg1ODA2NDUxNjEyIDI1LjQyLDUyLjAzMjg1ODA2NDUxNjEzIj48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjM1Ljc2MDAwMDAwMDAwMDAwNSw2MC4wNzkwNTgwNjQ1MTYxMyA0Mi4zNiw2Mi45MTcwNTgwNjQ1MTYxMyA0Mi4zNiw1OS4zMTcwNTgwNjQ1MTYxMjUgMzUuNzYwMDAwMDAwMDAwMDA1LDU2LjQ3OTA1ODA2NDUxNjEzIj48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjNGI5MThiIiBwb2ludHM9IjQ2LjA5OTk5OTk5OTk5OTk5NCw2NC41MjUyNTgwNjQ1MTYxMiA1Mi42OTk5OTk5OTk5OTk5OSw2Ny4zNjMyNTgwNjQ1MTYxMiA1Mi42OTk5OTk5OTk5OTk5OSw2My43NjMyNTgwNjQ1MTYxMTYgNDYuMDk5OTk5OTk5OTk5OTk0LDYwLjkyNTI1ODA2NDUxNjEyIj48L3BvbHlnb24+PC9nPjxwb2x5Z29uIGZpbGw9IiM0YjkxOGIiIHBvaW50cz0iODMuMjgsNTcuMDUxODU4MDY0NTE2MTI1IDYwLjAzLDY3LjA0OTM1ODA2NDUxNjEzIDYwLjAzLDY0LjcwOTM1ODA2NDUxNjEyIDgzLjI4LDU0LjcxMTg1ODA2NDUxNjEyIj48L3BvbHlnb24+PC9nPjwvZz48L3N2Zz4=", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyA+PHBvbHlnb24gZmlsbD0iI2VlYmM4ZCIgcG9pbnRzPSIxMiwzNi4zMyA1Niw1NS4yNSA1Niw4OS4yNSAxMiw3MC4zMyI+PC9wb2x5Z29uPjxwb2x5Z29uIGZpbGw9IiNjOTkwNzkiIHBvaW50cz0iNTYsNTUuMjUgODcsNDEuOTIgODcsNzUuOTIgNTYsODkuMjUiPjwvcG9seWdvbj48cG9seWdvbiBmaWxsPSIjZmZlM2M1IiBwb2ludHM9IjQzLDIzIDg3LDQxLjkyIDU2LDU1LjI1IDEyLDM2LjMzIj48L3BvbHlnb24+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw2Ny44MTU2OTAzMjI1ODA2NCAyMS42OCw3MC42NTM2OTAzMjI1ODA2NCAyMS42OCw2Ni4xMjAzNTY5ODkyNDczMSAxNS4wNzk5OTk5OTk5OTk5OTgsNjMuMjgyMzU2OTg5MjQ3MzA1Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjI1LjQyLDcyLjI2MTg5MDMyMjU4MDY0IDMyLjAxOTk5OTk5OTk5OTk5Niw3NS4wOTk4OTAzMjI1ODA2MyAzMi4wMTk5OTk5OTk5OTk5OTYsNzAuNTY2NTU2OTg5MjQ3MyAyNS40Miw2Ny43Mjg1NTY5ODkyNDczMSI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iI2ExNmI2NCIgcG9pbnRzPSIzNS43NjAwMDAwMDAwMDAwMDUsNzYuNzA4MDkwMzIyNTgwNjUgNDIuMzYsNzkuNTQ2MDkwMzIyNTgwNjQgNDIuMzYsNzUuMDEyNzU2OTg5MjQ3MzEgMzUuNzYwMDAwMDAwMDAwMDA1LDcyLjE3NDc1Njk4OTI0NzMxIj48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjQ2LjA5OTk5OTk5OTk5OTk5NCw4MS4xNTQyOTAzMjI1ODA2NCA1Mi42OTk5OTk5OTk5OTk5OSw4My45OTIyOTAzMjI1ODA2MyA1Mi42OTk5OTk5OTk5OTk5OSw3OS40NTg5NTY5ODkyNDczIDQ2LjA5OTk5OTk5OTk5OTk5NCw3Ni42MjA5NTY5ODkyNDczIj48L3BvbHlnb24+PC9nPjxwb2x5Z29uIGZpbGw9IiNhMTZiNjQiIHBvaW50cz0iODMuMjgsNzMuNjgwODkwMzIyNTgwNjQgNjAuMDMsODMuNjc4MzkwMzIyNTgwNjQgNjAuMDMsODAuNzMxNzIzNjU1OTEzOTggODMuMjgsNzAuNzM0MjIzNjU1OTEzOTgiPjwvcG9seWdvbj48L2c+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw1Ni44NDc5NDgzODcwOTY3NjQgMjEuNjgsNTkuNjg1OTQ4Mzg3MDk2NzcgMjEuNjgsNTUuMTUyNjE1MDUzNzYzNDQgMTUuMDc5OTk5OTk5OTk5OTk4LDUyLjMxNDYxNTA1Mzc2MzQzIj48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjI1LjQyLDYxLjI5NDE0ODM4NzA5Njc3IDMyLjAxOTk5OTk5OTk5OTk5Niw2NC4xMzIxNDgzODcwOTY3NiAzMi4wMTk5OTk5OTk5OTk5OTYsNTkuNTk4ODE1MDUzNzYzNDMgMjUuNDIsNTYuNzYwODE1MDUzNzYzNDQiPjwvcG9seWdvbj48L2c+PGcgPjxwb2x5Z29uIGZpbGw9IiNhMTZiNjQiIHBvaW50cz0iMzUuNzYwMDAwMDAwMDAwMDA1LDY1Ljc0MDM0ODM4NzA5Njc3IDQyLjM2LDY4LjU3ODM0ODM4NzA5Njc3IDQyLjM2LDY0LjA0NTAxNTA1Mzc2MzQ0IDM1Ljc2MDAwMDAwMDAwMDAwNSw2MS4yMDcwMTUwNTM3NjM0NCI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iI2ExNmI2NCIgcG9pbnRzPSI0Ni4wOTk5OTk5OTk5OTk5OTQsNzAuMTg2NTQ4Mzg3MDk2NzYgNTIuNjk5OTk5OTk5OTk5OTksNzMuMDI0NTQ4Mzg3MDk2NzYgNTIuNjk5OTk5OTk5OTk5OTksNjguNDkxMjE1MDUzNzYzNDMgNDYuMDk5OTk5OTk5OTk5OTk0LDY1LjY1MzIxNTA1Mzc2MzQzIj48L3BvbHlnb24+PC9nPjxwb2x5Z29uIGZpbGw9IiNhMTZiNjQiIHBvaW50cz0iODMuMjgsNjIuNzEzMTQ4Mzg3MDk2NzY2IDYwLjAzLDcyLjcxMDY0ODM4NzA5Njc3IDYwLjAzLDY5Ljc2Mzk4MTcyMDQzMDExIDgzLjI4LDU5Ljc2NjQ4MTcyMDQzMDEiPjwvcG9seWdvbj48L2c+PGcgPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjE1LjA3OTk5OTk5OTk5OTk5OCw0NS44ODAyMDY0NTE2MTI4OSAyMS42OCw0OC43MTgyMDY0NTE2MTI5IDIxLjY4LDQ0LjE4NDg3MzExODI3OTU3IDE1LjA3OTk5OTk5OTk5OTk5OCw0MS4zNDY4NzMxMTgyNzk1NiI+PC9wb2x5Z29uPjwvZz48ZyA+PHBvbHlnb24gZmlsbD0iI2ExNmI2NCIgcG9pbnRzPSIyNS40Miw1MC4zMjY0MDY0NTE2MTI5IDMyLjAxOTk5OTk5OTk5OTk5Niw1My4xNjQ0MDY0NTE2MTI4OSAzMi4wMTk5OTk5OTk5OTk5OTYsNDguNjMxMDczMTE4Mjc5NTYgMjUuNDIsNDUuNzkzMDczMTE4Mjc5NTY1Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjM1Ljc2MDAwMDAwMDAwMDAwNSw1NC43NzI2MDY0NTE2MTI5IDQyLjM2LDU3LjYxMDYwNjQ1MTYxMjg5NSA0Mi4zNiw1My4wNzcyNzMxMTgyNzk1NjQgMzUuNzYwMDAwMDAwMDAwMDA1LDUwLjIzOTI3MzExODI3OTU3Ij48L3BvbHlnb24+PC9nPjxnID48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjQ2LjA5OTk5OTk5OTk5OTk5NCw1OS4yMTg4MDY0NTE2MTI4OSA1Mi42OTk5OTk5OTk5OTk5OSw2Mi4wNTY4MDY0NTE2MTI4ODYgNTIuNjk5OTk5OTk5OTk5OTksNTcuNTIzNDczMTE4Mjc5NTU0IDQ2LjA5OTk5OTk5OTk5OTk5NCw1NC42ODU0NzMxMTgyNzk1NiI+PC9wb2x5Z29uPjwvZz48cG9seWdvbiBmaWxsPSIjYTE2YjY0IiBwb2ludHM9IjgzLjI4LDUxLjc0NTQwNjQ1MTYxMjg5NCA2MC4wMyw2MS43NDI5MDY0NTE2MTI4OTYgNjAuMDMsNTguNzk2MjM5Nzg0OTQ2MjMgODMuMjgsNDguNzk4NzM5Nzg0OTQ2MjMiPjwvcG9seWdvbj48L2c+PC9nPjwvc3ZnPg=="];
+function am({b:t,rows:e,fields:l,selector:a,query:n,filter:i,open:u,create:r,onQuery:c,onFilter:h}) {
+ const R=L.default,E=R.createElement,d=t.listings,y=d.length,v=m=>F.format(m);
+ const key=JSON.stringify(l.map(f=>[f.key,f.label]));
+ const columns=R.useMemo(()=>[...l.map(f=>f.key!=='property_id'?{title:f.label,field:f.key}:{title:f.label,width:225,display:cell=>{
+   const row=cell.getRow().getData(),box=document.createElement('span'),img=document.createElement('img');box.className='lf-grid-property';img.alt='';img.width=40;img.height=40;img.className='lf-mini tone-'+row.tone;img.onerror=()=>{img.onerror=null;img.src=listingArtwork[row.tone]};img.src=row.cover||listingArtwork[row.tone];box.append(img,document.createTextNode(row.property_id));return box;
+ }}),{action:'details',title:'پرونده',caption:'جزئیات'}],[key]);
+ const data=R.useMemo(()=>{const byId=new Map(t.properties.map(p=>[p.id,p]));return e.map(record=>{const p=byId.get(record.property_id);let cover=p?.photo_url;try{const g=JSON.parse(p?.gallery_v1||'null');cover=g?.items?.[g.cover]||g?.items?.[0]||cover}catch{}return {...Object.fromEntries(l.map(f=>[f.key,Xe(f,record[f.key],t)])),id:record.id,record,cover,tone:p?.kind==='office'?2:record.kind==='sale'?0:1}})},[e,t,key]);
+ const toolbar=get=>E('div',{className:'tools'},E('label',{className:'search'},E('input',{placeholder:'جست‌وجو در فایل‌ها…','aria-label':'جست‌وجو در فایل‌ها',value:n,onChange:x=>c(x.target.value)})),E('select',{'aria-label':'وضعیت عرضه',value:i,onChange:x=>h(x.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),Object.entries(a.choices).map(([k,v])=>E('option',{key:k,value:k},v))),E('button',{onClick:()=>Yi('listings',[l.map(f=>f.label+(f.type==='money'?' (تومان)':'')),...get().map(row=>l.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'خروجی CSV'),E('button',{className:'primary',onClick:()=>r('listings')},'＋ ثبت فایل جدید'));
+ return E('div',{className:'lf lf-grid-page'},
     L.default.createElement(
       "div",
-      { className: "lf-stats" },
+      { className: "ls-kpis", "aria-label":"شاخص‌های فایل‌های عرضه" },
       [
         [
           "listings",
@@ -86,193 +30,15 @@ function am({
       ].map(([m, _, x], M) =>
         L.default.createElement(
           "div",
-          { className: "lf-stat tone-" + M, key: m },
+          { key: m },
           L.default.createElement(
-            "i",
-            null,
+            "span",
+            {className:"ls-k-icon", "aria-hidden":true},
             L.default.createElement(j, { name: m, size: 23 }),
           ),
-          L.default.createElement("strong", null, _),
-          L.default.createElement("b", null, v(x)),
+          L.default.createElement("small", null, _),
+          L.default.createElement("strong", null, v(x)),
         ),
       ),
     ),
-    L.default.createElement(
-      "section",
-      { className: "panel lf-ledger" },
-      L.default.createElement(
-        "div",
-        { className: "lf-head" },
-        L.default.createElement(
-          "h2",
-          null,
-          "\u0641\u0647\u0631\u0633\u062A \u0641\u0627\u06CC\u0644\u200C\u0647\u0627",
-        ),
-        L.default.createElement(
-          "span",
-          null,
-          v(e.length),
-          " \u0641\u0627\u06CC\u0644",
-        ),
-        L.default.createElement(
-          "small",
-          null,
-          "\u0645\u0628\u0627\u0644\u063A \u062C\u062F\u0648\u0644 \u0628\u0647 \u062A\u0648\u0645\u0627\u0646 \u0627\u0633\u062A",
-        ),
-      ),
-      L.default.createElement(
-        "div",
-        { className: "tools" },
-        L.default.createElement(
-          "label",
-          { className: "search" },
-          L.default.createElement(j, { name: "search" }),
-          L.default.createElement("input", {
-            "aria-label":
-              "\u062C\u0633\u062A\u200C\u0648\u062C\u0648 \u062F\u0631 \u0641\u0627\u06CC\u0644\u200C\u0647\u0627",
-            placeholder:
-              "\u062C\u0633\u062A\u200C\u0648\u062C\u0648 \u062F\u0631 \u0641\u0627\u06CC\u0644\u200C\u0647\u0627\u2026",
-            value: n,
-            onChange: (m) => c(m.target.value),
-          }),
-        ),
-        L.default.createElement(
-          "label",
-          { className: "lf-filter" },
-          L.default.createElement(j, { name: "demands", size: 17 }),
-          L.default.createElement(
-            "select",
-            {
-              "aria-label":
-                "\u0648\u0636\u0639\u06CC\u062A \u0639\u0631\u0636\u0647",
-              value: i,
-              onChange: (m) => h(m.target.value),
-            },
-            L.default.createElement(
-              "option",
-              { value: "" },
-              "\u0647\u0645\u0647\u0654 \u0648\u0636\u0639\u06CC\u062A\u200C\u0647\u0627",
-            ),
-            Object.entries(a.choices).map(([m, _]) =>
-              L.default.createElement("option", { key: m, value: m }, _),
-            ),
-          ),
-        ),
-        L.default.createElement(
-          "button",
-          { className: "lf-csv", onClick: g },
-          L.default.createElement(j, { name: "down", size: 17 }),
-          "\u062E\u0631\u0648\u062C\u06CC CSV",
-        ),
-      ),
-      L.default.createElement(
-        "div",
-        { className: "scroll" },
-        L.default.createElement(
-          "table",
-          null,
-          L.default.createElement(
-            "thead",
-            null,
-            L.default.createElement(
-              "tr",
-              null,
-              l.map((m) =>
-                L.default.createElement("th", { key: m.key }, m.label),
-              ),
-              L.default.createElement(
-                "th",
-                null,
-                "\u067E\u0631\u0648\u0646\u062F\u0647",
-              ),
-            ),
-          ),
-          L.default.createElement(
-            "tbody",
-            null,
-            p.map((m) =>
-              L.default.createElement(
-                "tr",
-                { key: m.id },
-                l.map((_) =>
-                  L.default.createElement(
-                    "td",
-                    { key: _.key },
-                    _.key === "property_id"
-                      ? L.default.createElement(aE, {
-                          r: m,
-                          b: t,
-                          onDetails: () => u("listings", m),
-                        })
-                      : _.choices
-                        ? L.default.createElement(
-                            "span",
-                            {
-                              className:
-                                "lf-tag lf-" +
-                                m[_.key] +
-                                (_.key === "status" ? " lf-status" : ""),
-                            },
-                            Xe(_, m[_.key], t),
-                          )
-                        : Xe(_, m[_.key], t),
-                  ),
-                ),
-                L.default.createElement(
-                  "td",
-                  null,
-                  L.default.createElement(
-                    "button",
-                    { className: "link", onClick: () => u("listings", m) },
-                    "\u062C\u0632\u0626\u06CC\u0627\u062A ",
-                    L.default.createElement(j, { name: "arrow", size: 14 }),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      !e.length &&
-        L.default.createElement(
-          re,
-          null,
-          y
-            ? "\u0641\u0627\u06CC\u0644\u06CC \u0628\u0627 \u0627\u06CC\u0646 \u062C\u0633\u062A\u200C\u0648\u062C\u0648 \u06CC\u0627 \u0648\u0636\u0639\u06CC\u062A \u067E\u06CC\u062F\u0627 \u0646\u0634\u062F."
-            : "\u0647\u0646\u0648\u0632 \u0641\u0627\u06CC\u0644\u06CC \u062B\u0628\u062A \u0646\u0634\u062F\u0647 \u0627\u0633\u062A.",
-        ),
-      L.default.createElement(
-        "div",
-        { className: "pager" },
-        L.default.createElement(
-          "span",
-          null,
-          e.length
-            ? `\u0646\u0645\u0627\u06CC\u0634 ${v(b + 1)} \u062A\u0627 ${v(b + p.length)} \u0627\u0632 ${v(e.length)} \u0641\u0627\u06CC\u0644`
-            : "\u06F0 \u0641\u0627\u06CC\u0644",
-        ),
-        L.default.createElement(
-          "button",
-          {
-            "aria-label":
-              "\u0635\u0641\u062D\u0647\u0654 \u0642\u0628\u0644\u06CC",
-            disabled: !s,
-            onClick: () => f(s - 1),
-          },
-          "\u2192",
-        ),
-        L.default.createElement("b", null, v(s + 1)),
-        L.default.createElement(
-          "button",
-          {
-            "aria-label":
-              "\u0635\u0641\u062D\u0647\u0654 \u0628\u0639\u062F\u06CC",
-            disabled: s + 1 >= o,
-            onClick: () => f(s + 1),
-          },
-          "\u2190",
-        ),
-      ),
-    ),
-  );
-}
+ E(MaskanDataGrid,{columns,data,toolbar,label:'فهرست فایل‌ها؛ مبالغ به تومان',empty:'فایلی برای نمایش نیست',countLabel:n=>F.format(n)+' فایل · مبالغ به تومان',onAction:(_,row)=>u('listings',row.record)}));}

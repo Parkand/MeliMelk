@@ -748,3 +748,20 @@ dialog.mperson .mp-head .pc-card-heading{display:grid;grid-template-columns:auto
 .pc-card-heading>:not(.pc-card-avatar){grid-column:2}.pc-card-avatar{position:relative;grid-column:1;grid-row:1/span 3;display:grid;place-items:center;width:4.25rem;aspect-ratio:1;border:1px solid var(--mp-edge,var(--mp-line));border-radius:50%;overflow:hidden;color:var(--mp-text);font-size:1.4rem}.pc-card-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pc-card-avatar img[hidden]{display:none}
 dialog.mperson:has(.pc-card-heading) button:not(.mm-control){background:transparent!important;color:var(--mp-text,CanvasText)!important;border:1px solid var(--mp-edge,var(--mp-line,GrayText))!important;border-radius:10px;box-shadow:none!important;filter:none!important}
 dialog.mperson:has(.pc-card-heading) button:not(.mm-control):focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* Listings: contain scrolling in the grid, not the document. */
+.shell:has(.lf-grid-page){height:100vh;height:100dvh;min-height:0;grid-template-rows:minmax(0,1fr);overflow:hidden}
+.workspace:has(.lf-grid-page),.content:has(.lf-grid-page),.lf.lf-grid-page,.lf-grid-page>.maskan-grid{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.content:has(.lf-grid-page),.lf.lf-grid-page,.lf-grid-page>.maskan-grid{flex:1;width:100%;box-sizing:border-box;margin-block:0}
+.lf-grid-page .maskan-grid>.tabulator{height:0!important;min-height:0;flex:1}
+.lf-grid-page .tools,.lf-grid-page .pager,.lf-grid-page .lf-stats{flex:none}.lf-grid-page .tools{flex-wrap:wrap}.lf-grid-property{display:flex;align-items:center;gap:.5rem}.lf-grid-property .lf-mini{width:40px;height:40px;object-fit:cover;flex:none}
+@media(max-height:560px),(max-width:680px){.lf.lf-grid-page{gap:4px}.lf-grid-page .lf-stats{display:flex;overflow-x:auto}.lf-grid-page .lf-stat{padding:4px;min-height:0}.lf-grid-page .lf-stat i{display:none}.lf-grid-page .tools{max-height:25dvh;overflow:auto}}
+
+/* Match the contacts KPI card geometry. */
+.lf.lf-grid-page:has(.ls-kpis){gap:0}
+.lf-grid-page .ls-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(4px,1vw,16px);margin-bottom:.7rem;flex:none}
+.lf-grid-page .ls-kpis>div{--tone:#5542ac;--tile:#efecfb;background:var(--paper,Canvas);color:var(--ink,CanvasText);border:1px solid var(--line);border-radius:1rem;padding:clamp(5px,1vw,14px);display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:.65rem}
+.lf-grid-page .ls-kpis>div:nth-child(2){--tone:#227763;--tile:#e5f4ee}.lf-grid-page .ls-kpis>div:nth-child(3){--tone:#965b24;--tile:#fff1df}
+.lf-grid-page .ls-k-icon{grid-row:span 2;background:var(--tile);color:var(--tone);padding:.5rem;border-radius:.75rem;display:grid}.lf-grid-page .ls-k-icon svg{width:1.35rem;height:1.35rem}
+.lf-grid-page .ls-kpis strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lf-grid-page .ls-kpis small{color:var(--muted)}
+@media(max-width:650px){.lf-grid-page .ls-kpis>div{display:flex;flex-direction:column;align-items:stretch}.lf-grid-page .ls-k-icon{display:none}.lf-grid-page .ls-kpis strong{font-size:.8rem}}
