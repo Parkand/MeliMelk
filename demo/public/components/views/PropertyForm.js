@@ -1,14 +1,21 @@
 function PropertyPointMap({lat,lon,pick,busy}) {
   const h=O.default.createElement, host=O.useRef(null), instance=O.useRef(null), marker=O.useRef(null), action=O.useRef(null);
-  const [offline,status]=O.useState(false);
+  const [offline,status]=O.useState(false), [geo,msg]=O.useState(''), [waiting,wait]=O.useState(false), seq=O.useRef(0);
+  O.useEffect(()=>()=>{seq.current++},[]);
+  function locate(){
+    if(!window.isSecureContext){msg('برای موقعیت دستگاه، سایت را با HTTPS یا روی خود سرور با localhost باز کنید. انتخاب دستی ممکن است.');return}
+    if(!navigator.geolocation){msg('این مرورگر مکان‌یابی دستگاه را ارائه نمی‌کند.');return}
+    const id=++seq.current;wait(true);msg('در حال دریافت موقعیت دستگاه…');
+    navigator.geolocation.getCurrentPosition(({coords:c})=>{if(id!==seq.current)return;wait(false);instance.current?.setView([c.latitude,c.longitude],16);action.current({lat:c.latitude,lng:c.longitude});msg('دقت تقریبی: '+Math.round(c.accuracy)+' متر. نقطه را بررسی و در صورت نیاز جابه‌جا کنید.');},e=>{if(id!==seq.current)return;wait(false);msg(e.code===1?'دسترسی به موقعیت داده نشد؛ اجازهٔ مرورگر را بررسی کنید یا دستی انتخاب کنید.':e.code===3?'مهلت دریافت موقعیت تمام شد؛ دوباره تلاش کنید.':'موقعیت دستگاه در دسترس نیست؛ دستی انتخاب کنید.');},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+  }
   const point=(a,b)=>String(a??'').trim()!==''&&String(b??'').trim()!==''&&Number.isFinite(+a)&&Number.isFinite(+b)&&Math.abs(+a)<=90&&Math.abs(+b)<=180?[+a,+b]:null;
-  action.current=p=>{if(!busy)pick(p.lat.toFixed(6),(((p.lng+180)%360+360)%360-180).toFixed(6))};
+  action.current=p=>{seq.current++;wait(false);msg('');if(!busy)pick(p.lat.toFixed(6),(((p.lng+180)%360+360)%360-180).toFixed(6))};
   O.useEffect(()=>{const L=window.L;const key=document.querySelector('meta[name="neshan-web-key"]')?.content;if(!L||!key){status(true);return}const initial=point(lat,lon);let m;try{m=new L.Map(host.current,{key,maptype:'dreamy',poi:false,traffic:false,center:initial||[32.4,53.7],zoom:initial?16:5,scrollWheelZoom:false,zoomControl:false});}catch{status(true);return}instance.current=m;
     L.control.zoom({zoomInTitle:'بزرگ‌نمایی',zoomOutTitle:'کوچک‌نمایی'}).addTo(m);
     m.eachLayer(layer=>{layer.on('tileerror',()=>status(true)).on('tileload',()=>status(false))});
     m.on('click',e=>action.current(e.latlng));const obs=new ResizeObserver(()=>m.invalidateSize({pan:false}));obs.observe(host.current);return()=>{obs.disconnect();m.remove();instance.current=null;marker.current=null};},[]);
   O.useEffect(()=>{const m=instance.current,p=point(lat,lon);if(!m)return;if(!p){marker.current?.remove();marker.current=null;return}if(!marker.current){marker.current=window.L.marker(p,{draggable:true,title:'موقعیت ملک',icon:window.L.divIcon({className:'pr-map-pin',iconSize:[18,18],iconAnchor:[9,9]})}).on('dragend',e=>action.current(e.target.getLatLng())).addTo(m)}else marker.current.setLatLng(p);if(busy)marker.current.dragging.disable();else marker.current.dragging.enable();if(!m.getBounds().contains(p))m.panTo(p);},[lat,lon,busy]);
-  return h('div',{className:'full pr-map-wrap'},h('p',null,'برای انتخاب موقعیت روی نقشه بزنید. برای اصلاح، نشانگر را بکشید و سپس انتخاب را تأیید کنید.'),h('div',{ref:host,style:{height:'clamp(200px,45dvh,480px)',width:'100%',position:'relative'},className:'pr-point-map',dir:'ltr',role:'region','aria-label':'نقشهٔ انتخاب موقعیت ملک'}),offline&&h('small',{role:'status'},'نقشه کامل بارگیری نشد. کلید وب، دامنهٔ مجاز و اتصال اینترنت را بررسی کنید؛ ورود دستی مختصات همچنان ممکن است.'));
+  return h('div',{className:'full pr-map-wrap'},h('button',{type:'button',disabled:busy||waiting,onClick:locate},'موقعیت فعلی من'),h('small',{role:'status'},geo),h('p',null,'برای انتخاب موقعیت روی نقشه بزنید. برای اصلاح، نشانگر را بکشید و سپس انتخاب را تأیید کنید.'),h('div',{ref:host,style:{height:'clamp(200px,45dvh,480px)',width:'100%',position:'relative'},className:'pr-point-map',dir:'ltr',role:'region','aria-label':'نقشهٔ انتخاب موقعیت ملک'}),offline&&h('small',{role:'status'},'نقشه کامل بارگیری نشد. کلید وب، دامنهٔ مجاز و اتصال اینترنت را بررسی کنید؛ ورود دستی مختصات همچنان ممکن است.'));
 }
 function MaskanPropertyForm({frame,row,groups,fields,renderField,address,lat,lon,pick,team,admin,assignee,setAssignee,save,busy,dirty,error}) {
   const h=O.default.createElement;
