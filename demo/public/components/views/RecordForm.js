@@ -58,6 +58,7 @@ function jb({
       }
     };
   const [ownerMode,setOwnerMode]=O.useState(''), [query,setQuery]=O.useState(''), [added,setAdded]=O.useState([]);
+  const [taskTab,setTaskTab]=O.useState(0);
   function T(E) {
     if (
       t === "tasks" &&
@@ -261,14 +262,14 @@ function jb({
   };
   const localEntry=O.useRef({prev:s}).current;
   if(t==='properties') return O.default.createElement(O.default.Fragment,null,O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,gallery:galleryOf(r),changeGallery:g=>x('galleryDraft',g),work:_,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p}),ownerMode==='create'&&O.default.createElement(pcForm,{ws:a,nested:true,preset:{category:'owner'},close:()=>setOwnerMode(''),onDone:(id,person)=>{setAdded(prev=>[...prev,{...person,id}]);x('owner_id',id);setOwnerMode('')}}));
-  if(t==='tasks' && e){
-    const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','status','priority','due_at','contact_id','listing_id'];
-    return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:'ویرایش وظیفه',expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:'te13'}},
-      el('form',{onSubmit:M,className:'te-form'},el('div',{className:'modal-scroll te-body'},el('div',{className:'te-grid'},
-        ...keys.map(field),...o.fields.filter(z=>!keys.includes(z.key)&&z.key!=='result').map(T),el(Jd,{ws:a,row:e,form:r,set:c}),field('result'),
+  if(t==='tasks'){
+    const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','contact_id','listing_id','due_at','priority','status'], tabs=['اطلاعات وظیفه','واگذاری و پیگیری'];
+    function submit(ev){ev.preventDefault();const form=ev.currentTarget, bad=form.querySelector(':invalid,[data-missing="yes"]');if(!bad)return M(ev);const pane=bad.closest('[data-step]');if(pane)setTaskTab(Number(pane.dataset.step));requestAnimationFrame(()=>{bad.focus();if(bad.dataset.missing)g('لطفاً تاریخ الزامی را انتخاب کنید.');else bad.reportValidity()})}
+    return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:e?'ویرایش وظیفه':'ثبت وظیفه',expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:'te13 task22'}},
+      el('form',{onSubmit:submit,noValidate:true,className:'te-form'},el('nav',{'aria-label':'بخش‌های وظیفه'},tabs.map((s,j)=>el('button',{key:s,type:'button','aria-pressed':taskTab===j,onClick:()=>setTaskTab(j)},s))),el('div',{className:'modal-scroll te-body'},el('section',{className:'te-grid task-info','data-step':0,hidden:taskTab!==0},...keys.map(field),...o.fields.filter(z=>!keys.includes(z.key)&&z.key!=='result').map(T)),el('section',{className:'te-grid','data-step':1,hidden:taskTab!==1},field('result'),el(Jd,{ws:a,row:e,form:r,set:c}),el('div',{className:'te-follow'},
         el('label',{className:'te-toggle'},el('input',{type:'checkbox',checked:h,onChange:event=>f(event.target.checked)}),'هم‌زمان وظیفهٔ پیگیری بعدی ساخته شود'),
-        h&&el('label',null,'عنوان پیگیری بعدی',el('input',{required:true,value:d,onChange:event=>y(event.target.value)})),h&&el('div',{className:'pd-field'},'موعد پیگیری بعدی *',el(Xr,{label:'موعد پیگیری بعدی',timed:true,value:v,change:b,required:true}))),p&&el('p',{role:'alert',className:'error'},p)),
-      el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'))));
+        h&&el('label',null,'عنوان پیگیری بعدی',el('input',{required:true,value:d,onChange:event=>y(event.target.value)})),h&&el('div',{className:'pd-field'},'موعد پیگیری بعدی *',el(Xr,{label:'موعد پیگیری بعدی',timed:true,value:v,change:b,required:true})))),p&&el('p',{role:'alert',className:'error'},p)),
+      el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'),el('button',{type:'button',disabled:m,onClick:mmCancel},'انصراف'))));
   }
   return O.default.createElement(
     mmDialog,
