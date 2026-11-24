@@ -1,3 +1,9 @@
+function DetailPin({lat,lon}) {
+ const R=O.default,h=R.createElement,host=R.useRef(null),[failed,fail]=R.useState(false);
+ const ok=[lat,lon].every(x=>x!=null&&String(x).trim()!==''&&Number.isFinite(Number(x)))&&Math.abs(lat)<=90&&Math.abs(lon)<=180;
+ R.useEffect(()=>{if(!ok)return;let map,observer;try{const L=window.L,key=document.querySelector('meta[name="neshan-web-key"]')?.content;if(!key||!L)throw Error();map=new L.Map(host.current,{key,maptype:'dreamy',center:[+lat,+lon],zoom:16,scrollWheelZoom:false,traffic:false,poi:false});L.marker([+lat,+lon],{icon:L.divIcon({className:'pr-map-pin',iconSize:[18,18],iconAnchor:[9,9]})}).addTo(map);observer=new ResizeObserver(()=>map.invalidateSize());observer.observe(host.current);fail(false)}catch{fail(true)}return()=>{observer?.disconnect();map?.remove()}},[ok,lat,lon]);
+ return h('section',null,ok?h(R.Fragment,null,h('div',{ref:host,style:{height:140},'aria-label':'موقعیت ملک'}),failed&&h('small',null,'نقشه در دسترس نیست'),h('a',{href:'https://neshan.org/maps/@'+Number(lat)+','+Number(lon)+',16.0z,0.0p',target:'_blank',rel:'noopener noreferrer'},'نمایش در نقشه')):'موقعیت ثبت نشده');
+}
 function Yb({
   frame,
   k: t,
@@ -59,12 +65,10 @@ function Yb({
       nested: o,
       close: a,
     },
-    O.default.createElement(
-      "div",
-      { className: "detail-grid property-facts" },
-      t==='properties' && e.latitude!=null && e.longitude!=null && O.default.createElement('a',{href:'https://www.openstreetmap.org/?mlat='+encodeURIComponent(e.latitude)+'&mlon='+encodeURIComponent(e.longitude)+'#map=17/'+encodeURIComponent(e.latitude)+'/'+encodeURIComponent(e.longitude),target:'_blank',rel:'noopener noreferrer'},'نمایش پین ملک در OpenStreetMap'),
-      t==='properties'&&O.default.createElement(PropertyGallery,{value:galleryOf(e)}),
-      u.fields.map((d) =>
+    t==='properties' && O.default.createElement('div',{className:'pd-media'},O.default.createElement('style',null,`.pd-media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}.pd-media>.pr-album{display:block;grid-column:auto;min-width:0}.pd-media .pr-stage{height:140px}.pd-media section{min-width:0;text-align:center}.pd-media .pr-stage button{font-size:0;width:36px;height:36px;padding:0}.pd-media .pr-stage button:before{content:'❯';font-size:22px}.pd-media .pr-stage button:last-child:before{content:'❮'}.pd-summary.detail-grid{max-height:clamp(130px,30vh,320px);overflow:auto;overscroll-behavior:contain;background:#f6f8f6;padding:.8rem;border-radius:10px;gap:.45rem 1rem}.pd-summary.detail-grid>[data-fact]{padding:.4rem}.modal-scroll:has(.pd-media)~footer{flex:0 0 auto!important;height:auto!important;max-height:none!important;overflow:visible!important;flex-wrap:wrap}@media(max-width:600px){.pd-media{grid-template-columns:1fr}}`),O.default.createElement(PropertyGallery,{value:galleryOf(e)}),O.default.createElement(DetailPin,{lat:e.latitude,lon:e.longitude})),
+    t==='properties' && O.default.createElement('h3',null,'خلاصهٔ ملک'),
+    O.default.createElement('div',{className:'detail-grid property-facts'+(t==='properties'?' pd-summary':''),...(t==='properties'?{tabIndex:0,role:'region','aria-label':'خلاصهٔ کامل ملک'}:{})},
+      u.fields.filter(d=>t!=='properties'||!gallery.includes(d.key)||e[d.key]).map((d) =>
         O.default.createElement(
           "div",
           { key: d.key, "data-tone": $d(d), "data-fact": d.key },
