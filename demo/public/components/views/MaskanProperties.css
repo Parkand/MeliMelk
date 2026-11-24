@@ -2,3 +2,14 @@
 .mp-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-block-end:1rem}.mp-kpis>div{--ink:#5542ac;--tile:#efecfb;display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--surface,Canvas);color:var(--text,CanvasText);border:1px solid var(--line,#d9ddcf);border-radius:1rem}.mp-kpis>div:nth-child(2){--ink:#227763;--tile:#e5f4ee}.mp-kpis>div:nth-child(3){--ink:#985a19;--tile:#fff0dc}.mp-kpis i{display:grid;place-items:center;background:var(--tile);color:var(--ink);width:2.65rem;height:2.65rem;border-radius:.75rem;flex:none}.mp-kpis svg{width:1.45rem;height:1.45rem}.mp-kpis b{margin-inline-start:auto;font-size:1.8rem;color:var(--ink);font-variant-numeric:tabular-nums}@media(max-width:900px){.mp-kpis{grid-template-columns:1fr;gap:.4rem}.mp-kpis>div{padding:.45rem .8rem}.mp-kpis b{font-size:1.45rem}}
 .maskan-properties .tools{flex-wrap:wrap}
 .maskan-properties .tools .search{min-inline-size:min(16rem,100%)}
+
+/* Property bank only: allocate remaining viewport space to the grid. */
+.shell[data-desk=properties]:has(.maskan-properties){height:100vh;height:100dvh;min-height:0;grid-template-rows:minmax(0,1fr)}
+.shell[data-desk=properties] .workspace:has(.maskan-properties){height:100%;min-height:0;display:flex;flex-direction:column}
+.shell[data-desk=properties] .content:has(.maskan-properties){flex:1;min-height:0;width:100%;box-sizing:border-box;margin-block:0;display:flex;flex-direction:column;overflow:auto;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+.maskan-properties,.maskan-properties>.panel.maskan-grid{display:flex;flex:1 1 0;min-height:0;flex-direction:column}
+.maskan-properties>.panel.maskan-grid{border-color:var(--line);background:var(--paper);margin-block:0}
+.maskan-properties .mp-kpis,.maskan-properties .tools,.maskan-properties .pager{flex:none}
+.maskan-properties .maskan-grid>.tabulator{height:0!important;min-height:0;flex:1 1 0}
+.maskan-properties .mp-kpis b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-height:540px){.maskan-properties{min-height:24rem}}
