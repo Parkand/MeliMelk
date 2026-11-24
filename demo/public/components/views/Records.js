@@ -24,6 +24,7 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
     v = Math.max(1, Math.ceil(y.length / 25)),
     b = Math.min(c, v - 1),
     p = (g, m) => g.reduce((_, x) => _ + BigInt(x[m]), 0n);
+  if(t === "demands") return A.default.createElement(DemandGrid,{db:i,rows:y,fields:d,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   return t === "contacts"
     ? A.default.createElement(MaskanContacts, { ws: e, open: l, create: a })
     : t === "listings"
@@ -283,4 +284,18 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
             ),
           ),
         );
+}
+
+function DemandGrid({db, rows, fields, query, filter, setQuery, setFilter, open, create}) {
+  const R=A.default, E=R.createElement, labels=ne.demands.fields, fmt=new Intl.NumberFormat('fa-IR');
+  const columns=R.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
+  const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const cards=[['kind','نوع تقاضا','demands'],['district','محله','properties'],['status','وضعیت','check']].map(([key,title,icon])=>{
+    const counts=new Map(); for(const row of data){const val=String(row[key]||'').trim()||'نامشخص';counts.set(val,(counts.get(val)||0)+1)}
+    const entries=Array.from(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'fa'));
+    const text=entries.length?entries[0][0]+' · '+fmt.format(entries[0][1]):'بدون تقاضا';
+    return E('div',{key,title:entries.map(([k,v])=>k+': '+fmt.format(v)).join('\n')},E('span',{className:'ls-k-icon','aria-hidden':true},E(j,{name:icon})),E('small',null,'پرتکرارترین '+title),E('strong',null,text));
+  });
+  const toolbar=get=>E('div',{className:'tools'},E('input',{className:'demand-search',value:query,placeholder:'جست‌وجو در تقاضاها…','aria-label':'جست‌وجوی تقاضا',onChange:e=>setQuery(e.target.value)}),E('select',{value:filter,'aria-label':'وضعیت تقاضا',onChange:e=>setFilter(e.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),Object.entries(labels.find(f=>f.key==='status').choices).map(([k,v])=>E('option',{key:k,value:k},v))),E('button',{onClick:()=>Yi('demands',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'خروجی CSV'),E('button',{className:'primary',onClick:()=>create('demands')},'＋ ثبت تقاضا'));
+  return E('section',{className:'lf lf-grid-page demand-page'},E('div',{className:'ls-kpis','aria-label':'شاخص‌های تقاضا'},cards),E(MaskanDataGrid,{columns,data,toolbar,label:'فهرست تقاضاها',empty:'تقاضایی برای نمایش نیست',countLabel:n=>fmt.format(n)+' تقاضا',onAction:(_,row)=>open('demands',row.record)}));
 }
