@@ -2,7 +2,16 @@ function DetailPin({lat,lon}) {
  const R=O.default,h=R.createElement,host=R.useRef(null),[failed,fail]=R.useState(false);
  const ok=[lat,lon].every(x=>x!=null&&String(x).trim()!==''&&Number.isFinite(Number(x)))&&Math.abs(lat)<=90&&Math.abs(lon)<=180;
  R.useEffect(()=>{if(!ok)return;let map,observer;try{const L=window.L,key=document.querySelector('meta[name="neshan-web-key"]')?.content;if(!key||!L)throw Error();map=new L.Map(host.current,{key,maptype:'dreamy',center:[+lat,+lon],zoom:16,scrollWheelZoom:false,traffic:false,poi:false});L.marker([+lat,+lon],{icon:L.divIcon({className:'pr-map-pin',iconSize:[18,18],iconAnchor:[9,9]})}).addTo(map);observer=new ResizeObserver(()=>map.invalidateSize());observer.observe(host.current);fail(false)}catch{fail(true)}return()=>{observer?.disconnect();map?.remove()}},[ok,lat,lon]);
- return h('section',null,ok?h(R.Fragment,null,h('div',{ref:host,style:{height:140},'aria-label':'موقعیت ملک'}),failed&&h('small',null,'نقشه در دسترس نیست'),h('a',{href:'https://neshan.org/maps/@'+Number(lat)+','+Number(lon)+',16.0z,0.0p',target:'_blank',rel:'noopener noreferrer'},'نمایش در نقشه')):'موقعیت ثبت نشده');
+ return h('section',null,ok?h(R.Fragment,null,h('div',{ref:host,className:'pd6-map','aria-label':'موقعیت ملک'}),failed&&h('small',null,'نقشه در دسترس نیست'),h('a',{href:'https://neshan.org/maps/@'+Number(lat)+','+Number(lon)+',16.0z,0.0p',target:'_blank',rel:'noopener noreferrer'},'نمایش در نقشه')):'موقعیت ثبت نشده');
+}
+function Pd6Gallery({value}) {
+ const R=O.default,h=R.createElement,{items,cover}=value,[index,set]=R.useState(cover||0),i=Math.max(0,Math.min(index,items.length-1));
+ const arrow=(dir,label)=>h('button',{type:'button','aria-label':label,title:label,disabled:i+dir<0||i+dir>=items.length,onClick:()=>set(i+dir)},h('svg',{width:20,height:20,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,'aria-hidden':true},h('path',{d:dir<0?'M9 5l7 7-7 7':'M15 5l-7 7 7 7'})));
+ return h('div',null,h('div',{className:'pd6-stage'},items[i]?h('img',{src:items[i],alt:'عکس ملک',referrerPolicy:'no-referrer'}):'بدون عکس',items.length>1&&arrow(-1,'عکس قبلی'),items.length>1&&arrow(1,'عکس بعدی')),items.length>0&&h('small',null,'تصویر '+F.format(i+1)+' از '+F.format(items.length)));
+}
+function Pd6Body({row:e,model:u,data:r,team,photo,history}){
+ const h=O.default.createElement, field=k=>u.fields.find(d=>d.key===k), val=k=>field(k)&&e[k]!=null&&e[k]!==''?Xe(field(k),e[k],r):null, shown=['kind','district','area','rooms','address','owner_id'], label=(k,s)=>h('span',null,s+'：',val(k)||'ثبت نشده');
+ return h('div',{className:'pd6'},h('style',null,`dialog.mm-shell[open][data-size=wide]:has(.pd6),dialog.mm-shell[open][data-size=wide]:has(.pd6)>.modal-scroll{overflow:hidden!important}dialog.mm-shell[open][data-size=wide]:has(.pd6)>.modal-scroll{display:flex!important;flex:1 1 0!important;min-height:0!important;padding:0!important}dialog.mm-shell[open][data-size=wide]:has(.pd6)>footer{overflow:visible!important;height:auto!important;flex:0 0 auto!important;flex-wrap:wrap}dialog.mm-shell[open][data-size=wide]:has(.pd6)>footer button{margin:0}.pd6{--stage:clamp(52px,20dvh,145px);box-sizing:border-box;width:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:clamp(6px,2vh,16px);padding:clamp(8px,2vh,18px) clamp(10px,3vw,34px);color:var(--mp-text)}.pd6-media,.pd6-lead>div,.pd6 dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,3vw,28px)}.pd6-media>div{min-width:0}.pd6-media b{display:block;margin-bottom:6px;font-weight:550}.pd6-media section{margin:0;padding:0;border:0;display:block}.pd6-stage,.pd6-map{box-sizing:border-box;height:var(--stage)!important;overflow:hidden;border:1px solid var(--mp-line,#d9e1df);border-radius:9px;background:#ebefeb}.pd6-stage{position:relative;display:grid;place-items:center}.pd6-stage img{height:100%;width:100%;min-height:0;object-fit:contain}.pd6-stage button{position:absolute;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:32px;height:32px;min-height:0;padding:0;right:5px}.pd6-stage button:last-child{right:auto;left:5px}.pd6-media small,.pd6-media section>a{display:inline-block;font-size:.85em;margin-top:4px}.pd6-scroll{min-height:0;overflow:auto;overscroll-behavior:contain;background:var(--mp-soft,#f5f8f5);border:1px solid var(--mp-line,#d9e1df);border-radius:10px;padding:0 clamp(10px,2vw,22px);overflow-wrap:anywhere}.pd6-lead{box-sizing:border-box;min-height:100%;padding:16px 0;display:flex;flex-direction:column;justify-content:space-evenly;gap:8px}.pd6-lead h3,.pd6-lead p{margin:0}.pd6-lead p{color:var(--mp-text);font-weight:600}.pd6 dl{margin:0;padding:12px 0;row-gap:8px}.pd6 dl>div{border-top:1px solid var(--mp-line,#ddd);padding:7px 0}.pd6 dd{margin:3px 0}.pd6 dt{font-size:.85em}.pd6 .property-history{margin:8px 0}@media(max-height:450px){.pd6{--stage:48px;gap:4px;padding-block:4px}.pd6-media b{margin:0}.pd6-lead{padding:4px 0}}`),h('div',{className:'pd6-media'},h('div',null,h('b',null,'گالری ملک'),h(Pd6Gallery,{value:galleryOf(e)})),h('div',null,h('b',null,'موقعیت ملک'),h(DetailPin,{lat:e.latitude,lon:e.longitude}))),h('div',{className:'pd6-scroll',role:'region','aria-label':'خلاصه و جزئیات ملک',tabIndex:0},h('div',{className:'pd6-lead'},h('h3',null,val('kind')||'ملک',e.district?' در '+e.district:''),h('p',null,[e.area!=null&&e.area!==''?F.format(e.area)+' متر مربع':'',e.rooms!=null&&e.rooms!==''?F.format(e.rooms)+' اتاق':''].filter(Boolean).join('　•　')),h('div',null,label('address','نشانی'),label('owner_id','مالک'))),h('dl',null,u.fields.filter(d=>!shown.includes(d.key)&&(!d.key.startsWith('photo_url')||e[d.key])).map(d=>h('div',{key:d.key},h('dt',null,d.label),h('dd',null,d.key.startsWith('photo_url')?photo(d):Xe(d,e[d.key],r)||'—'))),h('div',null,h('dt',null,'مسئول'),h('dd',null,team.find(v=>v.id===e.assignee)?.name||'—'))),history));
 }
 function Yb({
   frame,
@@ -56,6 +65,46 @@ function Yb({
       create: i,
       open: s,
     });
+  const history=O.default.createElement(
+      "section",
+      {
+        className: "property-history",
+        "aria-label":
+          "\u0633\u0648\u0627\u0628\u0642 \u0645\u0631\u062A\u0628\u0637",
+      },
+      O.default.createElement(
+        "h3",
+        null,
+        "\u0633\u0648\u0627\u0628\u0642 \u0645\u0631\u062A\u0628\u0637 ",
+        O.default.createElement("small", null, F.format(h.length)),
+      ),
+      h.length
+        ? h.map(([d, y]) =>
+            O.default.createElement(
+              "button",
+              {
+                type: "button",
+                key: d.key + ":" + y.id,
+                onClick: () => s(d.key, y),
+              },
+              O.default.createElement(j, { name: d.key }),
+              O.default.createElement(
+                "span",
+                null,
+                O.default.createElement("small", null, d.single),
+                O.default.createElement("b", null, Ee(d.key, y, r)),
+              ),
+              O.default.createElement("i", { "aria-hidden": "true" }, "\u2039"),
+            ),
+          )
+        : O.default.createElement(
+            "p",
+            null,
+            "\u0647\u0646\u0648\u0632 \u0633\u0627\u0628\u0642\u0647\u200C\u0627\u06CC \u0628\u0631\u0627\u06CC \u0627\u06CC\u0646 ",
+            u.single,
+            " \u062B\u0628\u062A \u0646\u0634\u062F\u0647 \u0627\u0633\u062A.",
+          ),
+    );
   return O.default.createElement(
     mmDialog,
     {
@@ -65,10 +114,11 @@ function Yb({
       nested: o,
       close: a,
     },
-    t==='properties' && O.default.createElement('div',{className:'pd-media'},O.default.createElement('style',null,`.pd-media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}.pd-media>.pr-album{display:block;grid-column:auto;min-width:0}.pd-media .pr-stage{height:140px}.pd-media section{min-width:0;text-align:center}.pd-media .pr-stage button{font-size:0;width:36px;height:36px;padding:0}.pd-media .pr-stage button:before{content:'❯';font-size:22px}.pd-media .pr-stage button:last-child:before{content:'❮'}.pd-summary.detail-grid{max-height:clamp(130px,30vh,320px);overflow:auto;overscroll-behavior:contain;background:#f6f8f6;padding:.8rem;border-radius:10px;gap:.45rem 1rem}.pd-summary.detail-grid>[data-fact]{padding:.4rem}.modal-scroll:has(.pd-media)~footer{flex:0 0 auto!important;height:auto!important;max-height:none!important;overflow:visible!important;flex-wrap:wrap}@media(max-width:600px){.pd-media{grid-template-columns:1fr}}`),O.default.createElement(PropertyGallery,{value:galleryOf(e)}),O.default.createElement(DetailPin,{lat:e.latitude,lon:e.longitude})),
-    t==='properties' && O.default.createElement('h3',null,'خلاصهٔ ملک'),
-    O.default.createElement('div',{className:'detail-grid property-facts'+(t==='properties'?' pd-summary':''),...(t==='properties'?{tabIndex:0,role:'region','aria-label':'خلاصهٔ کامل ملک'}:{})},
-      u.fields.filter(d=>t!=='properties'||!gallery.includes(d.key)||e[d.key]).map((d) =>
+    t==='properties'?O.default.createElement(Pd6Body,{key:e.id,row:e,model:u,data:r,team:l.team,photo:renderPhoto,history}):
+    O.default.createElement(
+      "div",
+      { className: "detail-grid property-facts" },
+      u.fields.map((d) =>
         O.default.createElement(
           "div",
           { key: d.key, "data-tone": $d(d), "data-fact": d.key },
@@ -158,46 +208,7 @@ function Yb({
             "\u0641\u0627\u06CC\u0644\u06CC \u0645\u0646\u0637\u0628\u0642 \u0628\u0627 \u0627\u06CC\u0646 \u0634\u0631\u0627\u06CC\u0637 \u067E\u06CC\u062F\u0627 \u0646\u0634\u062F.",
           ),
       ),
-    O.default.createElement(
-      "section",
-      {
-        className: "property-history",
-        "aria-label":
-          "\u0633\u0648\u0627\u0628\u0642 \u0645\u0631\u062A\u0628\u0637",
-      },
-      O.default.createElement(
-        "h3",
-        null,
-        "\u0633\u0648\u0627\u0628\u0642 \u0645\u0631\u062A\u0628\u0637 ",
-        O.default.createElement("small", null, F.format(h.length)),
-      ),
-      h.length
-        ? h.map(([d, y]) =>
-            O.default.createElement(
-              "button",
-              {
-                type: "button",
-                key: d.key + ":" + y.id,
-                onClick: () => s(d.key, y),
-              },
-              O.default.createElement(j, { name: d.key }),
-              O.default.createElement(
-                "span",
-                null,
-                O.default.createElement("small", null, d.single),
-                O.default.createElement("b", null, Ee(d.key, y, r)),
-              ),
-              O.default.createElement("i", { "aria-hidden": "true" }, "\u2039"),
-            ),
-          )
-        : O.default.createElement(
-            "p",
-            null,
-            "\u0647\u0646\u0648\u0632 \u0633\u0627\u0628\u0642\u0647\u200C\u0627\u06CC \u0628\u0631\u0627\u06CC \u0627\u06CC\u0646 ",
-            u.single,
-            " \u062B\u0628\u062A \u0646\u0634\u062F\u0647 \u0627\u0633\u062A.",
-          ),
-    ),
+    t!=='properties' && history,
     O.default.createElement(
       "footer",
       null,
