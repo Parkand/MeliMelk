@@ -22,3 +22,11 @@ dialog.mm-shell.task22[open][data-size=wide] form.te-form>footer.mp-foot{overflo
 .te-edit .te-form>.te-body{padding:.75rem 1rem;align-content:start}
 .te-edit .te-body .te-grid{gap:.55rem .85rem;margin:0}
 @media(min-width:581px){.te-edit .task-info>:nth-child(5){grid-column:span 2}}
+.te-edit .te-lookup{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:.35rem}
+.te-edit .te-lookup label{display:grid;min-width:0;gap:.32rem}
+.te-edit .te-lookup>button{padding:.45rem}
+.te-edit .te-picker[open]{position:fixed;inset:0;margin:auto;width:min(24rem,90vw);max-height:75vh;overflow:auto;padding:1rem;color:var(--mp-text);background:var(--mp-bg);border:1px solid var(--mp-line);border-radius:.7rem}
+.te-picker::backdrop{background:#0006}.te-picker>button{float:inline-end}.te-picker input{margin-block:.65rem}.te-matches{display:grid;gap:.25rem}.te-matches button{text-align:start}
+.te-edit [data-step="1"]>.hint{align-self:end;margin:0;display:flex;align-items:center;min-height:2.6rem}
+.te-edit .te-follow>.te-toggle{display:flex;align-items:center;justify-content:flex-start;margin:0}
+@media(min-width:581px){.te-edit [data-step="1"]>label:first-child,.te-edit .te-next>label:first-child{grid-column:auto}}

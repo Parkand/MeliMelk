@@ -2,6 +2,7 @@ function Xr({
   value: t = "",
   change: e,
   timed: l = !1,
+  shortClock = false,
   label: a,
   required: n,
   popup = true,
@@ -126,7 +127,7 @@ function Xr({
       At.default.createElement(
         "div",
         { className: "pd-time" },
-        "\u0633\u0627\u0639\u062A \u062A\u0647\u0631\u0627\u0646 ",
+        shortClock ? "ساعت" : "\u0633\u0627\u0639\u062A \u062A\u0647\u0631\u0627\u0646 ",
         ["\u0633\u0627\u0639\u062A", "\u062F\u0642\u06CC\u0642\u0647"].map(
           (b, p) =>
             At.default.createElement(

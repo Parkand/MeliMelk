@@ -59,6 +59,7 @@ function jb({
     };
   const [ownerMode,setOwnerMode]=O.useState(''), [query,setQuery]=O.useState(''), [added,setAdded]=O.useState([]);
   const [taskTab,setTaskTab]=O.useState(0);
+  const [lookup,setLookup]=O.useState('');
   function T(E) {
     if (
       t === "tasks" &&
@@ -140,6 +141,17 @@ function jb({
               "\xBB \u062B\u0628\u062A \u06A9\u0646\u06CC\u062F.",
             ),
         )));
+      if(e&&t==='tasks'&&['contact_id','listing_id'].includes(E.key)){
+        const el=O.default.createElement,title='جست‌وجوی '+E.label;
+        const norm=text=>String(text??'').normalize('NFKC').replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[\s\u200c]+/g,'').toLowerCase();
+        const matches=lookup===E.key?q.filter(item=>norm(Ee(E.target,item,a.data)).includes(norm(query))):[];
+        return el('div',{key:E.key,className:'te-lookup'},el('label',null,E.label,K),
+          el('button',{type:'button',title,'aria-label':title,onClick:()=>{setQuery('');setLookup(E.key)}},el('svg',{width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,'aria-hidden':true},el('circle',{cx:10,cy:10,r:6}),el('path',{d:'m15 15 6 6'}))),
+          lookup===E.key&&el('dialog',{className:'te-picker','aria-label':title,ref:dialog=>{if(dialog&&!dialog.open)dialog.showModal()},onCancel:event=>{event.preventDefault();event.stopPropagation();setLookup('')},onKeyDown:event=>event.stopPropagation()},
+            el('strong',null,title),el('button',{type:'button',onClick:()=>setLookup('')},'بستن'),
+            el('input',{autoFocus:true,type:'search',value:query,'aria-label':title,placeholder:'جست‌وجو…',onChange:event=>setQuery(event.target.value),onKeyDown:event=>{if(event.key==='Enter')event.preventDefault()}}),
+            el('div',{className:'te-matches'},matches.length?matches.map(item=>el('button',{type:'button',key:item.id,onClick:()=>{x(E.key,item.id);setLookup('')}},Ee(E.target,item,a.data))):'موردی پیدا نشد.')));
+      }
     } else if (E.choices)
       K = O.default.createElement(
         "select",
@@ -174,6 +186,7 @@ function jb({
             required: k,
             value: S,
             timed: E.type === "datetime",
+            shortClock: t==='tasks' && !!e,
             change: (q) => x(E.key, q),
           }),
         );
@@ -263,14 +276,16 @@ function jb({
   const localEntry=O.useRef({prev:s}).current;
   if(t==='properties') return O.default.createElement(O.default.Fragment,null,O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,gallery:galleryOf(r),changeGallery:g=>x('galleryDraft',g),work:_,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p}),ownerMode==='create'&&O.default.createElement(pcForm,{ws:a,nested:true,preset:{category:'owner'},close:()=>setOwnerMode(''),onDone:(id,person)=>{setAdded(prev=>[...prev,{...person,id}]);x('owner_id',id);setOwnerMode('')}}));
   if(t==='tasks'){
-    const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','contact_id','listing_id','due_at','priority','status'], tabs=e?['اطلاعات وظیفه','واگذاری و نتیجه','زمان‌بندی و پیگیری']:['اطلاعات وظیفه','واگذاری و پیگیری'];
-    const followUp=el('div',{className:'te-follow'},
-        el('label',{className:'te-toggle'},el('input',{type:'checkbox',checked:h,onChange:event=>f(event.target.checked)}),'هم‌زمان وظیفهٔ پیگیری بعدی ساخته شود'),
-        h&&el('label',null,'عنوان پیگیری بعدی',el('input',{required:true,value:d,onChange:event=>y(event.target.value)})),h&&el('div',{className:'pd-field'},'موعد پیگیری بعدی *',el(Xr,{label:'موعد پیگیری بعدی',timed:true,value:v,change:b,required:true})));
-    function taskIcon({index}){return el(j,{name:['tasks','contacts','calendar'][index]})}
+    const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','contact_id','listing_id','due_at','priority','status'], tabs=e?['اطلاعات وظیفه','واگذاری و نتیجه','زمان‌بندی و پیگیری',...(h?['پیگیری بعدی']:[])]:['اطلاعات وظیفه','واگذاری و پیگیری'];
+    const toggle=el('label',{className:'te-toggle'},el('input',{type:'checkbox',checked:h,onChange:event=>{f(event.target.checked);if(e&&event.target.checked)setTaskTab(3)}}),'هم‌زمان وظیفهٔ پیگیری بعدی ساخته شود');
+    const settings=el(O.default.Fragment,null,
+      el('label',null,'عنوان پیگیری بعدی',el('input',{required:true,value:d,onChange:event=>y(event.target.value)})),
+      el('div',{className:'pd-field'},'موعد پیگیری بعدی *',el(Xr,{label:'موعد پیگیری بعدی',shortClock:!!e,timed:true,value:v,change:b,required:true})));
+    const followUp=el('div',{className:'te-follow'},toggle,!e&&h&&settings);
+    function taskIcon({index}){return el(j,{name:['tasks','contacts','calendar','tasks'][index]})}
     function submit(ev){ev.preventDefault();const form=ev.currentTarget, bad=form.querySelector(':invalid,[data-missing="yes"]');if(!bad)return M(ev);const pane=bad.closest('[data-step]');if(pane)setTaskTab(Number(pane.dataset.step));requestAnimationFrame(()=>{bad.focus();if(bad.dataset.missing)g('لطفاً تاریخ الزامی را انتخاب کنید.');else bad.reportValidity()})}
     return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:e?'ویرایش وظیفه':'ثبت وظیفه',heading:el('div',{className:'te-identity'},el(j,{name:'tasks'}),el('div',null,el('strong',null,e?'ویرایش وظیفه':'ثبت وظیفه'),el('small',null,e?.title||'پروندهٔ جدید وظیفه'))),expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:e?'te13 task22 te-edit':'te13 task22'}},
-      el('form',{onSubmit:submit,noValidate:true,className:'te-form'},el('nav',{'aria-label':'بخش‌های وظیفه'},tabs.map((s,j)=>el('button',{key:s,type:'button','aria-pressed':taskTab===j,onClick:()=>setTaskTab(j)},el(taskIcon,{index:j}),s))),el('div',{className:'modal-scroll te-body'},!e&&el('h3',{className:'te-section-title'},el(taskIcon,{index:taskTab}),tabs[taskTab]),el('section',{className:'te-grid task-info','data-step':0,hidden:taskTab!==0},...keys.filter(key=>!e||key!=='due_at').map(field),...o.fields.filter(z=>!keys.includes(z.key)&&z.key!=='result').map(T)),el('section',{className:'te-grid','data-step':1,hidden:taskTab!==1},field('result'),el(Jd,{ws:a,row:e,form:r,set:c}),!e&&followUp),e&&el('section',{className:'te-grid','data-step':2,hidden:taskTab!==2},field('due_at'),followUp),p&&el('p',{role:'alert',className:'error'},p)),
+      el('form',{onSubmit:submit,noValidate:true,className:'te-form'},el('nav',{'aria-label':'بخش‌های وظیفه'},tabs.map((s,j)=>el('button',{key:s,type:'button','aria-pressed':taskTab===j,onClick:()=>setTaskTab(j)},el(taskIcon,{index:j}),s))),el('div',{className:'modal-scroll te-body'},!e&&el('h3',{className:'te-section-title'},el(taskIcon,{index:taskTab}),tabs[taskTab]),el('section',{className:'te-grid task-info','data-step':0,hidden:taskTab!==0},...keys.filter(key=>!e||key!=='due_at').map(field),...o.fields.filter(z=>!keys.includes(z.key)&&z.key!=='result').map(T)),el('section',{className:'te-grid','data-step':1,hidden:taskTab!==1},!e&&field('result'),el(Jd,{ws:a,row:e,form:r,set:c}),e&&field('result'),!e&&followUp),e&&el('section',{className:'te-grid','data-step':2,hidden:taskTab!==2},field('due_at'),followUp),e&&h&&el('section',{className:'te-grid te-next','data-step':3,hidden:taskTab!==3},settings,el('button',{type:'button',onClick:()=>{f(false);setTaskTab(2)}},'انصراف از پیگیری بعدی')),p&&el('p',{role:'alert',className:'error'},p)),
       el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'),el('button',{type:'button',disabled:m,onClick:mmCancel},'انصراف'))));
   }
   return O.default.createElement(
