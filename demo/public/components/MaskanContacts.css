@@ -30,3 +30,5 @@
 .mc-k-icon{grid-row:span 2;background:var(--tile);color:var(--tone);padding:.5rem;border-radius:.75rem;display:grid}.mc-k-icon svg{width:1.35rem;height:1.35rem}
 .mc-kpis strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mc-kpis small{color:var(--muted)}
 @media(max-width:650px){.mc-kpis>div{display:flex;flex-direction:column;align-items:stretch}.mc-k-icon{display:none}.mc-kpis strong{font-size:.8rem}}
+
+.mm-ledger{min-width:0}.mm-ledger .mc-kpis{grid-template-columns:repeat(auto-fit,minmax(min(100%,9rem),1fr))}.mm-ledger .mc-kpis>div{border-inline-start:3px solid var(--ledger-tone)}.mm-ledger .mc-kpis>[aria-pressed=true]{outline:2px solid var(--ledger-tone);outline-offset:-2px}.mm-ledger-contracts{--ledger-tone:#7458b2}.mm-ledger-payments{--ledger-tone:#24806d}.mm-ledger-reports{--ledger-tone:#35729a}.mm-ledger-team{--ledger-tone:#987138}.mm-ledger-groups{--ledger-tone:#8b528c}.mm-ledger-audit{--ledger-tone:#627490}

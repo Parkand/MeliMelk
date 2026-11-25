@@ -20,48 +20,7 @@ function Fb({ ws: t, load: e }) {
       "\u0639\u0636\u0648 \u062C\u062F\u06CC\u062F",
     ),
     z.default.createElement(im, { ws: t, load: e }),
-    z.default.createElement(
-      "section",
-      { className: "panel" },
-      z.default.createElement(
-        "header",
-        null,
-        z.default.createElement(
-          "h2",
-          null,
-          "\u0645\u0633\u0626\u0648\u0644\u06CC\u062A\u200C\u0647\u0627\u06CC \u062C\u0627\u0631\u06CC",
-        ),
-      ),
-      t.team.map((u) =>
-        z.default.createElement(
-          "div",
-          { className: "line", key: u.id },
-          z.default.createElement("i", { className: "tile" }, u.name[0]),
-          z.default.createElement(
-            "span",
-            null,
-            z.default.createElement("b", null, u.name),
-            z.default.createElement(
-              "small",
-              null,
-              u.role === "admin"
-                ? "\u0645\u062F\u06CC\u0631 \u06A9\u0644"
-                : u.role === "office_manager"
-                  ? "\u0645\u062F\u06CC\u0631 \u062F\u0641\u062A\u0631"
-                  : "\u0645\u0634\u0627\u0648\u0631",
-            ),
-          ),
-          z.default.createElement(
-            "em",
-            null,
-            F.format(
-              t.data.tasks.filter((r) => r.assignee === u.id && Jr(r)).length,
-            ),
-            " \u0648\u0638\u06CC\u0641\u0647\u0654 \u0628\u0627\u0632",
-          ),
-        ),
-      ),
-    ),
+    z.default.createElement(MmLedger,{name:'team',title:'مسئولیت‌های جاری',fields:[['name','عضو'],['role','نقش'],['tasks','وظایف باز'],['bucket','وضعیت تخصیص']],rows:t.team.map(u=>{const n=t.data.tasks.filter(r=>r.assignee===u.id&&Jr(r)).length;return {id:u.id,name:u.name,role:u.role==='admin'?'مدیر کل':u.role==='office_manager'?'مدیر دفتر':'مشاور',tasks:F.format(n),bucket:!u.active?'غیرفعال':n?'دارای وظیفهٔ باز':'بدون وظیفهٔ باز'}}),groupField:'role'}),
     z.default.createElement(
       "p",
       { className: "hint" },

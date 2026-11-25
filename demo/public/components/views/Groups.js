@@ -42,43 +42,7 @@ function im({ ws: t, load: e }) {
         "\u062A\u0639\u0631\u06CC\u0641 \u06AF\u0631\u0648\u0647",
       ),
     ),
-    t.groups.length
-      ? t.groups.map((f) =>
-          R.default.createElement(
-            "div",
-            { className: "line", key: f.id },
-            R.default.createElement(
-              "span",
-              null,
-              R.default.createElement(
-                "b",
-                null,
-                f.name,
-                " \xB7 \u067E\u0627\u0633\u062E\u200C\u06AF\u0648: ",
-                r(f.manager_id),
-              ),
-              R.default.createElement(
-                "small",
-                null,
-                t.team
-                  .filter((d) => d.group_id === f.id)
-                  .map((d) => d.name)
-                  .join("\u060C ") ||
-                  "\u0628\u062F\u0648\u0646 \u0645\u0634\u0627\u0648\u0631",
-              ),
-            ),
-            R.default.createElement(
-              "button",
-              { disabled: !h.length, onClick: () => u(f.id) },
-              "\u0627\u0641\u0632\u0648\u062F\u0646 \u0645\u0634\u0627\u0648\u0631",
-            ),
-          ),
-        )
-      : R.default.createElement(
-          "p",
-          { className: "hint" },
-          "\u0627\u0628\u062A\u062F\u0627 \u062D\u0633\u0627\u0628 \u0645\u062F\u06CC\u0631 \u062F\u0641\u062A\u0631 \u0648 \u0645\u0634\u0627\u0648\u0631\u0627\u0646 \u0631\u0627 \u0628\u0633\u0627\u0632\u06CC\u062F\u061B \u0633\u067E\u0633 \u06AF\u0631\u0648\u0647 \u0648 \u0645\u062F\u06CC\u0631 \u067E\u0627\u0633\u062E\u200C\u06AF\u0648\u06CC \u0622\u0646 \u0631\u0627 \u062A\u0639\u06CC\u06CC\u0646 \u06A9\u0646\u06CC\u062F.",
-        ),
+    R.default.createElement(MmLedger,{name:'groups',title:'فهرست گروه‌ها',fields:[['name','گروه'],['manager','پاسخ‌گو'],['members','اعضا'],['bucket','عضویت']],rows:t.groups.map(f=>{const members=t.team.filter(d=>d.group_id===f.id);return {id:f.id,name:f.name,manager:r(f.manager_id),members:members.map(d=>d.name).join('، '),bucket:members.length?'دارای عضو':'بدون عضو'}}),actions:h.length?[['add','افزودن مشاور']]:[],act:(_,row)=>u(row.id),groupField:'bucket'}),
     l !== null &&
       R.default.createElement(
         mmDialog,
