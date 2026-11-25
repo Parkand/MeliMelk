@@ -30,10 +30,12 @@ function VisitDetail({frame,row,ws,related,canEdit,edit,open}) {
 function DemandDetail43({frame,title,facts,matches,count,history,canEdit,edit}) {
   const el=O.default.createElement,[page,setPage]=O.useState(0);
   const labels=['مشخصات تقاضا','فایل‌های منطبق ('+F.format(count)+')','سوابق مرتبط'];
-  return el(MaskanModal,{frame,title:'تقاضا | '+title,expand:true,extra:{className:'task-detail demand-detail'},heading:el('div',{className:'pc-card-heading task-heading'},el('span',{className:'pc-card-avatar','aria-hidden':true},el(j,{name:'demands',size:24})),el('small',null,'جزئیات تقاضا'),el('h2',null,title))},
-    el('nav',{className:'demand-detail-pages','aria-label':'بخش‌های جزئیات تقاضا'},labels.map((label,i)=>el('button',{type:'button',key:i,'aria-pressed':page===i,onClick:()=>setPage(i)},label))),
-    el('div',{key:page,className:'modal-scroll task-content','aria-label':labels[page]},[facts,matches,history][page]),
-    el('div',{className:'mp-foot'},canEdit&&el('button',{className:'mp-edit',type:'button',onClick:edit},'ویرایش تقاضا')));
+  const icons=['demands','listings','tasks'];
+  return el(MaskanModal,{frame,title:'جزئیات تقاضا | '+title,expand:true,size:'wide',extra:{className:'te13 task22 te-edit demand44'},heading:el('div',{className:'te-identity'},el(j,{name:'demands'}),el('div',null,el('strong',null,'جزئیات تقاضا'),el('small',null,title)))},
+    el('form',{className:'te-form',onSubmit:event=>event.preventDefault()},
+      el('nav',{'aria-label':'بخش‌های جزئیات تقاضا'},labels.map((label,i)=>el('button',{type:'button',key:i,'aria-pressed':page===i,onClick:()=>setPage(i)},el(j,{name:icons[i]}),label))),
+      el('div',{key:page,className:'modal-scroll te-body','aria-label':labels[page]},[facts,matches,history][page]),
+      el('footer',{className:'mp-foot'},canEdit&&el('button',{className:'primary',type:'button',onClick:edit},'ویرایش تقاضا'),el('button',{type:'button',onClick:frame.back},'بازگشت'))));
 }
 function Yb({
   frame,

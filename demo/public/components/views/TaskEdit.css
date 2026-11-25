@@ -1,3 +1,9 @@
+.demand44 .te-body .property-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:.75rem 1rem;padding:0;background:transparent}
+.demand44 .te-body .property-facts>div{display:grid;gap:.32rem;padding:0;border:0;min-width:0}
+.demand44 .property-facts>div:first-child,.demand44 .property-facts>[data-fact=note]{grid-column:1/-1}
+.demand44 .property-facts>div>strong{display:block;padding:.42rem .65rem;border:1px solid var(--mp-line);border-radius:.55rem;background:var(--mp-bg);overflow-wrap:anywhere}
+.demand44 .property-facts>div>small{color:var(--mp-text);font-weight:600}
+@media(max-width:580px){.demand44 .te-body .property-facts{grid-template-columns:minmax(0,1fr)}.demand44 .te-form>nav button{flex-direction:column}}
 dialog.te13[open]{display:flex;flex-direction:column}
 .demand40 .te-grid[hidden]{display:none!important}
 .demand40 .demand-subheading{grid-column:1/-1;margin:.2rem 0 0;padding-block-start:.45rem;border-block-start:1px solid currentColor;font-size:1rem}
