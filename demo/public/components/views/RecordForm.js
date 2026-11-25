@@ -276,6 +276,22 @@ function jb({
   };
   const localEntry=O.useRef({prev:s}).current;
   if(t==='properties') return O.default.createElement(O.default.Fragment,null,O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,gallery:galleryOf(r),changeGallery:g=>x('galleryDraft',g),work:_,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p}),ownerMode==='create'&&O.default.createElement(pcForm,{ws:a,nested:true,preset:{category:'owner'},close:()=>setOwnerMode(''),onDone:(id,person)=>{setAdded(prev=>[...prev,{...person,id}]);x('owner_id',id);setOwnerMode('')}}));
+  if(t==='demands'){
+    const el=O.default.createElement, title=e?'ویرایش تقاضا':'ثبت تقاضا';
+    const pages=['متقاضی','مشخصات ملک','بودجه','یادداشت'];
+    const step=k=>['contact_id','kind','status'].includes(k)?0:['property_kind','district','min_area','parking'].includes(k)?1:['budget','max_deposit','max_rent'].includes(k)?2:3;
+    function submit(ev){
+      ev.preventDefault(); const bad=ev.currentTarget.querySelector(':invalid');
+      if(!bad)return M(ev);
+      setTaskTab(Number(bad.closest('[data-step]').dataset.step));
+      requestAnimationFrame(()=>{bad.focus();bad.reportValidity()});
+    }
+    return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title,expand:true,size:'wide',dirty:mmDirty,blocked:m,extra:{className:'te13 task22 demand40'}},
+      el('form',{className:'te-form',onSubmit:submit,noValidate:true},
+        el('nav',{'aria-label':'بخش‌های تقاضا'},pages.map((name,j)=>el('button',{key:name,type:'button','aria-pressed':taskTab===j,onClick:()=>setTaskTab(j)},name))),
+        el('div',{className:'modal-scroll te-body'},pages.map((name,j)=>el('section',{key:name,'aria-label':name,'data-step':j,hidden:taskTab!==j,className:'te-grid'},...o.fields.filter(z=>step(z.key)===j).map(T),j===3&&a.user.role==='admin'&&el('label',null,'مسئول',el('select',{value:r.assignee,onChange:ev=>x('assignee',ev.target.value)},a.team.filter(person=>person.active).map(person=>el('option',{key:person.id,value:person.id},person.name))))))),
+        p&&el('p',{className:'error',role:'alert'},p),el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'),el('button',{type:'button',onClick:mmCancel,disabled:m},'انصراف'))));
+  }
   if(t==='tasks'){
     const el=O.default.createElement, field=key=>{const spec=o.fields.find(z=>z.key===key);return spec && T(spec)}, keys=['title','contact_id','listing_id','due_at','priority','status'], tabs=e?['اطلاعات وظیفه','واگذاری و نتیجه','زمان‌بندی و پیگیری',...(h?['پیگیری بعدی']:[])]:['اطلاعات وظیفه','واگذاری و پیگیری'];
     const toggle=el('label',{className:'te-toggle'},el('input',{type:'checkbox',checked:h,onChange:event=>{f(event.target.checked);if(e&&event.target.checked)setTaskTab(3)}}),'هم‌زمان وظیفهٔ پیگیری بعدی ساخته شود');

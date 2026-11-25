@@ -1,4 +1,8 @@
 dialog.te13[open]{display:flex;flex-direction:column}
+.demand40 .te-grid[hidden]{display:none!important}
+.demand40 .te-grid>label:first-child:not(.full){grid-column:auto}
+.demand40 .te-form>nav{display:flex;flex-wrap:wrap}
+.demand40 .te-form>nav button{flex:1;min-width:fit-content}
 .te13 .te-form{min-height:0;display:flex;flex:1;flex-direction:column;margin:0}
 .te13 .te-body{overflow:auto;min-height:0;flex:1;padding:clamp(.8rem,2vw,1.35rem)}
 .te13 .te-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:.75rem 1rem}
