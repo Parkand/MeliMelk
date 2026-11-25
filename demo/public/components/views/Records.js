@@ -24,6 +24,7 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
     v = Math.max(1, Math.ceil(y.length / 25)),
     b = Math.min(c, v - 1),
     p = (g, m) => g.reduce((_, x) => _ + BigInt(x[m]), 0n);
+  if(t === 'tasks') return A.default.createElement(TaskListGrid,{db:i,rows:y,fields:d,status:f,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   if(t === "demands") return A.default.createElement(DemandGrid,{db:i,rows:y,fields:d,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   return t === "contacts"
     ? A.default.createElement(MaskanContacts, { ws: e, open: l, create: a })
@@ -284,6 +285,14 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
             ),
           ),
         );
+}
+
+function TaskListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,open,create}) {
+  const E=A.default.createElement, fmt=new Intl.NumberFormat('fa-IR');
+  const columns=A.default.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
+  const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const toolbar=get=>E('div',{className:'tools'},E('input',{className:'demand-search',value:query,placeholder:'جست‌وجو در پیگیری‌ها…','aria-label':'جست‌وجوی وظیفه',onChange:e=>setQuery(e.target.value)}),E('select',{value:filter,'aria-label':'وضعیت وظیفه',onChange:e=>setFilter(e.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),Object.entries(status.choices).map(([value,title])=>E('option',{key:value,value},title))),E('button',{onClick:()=>Yi('tasks',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'خروجی CSV'),E('button',{className:'primary',onClick:()=>create('tasks')},'＋ ثبت وظیفه'));
+  return E('section',{className:'lf lf-grid-page demand-page'},E('div',{className:'ls-kpis','aria-label':'خلاصهٔ نتایج پیگیری'},Object.entries(status.choices).map(([value,label])=>E('div',{key:value},E('small',null,label),E('strong',null,fmt.format(rows.filter(r=>r[status.key]===value).length))))),E(MaskanDataGrid,{columns,data,toolbar,label:'فهرست پیگیری‌ها',empty:'وظیفه‌ای برای نمایش نیست',countLabel:n=>fmt.format(n)+' وظیفه',onAction:(_,row)=>open('tasks',row.record)}));
 }
 
 function DemandGrid({db, rows, fields, query, filter, setQuery, setFilter, open, create}) {
