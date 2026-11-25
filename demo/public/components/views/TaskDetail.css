@@ -13,7 +13,11 @@ dialog.mm-shell[open]:has(> .task-content){display:flex;flex-direction:column;ov
 dialog.mm-shell:has(> .task-content) > .mp-head{box-sizing:border-box;align-items:center;padding:8px clamp(10px,2vw,24px);min-height:68px;flex:none}
 dialog.mm-shell .pc-card-heading .pc-card-avatar{width:52px;grid-row:1/span 2}dialog.mm-shell .pc-card-heading h2{font-size:1.25rem;margin:0}dialog.mm-shell .pc-card-heading{line-height:1.3}
 
-dialog.mm-shell.task-detail > .task-content{flex:1 1 0;padding:.85rem clamp(10px,2vw,24px);overscroll-behavior:contain}
+dialog.mm-shell.task-detail > .task-content{flex:1 1 0;padding:.65rem clamp(10px,2vw,24px);gap:.6rem;overscroll-behavior:contain}
+.task-detail .task-content section{margin:0;padding:.6rem .85rem}
+.task-detail .task-content h3{margin:0 0 .35rem;line-height:1.45}
+.task-detail .task-pair dl{gap:.45rem 1rem;line-height:1.45}
+.task-detail .task-pair dd{margin:.1rem 0 0}
 .task-detail .task-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;direction:rtl}
 .task-detail .task-pair section{margin:0;min-width:0;background:var(--mp-soft,var(--mp-bg))}
 dialog.mm-shell.task-detail > .mp-foot{box-sizing:border-box;padding:6px clamp(10px,2vw,24px);min-height:54px;align-items:center}
