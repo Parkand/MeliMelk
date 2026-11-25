@@ -13,7 +13,7 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
     d = n.columns.map((g) => n.fields.find((m) => m.key === g)),
     y = i[t].filter(
       (g) =>
-        (!u || t==='deals' || g[f?.key] === u) &&
+        (!u || ['deals','tasks','visits'].includes(t) || g[f?.key] === u) &&
         (!s ||
           bo(
             n.fields.map((m) => Xe(m, g[m.key], i)).join(" ") +
@@ -308,31 +308,36 @@ function VisitListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,op
   const E=A.default.createElement, fmt=new Intl.NumberFormat('fa-IR');
   const states=Object.entries(status.choices), counts=new Map();
   for(const row of rows) counts.set(row[status.key],(counts.get(row[status.key])||0)+1);
+  const kpi=MaskanDataGrid.useKpi();
   const columns=A.default.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
-  const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
-  const summary=E('section',{className:'mc-kpis',style:{gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,9rem),1fr))'},'aria-label':'تعداد بازدیدها بر اساس وضعیت'},states.map(([key,title])=>E('div',{key},E('span',{className:'mc-k-icon','aria-hidden':true},E(j,{name:'visits'})),E('small',null,title),E('strong',null,fmt.format(counts.get(key)||0)+' بازدید'))));
-  const toolbar=get=>E('div',{className:'tools',dir:'rtl'},E('input',{type:'search',style:{flex:'1 1 12rem',minWidth:0},value:query,placeholder:'جست‌وجو در بازدیدها…','aria-label':'جست‌وجوی بازدید',onChange:e=>setQuery(e.target.value)}),E('select',{value:filter,'aria-label':'وضعیت بازدید',onChange:e=>setFilter(e.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),states.map(([key,title])=>E('option',{key,value:key},title))),E('button',{onClick:()=>Yi('visits',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'CSV'),E('button',{className:'primary',onClick:()=>create('visits')},'＋ ثبت بازدید'));
+  const data=rows.filter(r=>kpi.accepts(k=>k===r[status.key])).map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const summary=E('section',{className:'mc-kpis',style:{gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,9rem),1fr))'},'aria-label':'تعداد بازدیدها بر اساس وضعیت'},states.map(([key,title])=>E('div',{key,...kpi.card(key)},E('span',{style:kpi.icon(key),className:'mc-k-icon','aria-hidden':true},E(j,{name:'visits'})),E('small',null,title),E('strong',null,fmt.format(counts.get(key)||0)+' بازدید'))));
+  const toolbar=get=>E('div',{className:'tools',dir:'rtl'},E('input',{type:'search',style:{flex:'1 1 12rem',minWidth:0},value:query,placeholder:'جست‌وجو در بازدیدها…','aria-label':'جست‌وجوی بازدید',onChange:e=>setQuery(e.target.value)}),E('select',{value:kpi.keys.length>1?'@':kpi.keys[0]||'','aria-label':'وضعیت بازدید',onChange:e=>kpi.set(e.target.value?[e.target.value]:[])},kpi.keys.length>1?E('option',{value:'@',disabled:true},fmt.format(kpi.keys.length)+' وضعیت انتخاب شده'):null,E('option',{value:''},'همهٔ وضعیت‌ها'),states.map(([key,title])=>E('option',{key,value:key},title))),E('button',{onClick:()=>Yi('visits',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'CSV'),E('button',{className:'primary',onClick:()=>create('visits')},'＋ ثبت بازدید'));
   return E('section',{className:'lf lf-grid-page demand-page'},summary,E(MaskanDataGrid,{columns,data,toolbar,label:'برنامهٔ بازدید',empty:'بازدیدی برای نمایش نیست',countLabel:n=>fmt.format(n)+' بازدید',onAction:(_,row)=>open('visits',row.record)}));
 }
 
 function TaskListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,open,create}) {
   const E=A.default.createElement, fmt=new Intl.NumberFormat('fa-IR');
+  const kpi=MaskanDataGrid.useKpi();
   const columns=A.default.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
-  const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
-  const toolbar=get=>E('div',{className:'tools'},E('input',{className:'demand-search',value:query,placeholder:'جست‌وجو در پیگیری‌ها…','aria-label':'جست‌وجوی وظیفه',onChange:e=>setQuery(e.target.value)}),E('select',{value:filter,'aria-label':'وضعیت وظیفه',onChange:e=>setFilter(e.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),Object.entries(status.choices).map(([value,title])=>E('option',{key:value,value},title))),E('button',{onClick:()=>Yi('tasks',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'خروجی CSV'),E('button',{className:'primary',onClick:()=>create('tasks')},'＋ ثبت وظیفه'));
-  return E('section',{className:'lf lf-grid-page demand-page'},E('section',{className:'mc-kpis',style:{gridTemplateColumns:'repeat(5,minmax(0,1fr))'},'aria-label':'خلاصهٔ نتایج پیگیری'},Object.entries(status.choices).map(([value,label],i)=>E('div',{key:value},E('span',{className:'mc-k-icon','aria-hidden':true},E('svg',{viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'},E('path',{d:['M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l3 2','M4 5h16v12H9l-5 4z','M5 12l4 4L20 5','M6 5h12 M6 19h12 M8 5v3l8 8v3 M16 5v3l-8 8v3','M5 6h14v14H5z M9 3v5 M15 3v5'][i%5]}))),E('small',null,label),E('strong',null,fmt.format(rows.filter(r=>r[status.key]===value).length))))),E(MaskanDataGrid,{columns,data,toolbar,label:'فهرست پیگیری‌ها',empty:'وظیفه‌ای برای نمایش نیست',countLabel:n=>fmt.format(n)+' وظیفه',onAction:(_,row)=>open('tasks',row.record)}));
+  const data=rows.filter(r=>kpi.accepts(k=>k===r[status.key])).map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const toolbar=get=>E('div',{className:'tools'},E('input',{className:'demand-search',value:query,placeholder:'جست‌وجو در پیگیری‌ها…','aria-label':'جست‌وجوی وظیفه',onChange:e=>setQuery(e.target.value)}),E('select',{value:kpi.keys.length>1?'@':kpi.keys[0]||'','aria-label':'وضعیت وظیفه',onChange:e=>kpi.set(e.target.value?[e.target.value]:[])},kpi.keys.length>1?E('option',{value:'@',disabled:true},fmt.format(kpi.keys.length)+' وضعیت انتخاب شده'):null,E('option',{value:''},'همهٔ وضعیت‌ها'),Object.entries(status.choices).map(([value,title])=>E('option',{key:value,value},title))),E('button',{onClick:()=>Yi('tasks',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'خروجی CSV'),E('button',{className:'primary',onClick:()=>create('tasks')},'＋ ثبت وظیفه'));
+  return E('section',{className:'lf lf-grid-page demand-page'},E('section',{className:'mc-kpis',style:{gridTemplateColumns:'repeat(5,minmax(0,1fr))'},'aria-label':'خلاصهٔ نتایج پیگیری'},Object.entries(status.choices).map(([value,label],i)=>E('div',{key:value,...kpi.card(value)},E('span',{style:kpi.icon(value),className:'mc-k-icon','aria-hidden':true},E('svg',{viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'},E('path',{d:['M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l3 2','M4 5h16v12H9l-5 4z','M5 12l4 4L20 5','M6 5h12 M6 19h12 M8 5v3l8 8v3 M16 5v3l-8 8v3','M5 6h14v14H5z M9 3v5 M15 3v5'][i%5]}))),E('small',null,label),E('strong',null,fmt.format(rows.filter(r=>r[status.key]===value).length))))),E(MaskanDataGrid,{columns,data,toolbar,label:'فهرست پیگیری‌ها',empty:'وظیفه‌ای برای نمایش نیست',countLabel:n=>fmt.format(n)+' وظیفه',onAction:(_,row)=>open('tasks',row.record)}));
 }
 
 function DemandGrid({db, rows, fields, query, filter, setQuery, setFilter, open, create}) {
   const R=A.default, E=R.createElement, labels=ne.demands.fields, fmt=new Intl.NumberFormat('fa-IR');
+  const kpi=MaskanDataGrid.useKpi();
   const columns=R.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
   const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const leaders={};
   const cards=[['kind','نوع تقاضا','demands'],['district','محله','properties'],['status','وضعیت','check']].map(([key,title,icon])=>{
     const counts=new Map(); for(const row of data){const val=String(row[key]||'').trim()||'نامشخص';counts.set(val,(counts.get(val)||0)+1)}
     const entries=Array.from(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'fa'));
+    leaders[key]=entries[0]?.[0];
     const text=entries.length?entries[0][0]+' · '+fmt.format(entries[0][1]):'بدون تقاضا';
-    return E('div',{key,title:entries.map(([k,v])=>k+': '+fmt.format(v)).join('\n')},E('span',{className:'ls-k-icon','aria-hidden':true},E(j,{name:icon})),E('small',null,'پرتکرارترین '+title),E('strong',null,text));
+    return E('div',{key,...kpi.card(key,!!entries.length),title:entries.map(([k,v])=>k+': '+fmt.format(v)).join('\n')},E('span',{style:kpi.icon(key),className:'ls-k-icon','aria-hidden':true},E(j,{name:icon})),E('small',null,'پرتکرارترین '+title),E('strong',null,text));
   });
   const toolbar=get=>E('div',{className:'tools'},E('input',{className:'demand-search',value:query,placeholder:'جست‌وجو در تقاضاها…','aria-label':'جست‌وجوی تقاضا',onChange:e=>setQuery(e.target.value)}),E('select',{value:filter,'aria-label':'وضعیت تقاضا',onChange:e=>setFilter(e.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),Object.entries(labels.find(f=>f.key==='status').choices).map(([k,v])=>E('option',{key:k,value:k},v))),E('button',{onClick:()=>Yi('demands',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'خروجی CSV'),E('button',{className:'primary',onClick:()=>create('demands')},'＋ ثبت تقاضا'));
-  return E('section',{className:'lf lf-grid-page demand-page'},E('div',{className:'ls-kpis','aria-label':'شاخص‌های تقاضا'},cards),E(MaskanDataGrid,{columns,data,toolbar,label:'فهرست تقاضاها',empty:'تقاضایی برای نمایش نیست',countLabel:n=>fmt.format(n)+' تقاضا',onAction:(_,row)=>open('demands',row.record)}));
+  return E('section',{className:'lf lf-grid-page demand-page'},E('div',{className:'ls-kpis','aria-label':'شاخص‌های تقاضا'},cards),E(MaskanDataGrid,{columns,data:data.filter(r=>kpi.accepts(k=>(String(r[k]||'').trim()||'نامشخص')===leaders[k])),toolbar,label:'فهرست تقاضاها',empty:'تقاضایی برای نمایش نیست',countLabel:n=>fmt.format(n)+' تقاضا',onAction:(_,row)=>open('demands',row.record)}));
 }

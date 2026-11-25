@@ -16,5 +16,13 @@ function MaskanDataGrid({data,group,columns,onAction,toolbar,label,empty,countLa
   React.useEffect(()=>{if(built.current)table.current.setGroupBy(group||false);},[group]);
   return h('section',{className:'panel ledger maskan-grid',dir:'rtl'},toolbar(()=>table.current?.getData('active')??data),h('div',{ref:host,'aria-label':label}),h('div',{className:'pager'},h('span',{'aria-live':'polite'},countLabel(data.length)),h('nav',{ref:pages,className:'maskan-pages','aria-label':'صفحه‌بندی جدول'})));
 }
+// Opt-in only: mounting a grid does not activate KPI filtering.
+MaskanDataGrid.useKpi=function useKpi(){
+ const [keys,set]=A.default.useState([]);
+ const has=k=>keys.includes(k), toggle=k=>set(old=>old.includes(k)?old.filter(x=>x!==k):[...old,k]);
+ return {keys,set, accepts:matches=>!keys.length||keys.some(matches),
+ card:(k,enabled=true)=>enabled?{role:'button',tabIndex:0,'aria-pressed':has(k),style:{cursor:'pointer'},onClick:()=>toggle(k),onKeyDown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(!e.repeat)toggle(k)}}}:{'aria-disabled':true},
+ icon:k=>has(k)?{outline:'2px solid var(--accent,currentColor)',outlineOffset:'2px'}:undefined};
+};
 return MaskanDataGrid;
 };
