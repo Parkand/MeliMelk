@@ -106,6 +106,8 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
           ? [v.category]
           : []),
     display = [pf.salutation, pf.last || v.name].filter(Boolean).join(" ");
+  // Feedback is rendered by the shared modal via ce-errors, not a second popup.
+  const maskanFeedback=(set,text)=>set(text);
   async function photo(e) {
     const f = e.target.files[0];
     if (!f) return;

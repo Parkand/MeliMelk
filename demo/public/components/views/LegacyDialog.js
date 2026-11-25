@@ -34,7 +34,7 @@ function mmLegacy(props) {
             onChangeCapture: () => touch(true),
             onClickCapture: async (e) => {
               const button=e.target.closest('footer button[type="button"]');
-              if(!props.guardCancel||!touched||!button)return;
+              if(button?.closest('.mm-notice')||!props.guardCancel||!touched||!button)return;
               if(allowedCancel.current===button){allowedCancel.current=null;return}
               e.preventDefault();e.stopPropagation();
               if(await maskanMessage({kind:'confirm',title:'خروج بدون ذخیره؟',message:'تغییرات این فرم ذخیره نشده‌اند.'})&&button.isConnected){allowedCancel.current=button;button.click();allowedCancel.current=null}
