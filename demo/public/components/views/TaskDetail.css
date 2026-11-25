@@ -22,3 +22,10 @@ dialog.mm-shell.task-detail > .task-content{flex:1 1 0;padding:.65rem clamp(10px
 .task-detail .task-pair section{margin:0;min-width:0;background:var(--mp-soft,var(--mp-bg))}
 dialog.mm-shell.task-detail > .mp-foot{box-sizing:border-box;padding:6px clamp(10px,2vw,24px);min-height:54px;align-items:center}
 @media(max-width:640px){.task-detail .task-pair{grid-template-columns:minmax(0,1fr)}}
+
+dialog.visit-detail.task-detail > .task-content{overflow:hidden;gap:.45rem}
+.visit-detail .task-content dl{grid-template-columns:repeat(2,minmax(0,1fr));gap:.3rem .65rem}
+.visit-detail :is(dd,h2,.visit-text){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.visit-detail .task-content section>.visit-text,.visit-detail .visit-history .visit-text{display:block;text-align:start;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100%;margin:0;padding:.2em .5em;min-width:0}
+.visit-detail .visit-history,.visit-detail nav{display:flex;align-items:center;gap:.35rem;min-width:0}
+.visit-detail .visit-history small{white-space:nowrap}.visit-detail nav button{flex:1;min-width:0;padding:.2em;white-space:nowrap}.visit-detail nav button[aria-pressed=true]{font-weight:bold;box-shadow:inset 0 -2px currentColor}
