@@ -27,6 +27,14 @@ function VisitDetail({frame,row,ws,related,canEdit,edit,open}) {
   const history=h('section',null,h('h3',null,'سوابق مرتبط · '+F.format(related.length)),pair?h('div',{className:'visit-history'},h('button',{type:'button',className:'visit-text',onClick:()=>open(pair[0].key,pair[1])},pair[0].single+' | '+Ee(pair[0].key,pair[1],ws.data)),related.length>1&&h(R.Fragment,null,h('button',{type:'button',disabled:index===0,onClick:()=>setCursor(index-1),'aria-label':'سابقه قبلی'},'‹'),h('small',null,F.format(index+1)+'/'+F.format(related.length)),h('button',{type:'button',disabled:index+1===related.length,onClick:()=>setCursor(index+1),'aria-label':'سابقه بعدی'},'›'))):h('p',null,'هنوز سابقه‌ای برای این بازدید ثبت نشده است.'));
   return h(MaskanModal,{frame,title:'بازدید | '+title,expand:true,extra:{className:'task-detail visit-detail'},heading:h('div',{className:'pc-card-heading task-heading'},h('span',{className:'pc-card-avatar','aria-hidden':true},h(j,{name:'calendar',size:24})),h('small',null,'برنامهٔ بازدید'),h('h2',{title},title))},h('div',{ref:body,className:'modal-scroll task-content'},compact?h(R.Fragment,null,h('nav',{'aria-label':'بخش‌های بازدید'},labels.map((v,i)=>h('button',{key:v,type:'button','aria-pressed':page===i,onClick:()=>setPage(i)},v))),[...parts,feedback,history][page]):h(R.Fragment,null,h('div',{className:'task-pair'},...parts),feedback,history)),h('div',{className:'mp-foot'},canEdit&&h('button',{className:'mp-edit',type:'button',title:'ویرایش بازدید','aria-label':'ویرایش بازدید',onClick:()=>edit('visits',row)},h('svg',{width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,'aria-hidden':true},h('path',{d:'m4 16-1 5 5-1L20 8l-4-4Zm10-10 4 4'})))));
 }
+function DemandDetail43({frame,title,facts,matches,count,history,canEdit,edit}) {
+  const el=O.default.createElement,[page,setPage]=O.useState(0);
+  const labels=['مشخصات تقاضا','فایل‌های منطبق ('+F.format(count)+')','سوابق مرتبط'];
+  return el(MaskanModal,{frame,title:'تقاضا | '+title,expand:true,extra:{className:'task-detail demand-detail'},heading:el('div',{className:'pc-card-heading task-heading'},el('span',{className:'pc-card-avatar','aria-hidden':true},el(j,{name:'demands',size:24})),el('small',null,'جزئیات تقاضا'),el('h2',null,title))},
+    el('nav',{className:'demand-detail-pages','aria-label':'بخش‌های جزئیات تقاضا'},labels.map((label,i)=>el('button',{type:'button',key:i,'aria-pressed':page===i,onClick:()=>setPage(i)},label))),
+    el('div',{key:page,className:'modal-scroll task-content','aria-label':labels[page]},[facts,matches,history][page]),
+    el('div',{className:'mp-foot'},canEdit&&el('button',{className:'mp-edit',type:'button',onClick:edit},'ویرایش تقاضا')));
+}
 function Yb({
   frame,
   k: t,
@@ -42,7 +50,7 @@ function Yb({
   function photoLink(value){if(typeof value!=='string')return null;let url;try{url=new URL(value)}catch{return null}return /^https:\/\//i.test(value)&&url.protocol==='https:'&&!url.username&&!url.password&&!/[\s\\]/.test(value)?url:null;}
   const gallery=['photo_url','photo_url_2','photo_url_3'];
   function renderPhoto(d){const photo=photoLink(e[d.key]);return photo ? O.default.createElement('a',{href:photo.href,target:'_blank',rel:'noopener noreferrer',dir:'auto'},d.label+' ('+photo.hostname+')') : 'ثبت نشده';}
-  let u = t==='properties'?physicalPropertyModel():ne[t],
+  let u = t==='properties'?physicalPropertyModel():t==='demands'?demandFormModel():ne[t],
     r = l.data,
     c =
       (l.user.role === "admin" ||
@@ -120,16 +128,7 @@ function Yb({
             " \u062B\u0628\u062A \u0646\u0634\u062F\u0647 \u0627\u0633\u062A.",
           ),
     );
-  return O.default.createElement(
-    mmDialog,
-    {
-      frame,
-      icon: t,
-      title: u.single + " | " + Ee(t, e, r),
-      nested: o,
-      close: a,
-    },
-    t==='properties'?O.default.createElement(Pd6Body,{key:e.id,row:e,model:u,data:r,team:l.team,photo:renderPhoto,history}):
+  const facts=t==='properties'?O.default.createElement(Pd6Body,{key:e.id,row:e,model:u,data:r,team:l.team,photo:renderPhoto,history}):
     O.default.createElement(
       "div",
       { className: "detail-grid property-facts" },
@@ -190,8 +189,8 @@ function Yb({
             " \u062A\u0648\u0645\u0627\u0646",
           ),
         ),
-    ),
-    t === "demands" &&
+    );
+    const matches=t === "demands" &&
       O.default.createElement(
         "section",
         { className: "property-history" },
@@ -222,7 +221,9 @@ function Yb({
             null,
             "\u0641\u0627\u06CC\u0644\u06CC \u0645\u0646\u0637\u0628\u0642 \u0628\u0627 \u0627\u06CC\u0646 \u0634\u0631\u0627\u06CC\u0637 \u067E\u06CC\u062F\u0627 \u0646\u0634\u062F.",
           ),
-      ),
+      );
+    if(t==='demands')return O.default.createElement(DemandDetail43,{key:e.id,frame,title:Ee(t,e,r),facts,matches,count:f.length,history,canEdit:c,edit:()=>n(t,e)});
+    return O.default.createElement(mmDialog,{frame,icon:t,title:u.single+' | '+Ee(t,e,r),nested:o,close:a},facts,
     t!=='properties' && history,
     O.default.createElement(
       "footer",

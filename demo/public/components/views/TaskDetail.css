@@ -1,3 +1,6 @@
+.demand-detail .demand-detail-pages{display:flex;flex-wrap:wrap;gap:.4rem;padding:.45rem 1rem;border-bottom:1px solid var(--mp-edge)}
+.demand-detail-pages button[aria-pressed=true]{font-weight:700;border-bottom:3px solid currentColor}
+.demand-detail .mp-foot button.mp-edit{width:auto;padding-inline:.8rem}
 .task-detail .task-heading {min-width:0;overflow-wrap:anywhere}
 .task-detail .task-heading small,.task-detail dt {color:var(--mp-muted)}
 .task-detail .task-content {display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:1rem;min-height:0;overflow:auto;color:var(--mp-text)}
