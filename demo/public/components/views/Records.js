@@ -24,6 +24,7 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
     v = Math.max(1, Math.ceil(y.length / 25)),
     b = Math.min(c, v - 1),
     p = (g, m) => g.reduce((_, x) => _ + BigInt(x[m]), 0n);
+  if(t === 'visits') return A.default.createElement(VisitListGrid,{db:i,rows:y,fields:d,status:f,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   if(t === 'tasks') return A.default.createElement(TaskListGrid,{db:i,rows:y,fields:d,status:f,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   if(t === "demands") return A.default.createElement(DemandGrid,{db:i,rows:y,fields:d,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   return t === "contacts"
@@ -285,6 +286,17 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
             ),
           ),
         );
+}
+
+function VisitListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,open,create}) {
+  const E=A.default.createElement, fmt=new Intl.NumberFormat('fa-IR');
+  const states=Object.entries(status.choices), counts=new Map();
+  for(const row of rows) counts.set(row[status.key],(counts.get(row[status.key])||0)+1);
+  const columns=A.default.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
+  const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const summary=E('section',{className:'mc-kpis',style:{gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,9rem),1fr))'},'aria-label':'تعداد بازدیدها بر اساس وضعیت'},states.map(([key,title])=>E('div',{key},E('span',{className:'mc-k-icon','aria-hidden':true},E(j,{name:'visits'})),E('small',null,title),E('strong',null,fmt.format(counts.get(key)||0)+' بازدید'))));
+  const toolbar=get=>E('div',{className:'tools',dir:'rtl'},E('input',{type:'search',style:{flex:'1 1 12rem',minWidth:0},value:query,placeholder:'جست‌وجو در بازدیدها…','aria-label':'جست‌وجوی بازدید',onChange:e=>setQuery(e.target.value)}),E('select',{value:filter,'aria-label':'وضعیت بازدید',onChange:e=>setFilter(e.target.value)},E('option',{value:''},'همهٔ وضعیت‌ها'),states.map(([key,title])=>E('option',{key,value:key},title))),E('button',{onClick:()=>Yi('visits',[fields.map(f=>f.label),...get().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'CSV'),E('button',{className:'primary',onClick:()=>create('visits')},'＋ ثبت بازدید'));
+  return E('section',{className:'lf lf-grid-page demand-page'},summary,E(MaskanDataGrid,{columns,data,toolbar,label:'برنامهٔ بازدید',empty:'بازدیدی برای نمایش نیست',countLabel:n=>fmt.format(n)+' بازدید',onAction:(_,row)=>open('visits',row.record)}));
 }
 
 function TaskListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,open,create}) {
