@@ -296,10 +296,8 @@ function zS({ seed: t }) {
             H.default.createElement(
               "button",
               {
-                onClick: () => {
-                  window.confirm(
-                    "\u067E\u0631\u0648\u0646\u062F\u0647\u0654 \u0622\u0632\u0645\u0627\u06CC\u0634\u06CC \u0641\u0639\u0644\u06CC \u0628\u0633\u062A\u0647 \u0634\u0648\u062F\u061F",
-                  ) && (c(null), b(""), g(""), y(""));
+                onClick: async () => {
+                  if(await maskanMessage({kind:'danger',title:'بستن پروندهٔ آزمایشی؟',message:'اطلاعات اجرای فعلی کنار گذاشته می‌شود.',action:'بستن پرونده'})){c(null);b("");g("");y("")}
                 },
               },
               "\u067E\u0631\u0648\u0646\u062F\u0647\u0654 \u062C\u062F\u06CC\u062F",

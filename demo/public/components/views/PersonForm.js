@@ -94,8 +94,8 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
           ),
         ),
       ),
-    cancel = () => {
-      if (!busy && (!dirty || confirm("تغییرات ذخیره نشده است. خارج می‌شوید؟")))
+    cancel = async () => {
+      if (!busy && (!dirty || await maskanMessage({kind:'confirm',title:'خروج بدون ذخیره؟',message:'تغییرات این فرم ذخیره نشده‌اند.'})))
         close();
     },
     roles =

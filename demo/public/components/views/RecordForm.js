@@ -50,9 +50,11 @@ function jb({
           e ? "PUT" : "POST",
           { ...r, ...(h ? { followup: { title: d, due_at: v } } : {}) },
         );
+        await maskanMessage({kind:'success',title:'ذخیره شد',message:'اطلاعات با موفقیت ذخیره شد.'});
         await n(k.id);
       } catch (k) {
         g(k.message);
+        await maskanMessage({kind:'error',title:'عملیات کامل نشد',message:k.message||'وضعیت اتصال را بررسی کنید.',action:'بازگشت به فرم',cancel:''});
       } finally {
         _(!1);
       }
@@ -270,8 +272,8 @@ function jb({
   const baseline = O.useRef(r);
   const mmDirty =
     JSON.stringify(baseline.current) !== JSON.stringify(r) || h || !!d || !!v;
-  const mmCancel = () => {
-    if (!m && (!frame || !mmDirty || confirm("بدون ذخیره خارج می‌شوید؟"))) i();
+  const mmCancel = async () => {
+    if (!m && (!frame || !mmDirty || await maskanMessage({kind:'confirm',title:'خروج بدون ذخیره؟',message:'تغییرات این فرم ذخیره نشده‌اند.'}))) i();
   };
   const localEntry=O.useRef({prev:s}).current;
   if(t==='properties') return O.default.createElement(O.default.Fragment,null,O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,gallery:galleryOf(r),changeGallery:g=>x('galleryDraft',g),work:_,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p}),ownerMode==='create'&&O.default.createElement(pcForm,{ws:a,nested:true,preset:{category:'owner'},close:()=>setOwnerMode(''),onDone:(id,person)=>{setAdded(prev=>[...prev,{...person,id}]);x('owner_id',id);setOwnerMode('')}}));
@@ -283,7 +285,7 @@ function jb({
       el('div',{className:'pd-field'},'موعد پیگیری بعدی *',el(Xr,{label:'موعد پیگیری بعدی',shortClock:!!e,timed:true,value:v,change:b,required:true})));
     const followUp=el('div',{className:'te-follow'},toggle,!e&&h&&settings);
     function taskIcon({index}){return el(j,{name:['tasks','contacts','calendar','tasks'][index]})}
-    function submit(ev){ev.preventDefault();const form=ev.currentTarget, bad=form.querySelector(':invalid,[data-missing="yes"]');if(!bad)return M(ev);const pane=bad.closest('[data-step]');if(pane)setTaskTab(Number(pane.dataset.step));requestAnimationFrame(()=>{bad.focus();if(bad.dataset.missing)g('لطفاً تاریخ الزامی را انتخاب کنید.');else bad.reportValidity()})}
+    async function submit(ev){ev.preventDefault();const form=ev.currentTarget, bad=form.querySelector(':invalid,[data-missing="yes"]');if(!bad)return M(ev);const pane=bad.closest('[data-step]');if(pane)setTaskTab(Number(pane.dataset.step));await maskanMessage({kind:'validation',message:bad.dataset.missing?'لطفاً تاریخ الزامی را انتخاب کنید.':'لطفاً فیلد مشخص‌شده را بررسی کنید.'});bad.focus()}
     return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title:e?'ویرایش وظیفه':'ثبت وظیفه',heading:el('div',{className:'te-identity'},el(j,{name:'tasks'}),el('div',null,el('strong',null,e?'ویرایش وظیفه':'ثبت وظیفه'),el('small',null,e?.title||'پروندهٔ جدید وظیفه'))),expand:true,size:'wide',blocked:m,dirty:mmDirty,extra:{className:e?'te13 task22 te-edit':'te13 task22'}},
       el('form',{onSubmit:submit,noValidate:true,className:'te-form'},el('nav',{'aria-label':'بخش‌های وظیفه'},tabs.map((s,j)=>el('button',{key:s,type:'button','aria-pressed':taskTab===j,onClick:()=>setTaskTab(j)},el(taskIcon,{index:j}),s))),el('div',{className:'modal-scroll te-body'},!e&&el('h3',{className:'te-section-title'},el(taskIcon,{index:taskTab}),tabs[taskTab]),el('section',{className:'te-grid task-info','data-step':0,hidden:taskTab!==0},...keys.filter(key=>!e||key!=='due_at').map(field),...o.fields.filter(z=>!keys.includes(z.key)&&z.key!=='result').map(T)),el('section',{className:'te-grid','data-step':1,hidden:taskTab!==1},!e&&field('result'),el(Jd,{ws:a,row:e,form:r,set:c}),e&&field('result'),!e&&followUp),e&&el('section',{className:'te-grid','data-step':2,hidden:taskTab!==2},field('due_at'),followUp),e&&h&&el('section',{className:'te-grid te-next','data-step':3,hidden:taskTab!==3},settings,el('button',{type:'button',className:'te-cancel-next',title:'انصراف از پیگیری بعدی','aria-label':'انصراف از پیگیری بعدی',onClick:()=>{f(false);setTaskTab(2)}},el('svg',{width:20,height:20,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,'aria-hidden':true},el('path',{d:'M9 5 4 10l5 5M5 10h9a5 5 0 0 1 0 10'})))),p&&el('p',{role:'alert',className:'error'},p)),
       el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'),el('button',{type:'button',disabled:m,onClick:mmCancel},'انصراف'))));
