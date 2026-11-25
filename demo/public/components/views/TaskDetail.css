@@ -17,5 +17,4 @@ dialog.mm-shell.task-detail > .task-content{flex:1 1 0;padding:.85rem clamp(10px
 .task-detail .task-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;direction:rtl}
 .task-detail .task-pair section{margin:0;min-width:0;background:var(--mp-soft,var(--mp-bg))}
 dialog.mm-shell.task-detail > .mp-foot{box-sizing:border-box;padding:6px clamp(10px,2vw,24px);min-height:54px;align-items:center}
-dialog.mm-shell.task-detail .mp-foot button{min-height:40px;padding-block:4px}
 @media(max-width:640px){.task-detail .task-pair{grid-template-columns:minmax(0,1fr)}}

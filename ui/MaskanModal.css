@@ -48,3 +48,12 @@ html[data-palette=navy] dialog.mm-shell[open] :is(.mm-controls button,.mp-foot b
 html[data-palette=navy] dialog.mm-shell[open] .mm-controls{gap:.4rem}
 html[data-palette=navy] dialog.mm-shell[open] .mm-controls button:is(:hover,:active):not(:disabled){background:var(--hover)!important;border-color:var(--ring)!important}
 html[data-palette=navy] dialog.mm-shell[open] .mm-controls button:focus-visible{outline:2px solid var(--ring)!important;outline-offset:2px}
+
+/* Shared header and footer controls; view styles own layout only. */
+dialog.mm-shell .mm-controls button,dialog.mm-shell :is(footer,.mp-foot) button{box-sizing:border-box;font:inherit;cursor:pointer;box-shadow:none}
+dialog.mm-shell :is(footer,.mp-foot) button{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:36px;height:40px;max-height:100%;padding:0 .75rem;margin-block:0;border:1px solid var(--frame,var(--mp-line,var(--line)));border-radius:9px;background:var(--mp-bg,var(--paper));color:var(--mp-text,var(--ink))}
+dialog.mm-shell :is(footer,.mp-foot) button:is(.primary,[type=submit]){background:var(--nv-a,var(--button-start,var(--mp-action)));color:#fff;border-color:transparent}
+dialog.mm-shell :is(footer,.mp-foot) button.mp-edit{width:44px;padding:0}
+dialog.mm-shell :is(footer,.mp-foot) button:hover:not(:disabled){filter:brightness(.93)}
+dialog.mm-shell :is(footer,.mp-foot) button:focus-visible{outline:2px solid var(--ring,var(--mp-action,currentColor));outline-offset:-3px}
+dialog.mm-shell :is(.mm-controls,footer,.mp-foot) button:disabled{opacity:.6;cursor:not-allowed}
