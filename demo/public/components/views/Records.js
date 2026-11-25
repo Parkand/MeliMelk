@@ -24,6 +24,7 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
     v = Math.max(1, Math.ceil(y.length / 25)),
     b = Math.min(c, v - 1),
     p = (g, m) => g.reduce((_, x) => _ + BigInt(x[m]), 0n);
+  if(t === 'deals') return A.default.createElement(DealListGrid,{db:i,rows:y,fields:d,status:f,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   if(t === 'visits') return A.default.createElement(VisitListGrid,{db:i,rows:y,fields:d,status:f,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   if(t === 'tasks') return A.default.createElement(TaskListGrid,{db:i,rows:y,fields:d,status:f,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
   if(t === "demands") return A.default.createElement(DemandGrid,{db:i,rows:y,fields:d,query:s,filter:u,setQuery:o,setFilter:r,open:l,create:a});
@@ -286,6 +287,18 @@ function MaskanOtherRecords({ k: t, ws: e, open: l, create: a }) {
             ),
           ),
         );
+}
+
+function DealListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,open,create}) {
+  const R=A.default,E=R.createElement,[group,setGroup]=R.useState(''),fmt=new Intl.NumberFormat('fa-IR');
+  const states=Object.entries(status.choices),counts=new Map();
+  for(const row of db.deals) counts.set(row.stage,1+(counts.get(row.stage)||0));
+  const columns=R.useMemo(()=>[...fields.map(f=>({field:f.key,title:f.label})),{action:'details',title:'پرونده',caption:'جزئیات'}],[]);
+  const data=rows.map(record=>({...Object.fromEntries(fields.map(f=>[f.key,Xe(f,record[f.key],db)])),id:record.id,record}));
+  const cards=E('section',{className:'mc-kpis',style:{gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,9rem),1fr))'},'aria-label':'تعداد پرونده‌ها به تفکیک مرحله'},states.map(([key,label])=>E('div',{key},E('span',{className:'mc-k-icon','aria-hidden':true},E(j,{name:'deals'})),E('small',null,label),E('strong',null,fmt.format(counts.get(key)||0)+' پرونده'))));
+  const options=items=>items.map(([value,label])=>E('option',{key:value,value},label));
+  const toolbar=getRows=>E('div',{className:'tools'},E('label',{className:'search'},E('input',{type:'search',value:query,placeholder:'جست‌وجو در پرونده‌ها…','aria-label':'جست‌وجوی پرونده',onChange:e=>setQuery(e.target.value)})),E('select',{value:filter,'aria-label':'مرحلهٔ معامله',onChange:e=>setFilter(e.target.value)},options([['','همهٔ مراحل'],...states])),E('select',{value:group,'aria-label':'گروه‌بندی',onChange:e=>setGroup(e.target.value)},options([['','بدون گروه‌بندی'],['stage','گروه: مرحله']])),E('button',{onClick:()=>Yi('deals',[fields.map(f=>f.label),...getRows().map(row=>fields.map(f=>/^\s*[=+@-]/.test(row[f.key])?"'"+row[f.key]:row[f.key]))])},'CSV'),(query||filter||group)?E('button',{onClick:()=>{setQuery('');setFilter('');setGroup('')}},'پاک‌کردن فیلترها'):null,E('button',{className:'primary',onClick:()=>create('deals')},'＋ ثبت پرونده'));
+  return E('section',{className:'lf lf-grid-page demand-page'},cards,E(MaskanDataGrid,{columns,data,toolbar,group,label:'فهرست پرونده‌های معامله',empty:'پرونده‌ای برای نمایش نیست',countLabel:n=>fmt.format(n)+' پرونده',onAction:(_,r)=>open('deals',r.record)}));
 }
 
 function VisitListGrid({db,rows,fields,status,query,filter,setQuery,setFilter,open,create}) {
