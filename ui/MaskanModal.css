@@ -24,3 +24,27 @@ dialog.mm-shell[open][data-size=wide] .mm-controls .mm-control svg{color:inherit
 
 /* Focus belongs to the shared header, not the view. */
 dialog.mm-shell > .mp-head > .mm-controls > .mm-control:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* Modal surfaces: foreground and background always travel together. */
+html[data-theme=dark] dialog.mm-shell :is(.te-follow,.pr-switch-field,.pr-gallery-frame,.pr-agent-preview){background:var(--mp-soft,#263144);color:var(--mp-text,#f1f5f9);border-color:var(--mp-line,#475569)}
+html[data-theme=dark] dialog.mm-shell .te-follow :is(label,.pd-field){color:var(--mp-text,#f1f5f9)}
+html[data-theme=dark] dialog.mm-shell :is(.error,[role=alert].error){background:#40262c;color:#ffd5d8;border-color:#88545d}
+html[data-palette=navy] dialog.mm-shell[open]{--mp-bg:var(--nv-s);--mp-soft:var(--nv-alt);--mp-text:var(--nv-t);--mp-muted:var(--nv-m);--mp-line:var(--nv-b);--mp-edge:var(--nv-b);--mp-accent:var(--nv-link);--mp-action:var(--nv-a);color:var(--mp-text);background:var(--mp-bg)!important;border-color:var(--mp-line);backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-palette=navy] dialog.mm-shell[open] :is(.mp-head,.mp-foot,footer,.te-form>nav,.pd-sheet){background:var(--nv-s)!important;background-blend-mode:normal;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;box-shadow:none!important;color:var(--nv-t);border-color:var(--nv-b)}
+html[data-palette=navy] dialog.mm-shell[open] :is(.mp-head,.mp-foot,footer)::before,html[data-palette=navy] dialog.mm-shell[open] :is(.mp-head,.mp-foot,footer)::after{background:none;backdrop-filter:none}
+html[data-palette=navy] dialog.mm-shell[open] :is(.te-follow,.pr-switch-field,.pr-gallery-frame,.pr-agent-preview){background:var(--nv-alt);color:var(--nv-t);border-color:var(--nv-b)}
+html[data-palette=navy] dialog.mm-shell[open] :is(select,textarea,input:not([type=checkbox],[type=radio],[type=range],[type=color],[type=file]),.pd-trigger){background:var(--nv-s);color:var(--nv-t);border-color:var(--nv-b)}
+html[data-palette=navy] dialog.mm-shell[open] .primary{background:var(--nv-a);color:#fff;border-color:var(--nv-a)}
+html[data-palette=navy] dialog.mm-shell[open] :focus-visible{outline:2px solid var(--nv-link);outline-offset:-2px}
+/* Matcha-style surface hierarchy, recoloured locally for navy dialogs. */
+html[data-palette=navy] dialog.mm-shell[open]{--frame:#7389a1;--well:#eaf0f6;--panel:#fff;--bar:#dce7f1;--fg:#142e48;--sub:#455d73;--hover:#c9dbeb;--ring:#1969ac;--paper:var(--panel);--bg:var(--well);--line:var(--frame);--ink:var(--fg);--muted:var(--sub);--mp-text:var(--fg);--mp-edge:var(--frame);--mp-line:var(--frame);--mp-bg:var(--panel);--mp-soft:var(--well);--mp-muted:var(--sub);border:1px solid var(--frame)!important;background:var(--well)!important;color:var(--fg)}
+html[data-palette=navy][data-theme=dark] dialog.mm-shell[open]{--frame:#718ba5;--well:#102031;--panel:#1c3044;--bar:#16293b;--fg:#edf4fa;--sub:#bdd0df;--hover:#304c65;--ring:#91cfff}
+html[data-palette=navy] dialog.mm-shell[open] :is(.modal-scroll,.task-content,.te-body){background:var(--well)!important;color:var(--fg)}
+html[data-palette=navy] dialog.mm-shell[open] :is(.task-content section,.te-follow,.pr-gallery-frame,.pr-agent-preview){background:var(--panel)!important;border:1px solid var(--frame)!important;color:var(--fg)}
+html[data-palette=navy] dialog.mm-shell[open] :is(.mp-head,.mp-foot,footer){background:var(--bar)!important;color:var(--fg)}
+html[data-palette=navy] dialog.mm-shell[open] .mp-head{border-block-end:1px solid var(--frame)!important}
+html[data-palette=navy] dialog.mm-shell[open] :is(.mp-foot,footer){border-block-start:1px solid var(--frame)!important}
+html[data-palette=navy] dialog.mm-shell[open] :is(.mm-controls button,.mp-foot button:not(.primary)){border:1px solid var(--frame)!important;background:var(--panel)!important;color:var(--fg)!important;border-radius:.6rem}
+html[data-palette=navy] dialog.mm-shell[open] .mm-controls{gap:.4rem}
+html[data-palette=navy] dialog.mm-shell[open] .mm-controls button:is(:hover,:active):not(:disabled){background:var(--hover)!important;border-color:var(--ring)!important}
+html[data-palette=navy] dialog.mm-shell[open] .mm-controls button:focus-visible{outline:2px solid var(--ring)!important;outline-offset:2px}
