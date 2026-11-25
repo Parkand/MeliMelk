@@ -44,6 +44,19 @@ function om({ section: t = "home" }) {
       let S = setTimeout(() => y(""), 3600);
       return () => clearTimeout(S);
     }, [d]));
+  const [pageBusy,setPageBusy]=U.useState(false), refreshLock=U.useRef(false);
+  async function manualRefresh(modal=false){
+    if(refreshLock.current)throw new Error('بازخوانی دیگری در جریان است.');
+    refreshLock.current=true;if(!modal)setPageBusy(true);
+    try {
+      const fresh=await sl('workspace');
+      if(!Fr(t,fresh.user.role)){location.replace('/desk/home');return}
+      const row=o?.row && fresh.data[o.k]?.find(item=>item.id===o.row.id);
+      if(modal&&o?.row&&!row)throw new Error('این رکورد دیگر در دسترس نیست.');
+      s(fresh);f('');
+      if(modal&&o?.type==='editor')u(current=>current===o?{...o,row,revision:(o.revision||0)+1}:current);
+    }catch(err){if(err.status===401)location.replace('/login');if(modal)throw err;f(err.message||'بازخوانی ناموفق بود.')}finally{refreshLock.current=false;if(!modal)setPageBusy(false)}
+  }
   let b = (S) => u((k) => ({ ...S, prev: k })),
     p = () => u((S) => S?.prev ?? null),
     g = (S) => {
@@ -113,7 +126,7 @@ function om({ section: t = "home" }) {
     ],
     ["\u0645\u062F\u06CC\u0631\u06CC\u062A", ["team", "audit"]],
   ];
-  return U.default.createElement(
+  return U.default.createElement(MaskanModal.RefreshContext.Provider,{value:()=>manualRefresh(true)},U.default.createElement(
     "div",
     {
       className: "shell",
@@ -222,10 +235,11 @@ function om({ section: t = "home" }) {
             title: "\u062A\u0627\u0632\u0647\u200C\u0633\u0627\u0632\u06CC",
             "aria-label":
               "\u062A\u0627\u0632\u0647\u200C\u0633\u0627\u0632\u06CC",
-            onClick: v,
+            onClick: () => manualRefresh(), disabled:pageBusy,
           },
           U.default.createElement(j, { name: "refresh" }),
         ),
+        pageBusy&&U.default.createElement('div',{className:'mm-page-refresh'},MaskanModal.refreshStatus(U.default)),
         U.default.createElement(tm, {
           user: i.user,
           appearance: n,
@@ -278,7 +292,7 @@ function om({ section: t = "home" }) {
     o?.type === "editor" &&
       U.default.createElement(pcDispatch, {
         frame: mmScope(o, () => u(null), p),
-        key: o.k + (o.row?.id ?? "new"),
+        key: o.k + (o.row?.id ?? "new") + ':' + (o.revision||0),
         k: o.k,
         ws: i,
         row: o.row,
@@ -301,5 +315,5 @@ function om({ section: t = "home" }) {
         U.default.createElement(j, { name: "check" }),
         d,
       ),
-  );
+  ));
 }
