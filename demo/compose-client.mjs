@@ -59,6 +59,7 @@ export async function composeClient() {
     const name = parts[i];
     if (!remaining.delete(name)) throw Error('Unknown or duplicate demo view: ' + name);
     parts[i] = await read('components/views/' + name + '.js');
+    if (name === 'RecordForm') parts[i] += '\nfunction demandFormModel(){return '+JSON.stringify(catalog.demands)+';}';
     if (name === 'RecordForm') parts[i] += '\nfunction physicalPropertyModel(){return '+JSON.stringify(catalog.properties)+';}';
     if (name === 'RecordForm') parts[i] += '\n' + await read('components/views/PropertyForm.js');
     if (name === 'Records') parts[i] += '\n' + await read('components/views/MaskanProperties.js');

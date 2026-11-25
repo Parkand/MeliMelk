@@ -8,7 +8,7 @@ function jb({
   close: i,
   nested: s,
 }) {
-  let o = t==='properties'?physicalPropertyModel():ne[t],
+  let o = t==='properties'?physicalPropertyModel():t==='demands'?demandFormModel():ne[t],
     u = zt().slice(0, 10),
     [r, c] = (0, O.useState)(() =>
       Object.assign(
@@ -278,8 +278,8 @@ function jb({
   if(t==='properties') return O.default.createElement(O.default.Fragment,null,O.default.createElement(MaskanPropertyForm,{frame:frame||{entry:localEntry,back:i,all:i},row:e,groups:N,gallery:galleryOf(r),changeGallery:g=>x('galleryDraft',g),work:_,fields:o.fields,renderField:T,address:r.address,lat:r.latitude,lon:r.longitude,pick:(latitude,longitude,address)=>c(prev=>({...prev,latitude,longitude,address})),team:a.team,admin:a.user.role==='admin',assignee:r.assignee,setAssignee:value=>x('assignee',value),save:M,busy:m,dirty:mmDirty,error:p}),ownerMode==='create'&&O.default.createElement(pcForm,{ws:a,nested:true,preset:{category:'owner'},close:()=>setOwnerMode(''),onDone:(id,person)=>{setAdded(prev=>[...prev,{...person,id}]);x('owner_id',id);setOwnerMode('')}}));
   if(t==='demands'){
     const el=O.default.createElement, title=e?'ویرایش تقاضا':'ثبت تقاضا';
-    const pages=['متقاضی','مشخصات ملک','بودجه','یادداشت'];
-    const step=k=>['contact_id','kind','status'].includes(k)?0:['property_kind','district','min_area','parking'].includes(k)?1:['budget','max_deposit','max_rent'].includes(k)?2:3;
+    const pages=['متقاضی','مشخصات ملک'];
+    const step=k=>['contact_id','kind','status'].includes(k)?0:['property_kind','district','min_area','rooms','built_year','unit_floor','floor_count','parking','elevator','storage_room'].includes(k)?1:['budget','max_deposit','max_rent'].includes(k)?2:3;
     function submit(ev){
       ev.preventDefault(); const bad=ev.currentTarget.querySelector(':invalid');
       if(!bad)return M(ev);
@@ -289,7 +289,7 @@ function jb({
     return el(MaskanModal,{frame:frame||{entry:localEntry,back:i,all:i},title,expand:true,size:'wide',dirty:mmDirty,blocked:m,extra:{className:'te13 task22 demand40'}},
       el('form',{className:'te-form',onSubmit:submit,noValidate:true},
         el('nav',{'aria-label':'بخش‌های تقاضا'},pages.map((name,j)=>el('button',{key:name,type:'button','aria-pressed':taskTab===j,onClick:()=>setTaskTab(j)},name))),
-        el('div',{className:'modal-scroll te-body'},pages.map((name,j)=>el('section',{key:name,'aria-label':name,'data-step':j,hidden:taskTab!==j,className:'te-grid'},...o.fields.filter(z=>step(z.key)===j).map(T),j===3&&a.user.role==='admin'&&el('label',null,'مسئول',el('select',{value:r.assignee,onChange:ev=>x('assignee',ev.target.value)},a.team.filter(person=>person.active).map(person=>el('option',{key:person.id,value:person.id},person.name))))))),
+        el('div',{className:'modal-scroll te-body'},pages.map((name,j)=>el('section',{key:name,'aria-label':name,'data-step':j,hidden:taskTab!==j,className:'te-grid'},...o.fields.filter(z=>step(z.key)===j).map(T),el('h3',{className:'demand-subheading'},j===0?'بودجه':'یادداشت'),...o.fields.filter(z=>step(z.key)===j+2).map(T),j===1&&a.user.role==='admin'&&el('label',null,'مسئول',el('select',{value:r.assignee,onChange:ev=>x('assignee',ev.target.value)},a.team.filter(person=>person.active).map(person=>el('option',{key:person.id,value:person.id},person.name))))))),
         p&&el('p',{className:'error',role:'alert'},p),el('footer',{className:'mp-foot'},el('button',{type:'submit',className:'primary',disabled:m},el(j,{name:'check'}),m?'در حال ذخیره…':'ذخیره'),el('button',{type:'button',onClick:mmCancel,disabled:m},'انصراف'))));
   }
   if(t==='tasks'){

@@ -52,6 +52,15 @@ const db=await connect('postgresql://daftar_app@127.0.0.1:5432/daftar_migration'
 await db.tx(q=>q('SELECT id FROM users LIMIT 1'));
 (await import('../core/service.mjs')).enableMaskanPersons();
 await db.tx(q=>q('CREATE TABLE IF NOT EXISTS maskan_contact_state(contact_id TEXT PRIMARY KEY REFERENCES contacts(id), archived INTEGER NOT NULL CHECK(archived IN (0,1)))'));
+await db.tx(async q=>{
+ const columns={rooms:'bigint',built_year:'bigint',unit_floor:'bigint',floor_count:'bigint',elevator:'text',storage_room:'text'};
+ const existing=await q("SELECT column_name,data_type,is_nullable FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='demands'");
+ for(const [name,type] of Object.entries(columns)){
+   const col=existing.find(c=>c.column_name===name);
+   if(col&&(col.data_type!==type||col.is_nullable!=='YES')) throw Error('Incompatible demands column: '+name);
+   if(!col)await q(`ALTER TABLE demands ADD COLUMN ${name} ${type}`);
+ }
+});
 const fresh=false,email='',password='';
 console.log('Database: PostgreSQL / daftar_migration');
 let webKey='';if(process.env.LOCALAPPDATA){try{const raw=(await readFile(join(process.env.LOCALAPPDATA,'MeliMelk-Neshan','web.key'),'utf8')).trim();if(/^[A-Za-z0-9._-]{1,512}$/.test(raw))webKey=raw;}catch(e){if(e.code!=='ENOENT')console.warn('Neshan configuration unavailable.')}}
