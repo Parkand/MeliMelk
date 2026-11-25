@@ -19,3 +19,6 @@ dialog.mm-shell.task22[open][data-size=wide] > form.te-form{overflow:hidden!impo
 dialog.task22 .te-form>nav>button{display:flex;align-items:center;justify-content:center;gap:.45rem;min-width:0;margin:0;padding:.8rem .45rem;border:0!important;border-bottom:3px solid transparent!important;border-radius:0!important;background:transparent!important;color:inherit!important;box-shadow:none!important}dialog.task22 .te-form>nav>button[aria-pressed=true]{border-bottom-color:var(--accent,#47623c)!important;font-weight:750}
 .task22 .te-form>.te-body{flex:1 1 0;overflow:auto;overscroll-behavior:contain;min-height:0}.task22 .te-section-title{margin:0 0 1rem;font-size:1rem}
 dialog.mm-shell.task22[open][data-size=wide] form.te-form>footer.mp-foot{overflow:hidden!important;flex-wrap:nowrap;align-items:center}
+.te-edit .te-form>.te-body{padding:.75rem 1rem;align-content:start}
+.te-edit .te-body .te-grid{gap:.55rem .85rem;margin:0}
+@media(min-width:581px){.te-edit .task-info>:nth-child(5){grid-column:span 2}}
