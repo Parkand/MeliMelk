@@ -1,7 +1,8 @@
 function Fb({ ws: t, load: e }) {
   let [l, a] = (0, z.useState)(!1),
     [n, i] = (0, z.useState)(!1),
-    [s, o] = (0, z.useState)("");
+    [s, setInlineMessage] = (0, z.useState)(""),
+    o = (message) => maskanFeedback(setInlineMessage,message,'error');
   return z.default.createElement(
     z.default.Fragment,
     null,

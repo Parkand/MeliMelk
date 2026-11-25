@@ -3,7 +3,8 @@ function um({ demo: t = !1 }) {
   let [e, l] = (0, st.useState)(t ? "admin@daftar.test" : ""),
     [a, n] = (0, st.useState)(""),
     [i, s] = (0, st.useState)(!1),
-    [o, u] = (0, st.useState)("");
+    [o, setInlineMessage] = (0, st.useState)(""),
+    u = (message) => maskanFeedback(setInlineMessage,message,'error');
   async function r(c) {
     (c.preventDefault(), u(""));
     let h = c.currentTarget.elements;
@@ -20,7 +21,7 @@ function um({ demo: t = !1 }) {
       ],
     ])
       if (!f.validity.valid) {
-        (f.focus(), u(d));
+        await maskanFeedback(setInlineMessage,d,'validation'); f.focus();
         return;
       }
     s(!0);

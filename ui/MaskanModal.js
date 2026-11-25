@@ -26,6 +26,10 @@ globalThis.maskanMessage=(()=>{
  })}
  return options=>{const result=queue.then(()=>open(options));queue=result.catch(()=>{});return result};
 })();
+globalThis.maskanFeedback=(setInline,message,kind='error')=>{
+ setInline(message);
+ if(message)return maskanMessage({kind,message,...(kind==='error'?{action:'متوجه شدم',cancel:''}:{})});
+};
 const createMaskanModal = (O) => {
 const refreshContext=O.default.createContext(null);
 function refreshStatus(R,error){return R.createElement('span',{className:'mm-refresh-status',role:error?'alert':'status'},error||'در حال بازخوانی',!error&&R.createElement('span',{className:'mm-refresh-dots','aria-hidden':true},...[0,1,2].map(i=>R.createElement('i',{key:i,style:{animationDelay:(i*.13)+'s'}}))))}

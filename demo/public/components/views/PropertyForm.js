@@ -2,7 +2,7 @@ function PropertyOwnerDialog({close,children}){const h=O.default.createElement,r
 function galleryOf(r={}){return r.galleryDraft || (r.gallery_v1?JSON.parse(r.gallery_v1):{items:[r.photo_url,r.photo_url_2,r.photo_url_3].filter(Boolean),cover:0})}
 function propertyPaneIcon(i){const paths=['M3 10l9-7 9 7M5 9v11h14V9M10 20v-6h4v6','M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0z M14 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z','M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6 M16 9h.01','M3 6h7m4 0h7M3 12h12m4 0h2M3 18h3m4 0h11M10 4v4m5 2v4M6 16v4','M6 3h12v18H6z M9 8h6m-6 4h6m-6 4h3'];return O.default.createElement('svg',{className:'pr-pane-glyph',viewBox:'0 0 24 24',width:17,height:17,fill:'none',stroke:'currentColor',strokeWidth:1.6,strokeLinecap:'round',strokeLinejoin:'round','aria-hidden':true},O.default.createElement('path',{d:paths[i]}))}
 function PropertyGallery({value,change,busy,work=()=>{}}){
- const h=O.default.createElement,{items,cover}=value,[active,select]=O.useState(cover),[msg,say]=O.useState(''),[mode,setMode]=O.useState(0),[link,url]=O.useState(''),at=Math.min(active,items.length-1),src=items[at];
+ const h=O.default.createElement,{items,cover}=value,[active,select]=O.useState(cover),[msg,setGalleryMessage]=O.useState(''),say=message=>maskanFeedback(setGalleryMessage,message),[mode,setMode]=O.useState(0),[link,url]=O.useState(''),at=Math.min(active,items.length-1),src=items[at];
  const zoom=O.useRef(null),trigger=O.useRef(null);
  const arrow=(step,label)=>h('button',{type:'button',className:'pr-icon-arrow',title:label,'aria-label':label,disabled:busy||at+step<0||at+step>=items.length,onClick:()=>select(at+step)},h('svg',{width:20,height:20,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:2,'aria-hidden':true},h('path',{d:step<0?'M9 5l7 7-7 7':'M15 5l-7 7 7 7'})));
  const button=(s,fn,disabled=false)=>h('button',{type:'button',onClick:fn,disabled:disabled||busy},s);
@@ -38,10 +38,10 @@ function MaskanPropertyForm({frame,row,groups,gallery,changeGallery,work,fields,
   const agent=team.find(u=>String(u.id)===String(assignee));
   const titles=[...groups.map(g=>g[0]),'یادداشت و مسئول'];
   const title=row?'ویرایش شناسنامهٔ ملک':'ثبت ملک';
-  function submit(event){
+  async function submit(event){
     event.preventDefault();
     const invalid=Array.from(event.currentTarget.elements).find(el=>el.willValidate&&!el.validity.valid);
-    if(invalid){setTab(Number(invalid.closest('[data-pane]').dataset.pane));requestAnimationFrame(()=>{invalid.focus();invalid.reportValidity()});return}
+    if(invalid){setTab(Number(invalid.closest('[data-pane]').dataset.pane));await maskanMessage({kind:"validation",message:"فیلد مشخص‌شده را بررسی کنید."});invalid.focus();return}
     return save(event);
   }
   O.useEffect(()=>{if(pane.current)pane.current.scrollTop=0},[tab]);

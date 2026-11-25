@@ -1,6 +1,7 @@
 function im({ ws: t, load: e }) {
   let [l, a] = (0, R.useState)(null),
-    [n, i] = (0, R.useState)(""),
+    [n, setInlineMessage] = (0, R.useState)(""),
+    i = (message) => maskanFeedback(setInlineMessage,message,'error'),
     [s, o] = (0, R.useState)(!1),
     u = (f) => {
       (i(""), a(f));

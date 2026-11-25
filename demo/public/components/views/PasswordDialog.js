@@ -1,5 +1,6 @@
 function sE({ close: t, all }) {
-  let [e, l] = (0, U.useState)(""),
+  let [e, setInlineMessage] = (0, U.useState)(""),
+    l = (message) => maskanFeedback(setInlineMessage,message,'error'),
     [a, n] = (0, U.useState)(!1);
   return U.default.createElement(
     mmDialog,
@@ -19,7 +20,7 @@ function sE({ close: t, all }) {
           (i.preventDefault(), n(!0), l(""));
           let s = Object.fromEntries(new FormData(i.currentTarget));
           try {
-            (await sl("password", "POST", s), location.replace("/login"));
+            (await sl("password", "POST", s), await maskanMessage({kind:"success",message:"رمز تغییر کرد. دوباره وارد شوید."}), location.replace("/login"));
           } catch (o) {
             (l(o.message), n(!1));
           }

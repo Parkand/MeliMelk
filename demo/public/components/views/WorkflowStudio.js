@@ -145,14 +145,14 @@ function zS({ seed: t }) {
                   (S) => !S.title.trim() || S.paths.some(([k]) => !k.trim()),
                 )
               )
-                return _(
+                return maskanFeedback(_,
                   "\u0639\u0646\u0648\u0627\u0646 \u0645\u0631\u0627\u062D\u0644 \u0648 \u0646\u062A\u06CC\u062C\u0647\u200C\u0647\u0627 \u0631\u0627 \u062A\u06A9\u0645\u06CC\u0644 \u06A9\u0646\u06CC\u062F.",
-                );
+                "validation");
               (n(e),
                 s(i + 1),
-                _(
+                maskanFeedback(_,
                   "\u0646\u0633\u062E\u0647\u0654 \u062C\u062F\u06CC\u062F \u0628\u0631\u0627\u06CC \u067E\u0631\u0648\u0646\u062F\u0647\u200C\u0647\u0627\u06CC \u0628\u0639\u062F\u06CC \u0645\u0646\u062A\u0634\u0631 \u0634\u062F.",
-                ));
+                "success"));
             },
           },
           "\u0627\u0646\u062A\u0634\u0627\u0631 \u0646\u0633\u062E\u0647",

@@ -61,11 +61,11 @@ function tm({ user: t, password: e, logout: l, appearance: a }) {
         let S = btoa(String.fromCharCode(...N.getImageData(0, 0, 48, 48).data));
         (localStorage.setItem(v, S),
           p(S),
-          r(
+          maskanFeedback(r,
             "\u062A\u0635\u0648\u06CC\u0631 \u062F\u0631 \u0627\u06CC\u0646 \u0645\u0631\u0648\u0631\u06AF\u0631 \u0630\u062E\u06CC\u0631\u0647 \u0634\u062F.",
-          ));
+          "success"));
       } catch {
-        r(
+        maskanFeedback(r,
           "\u0630\u062E\u06CC\u0631\u0647 \u0646\u0634\u062F. \u062A\u0635\u0648\u06CC\u0631 PNG\u060C JPEG \u06CC\u0627 WebP \u0632\u06CC\u0631 \u06F5 \u0645\u06AF\u0627\u0628\u0627\u06CC\u062A \u0627\u0646\u062A\u062E\u0627\u0628 \u06A9\u0646\u06CC\u062F.",
         );
       }

@@ -140,7 +140,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         img.close();
       }
     } catch (ex) {
-      E(ex.message);
+      maskanFeedback(E,ex.message);
     } finally {
       B(false);
     }
@@ -151,10 +151,10 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     tried(true);
     if (!v.name?.trim() || !v.phone?.trim()) {
       T(0);
-      E("");
+      await maskanFeedback(E,"نام و شماره تماس را کامل کنید.","validation");
       return;
     }
-    if (v.links.some(l => !(l.draft ?? relText(l.kind))?.trim())) { T(3); E(""); return; }
+    if (v.links.some(l => !(l.draft ?? relText(l.kind))?.trim())) { T(3); await maskanFeedback(E,'عنوان ارتباط را کامل کنید.','validation'); return; }
     B(true);
     E("");
     try {
@@ -174,7 +174,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       );
       await onDone(result.id, {name:v.name.trim(), phone:v.phone.trim()});
     } catch (ex) {
-      E(ex.message);
+      maskanFeedback(E,ex.message);
     } finally {
       B(false);
     }

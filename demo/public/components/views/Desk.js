@@ -15,7 +15,8 @@ function om({ section: t = "home" }) {
     [i, s] = (0, U.useState)(null),
     [o, u] = (0, U.useState)(null),
     [r, c] = (0, U.useState)(!1),
-    [h, f] = (0, U.useState)(""),
+    [h, setInlineMessage] = (0, U.useState)(""),
+    f = (message) => maskanFeedback(setInlineMessage,message,'error'),
     [d, y] = (0, U.useState)(""),
     v = (0, U.useCallback)(async () => {
       f("");
