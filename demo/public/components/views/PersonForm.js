@@ -40,6 +40,9 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     [err, E] = R.useState(""),
     [attempt, tried] = R.useState(false),
     errorId = R.useId(),
+    [searchRow,setSearchRow]=R.useState(null),
+    [searchText,setSearchText]=R.useState(""),
+    [suggestionRow,setSuggestionRow]=R.useState(null),
     picker = R.useRef(null),
     [busy, B] = R.useState(false),
     dirty = JSON.stringify(base) !== JSON.stringify(v),
@@ -63,10 +66,10 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       Object.entries(dict).map(([k, s]) =>
         h("option", { value: k, key: k }, s),
       ),
-    select = (value, fn, dict) =>
+    select = (value, fn, dict, accessibleName) =>
       h(
         "select",
-        { value: value || "", onChange: (e) => fn(e.target.value) },
+        { value: value || "", "aria-label":accessibleName, onChange: (e) => fn(e.target.value) },
         opts(dict),
       ),
     button = (s, fn) => h("button", { type: "button", onClick: fn }, s),
@@ -147,6 +150,8 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       B(false);
     }
   }
+  const normalizeSearch=value=>String(value??"").normalize("NFKC").replace(/ي/g,"ی").replace(/ك/g,"ک").replace(/[۰-۹]/g,digit=>"۰۱۲۳۴۵۶۷۸۹".indexOf(digit)).replace(/[\s\u200c-]/g,"").toLowerCase();
+  const matches=searchRow===null?[]:ws.data.contacts.filter(person=>person.id!==row?.id&&[person.name,person.phone].some(value=>normalizeSearch(value).includes(normalizeSearch(searchText))));
   async function save(e) {
     e.preventDefault();
     if (busy) return;
@@ -156,7 +161,9 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       await maskanFeedback(E,"نام و شماره تماس را کامل کنید.","validation");
       return;
     }
-    if (v.links.some(l => !(l.draft ?? relText(l.kind))?.trim())) { T(3); await maskanFeedback(E,'عنوان ارتباط را کامل کنید.','validation'); return; }
+    const links=v.links.filter(link=>link.id||(link.draft??relText(link.kind))?.trim());
+    if (links.some(link=>!link.id)) { T(3); await maskanFeedback(E,'پروندهٔ مرتبط را انتخاب کنید.','validation'); return; }
+    if (links.some(l => !(l.draft ?? relText(l.kind))?.trim())) { T(3); await maskanFeedback(E,'عنوان ارتباط را کامل کنید.','validation'); return; }
     B(true);
     E("");
     try {
@@ -165,7 +172,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
           ? "both"
           : roles.find((s) => s !== "referrer") || null;
       const { incoming, ...body } = v;
-      body.links = v.links.map(({ draft, kind, id }) => ({
+      body.links = links.map(({ draft, kind, id }) => ({
         id,
         kind: draft === undefined ? kind : relEncode(draft),
       }));
@@ -378,60 +385,24 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                   ]
                 : tab === 3
                   ? [
-                      h(
-                        "datalist",
-                        { id: "rel-" + (row?.id || "new") },
-                        ...[
-                          ...new Set([
-                            ...Object.values(pcKinds),
-                            ...(ws.data.relationNames || []),
-                            ...ws.data.contacts.flatMap((c) =>
-                              (c.links || [])
-                                .filter((l) => l.kind.startsWith("custom:"))
-                                .map((l) => relText(l.kind)),
-                            ),
-                          ]),
-                        ].map((s) => h("option", { key: s, value: s })),
-                      ),
-                      h("strong",{className:"ce-wide"},"آشنایی"),
-                      field("source", "منبع آشنایی"),
-                      h(
-                        "small",
-                        null,
-                        "شخص انتخابی چه نسبتی با صاحب این پرونده دارد؟",
-                      ),
-                      h("strong",{className:"ce-wide"},"روابط"),
-                      ...list("links", v.links, (l, change) => [
-                        label(
-                          "پروندهٔ مرتبط",
-                          select(l.id, (x) => change("id", x), {
-                            "": "انتخاب شخص",
-                            ...names,
-                          }),
-                        ),
-                        label(
-                          "نوع رابطه",
-                          h("input", {
-                            list: "rel-" + (row?.id || "new"),
-                            required: true,
-                            maxLength: 48,
-                            value: l.draft ?? relText(l.kind),
-                            placeholder: "انتخاب یا نوشتن رابطه",
-                            onChange: (e) => change("draft", e.target.value),
-                          }),
-                        ),
-                      ]),
-                      button("افزودن ارتباط", () =>
-                        put("links", [
-                          ...v.links,
-                          {
-                            kind: v.links.some((l) => l.kind === "referrer")
-                              ? "partner"
-                              : "referrer",
-                            id: "",
-                          },
-                        ]),
-                      ),
+                      h("div",{className:"ce-wide cr-source"},field("source","منبع آشنایی"),h("small",null,"شخص انتخابی چه نسبتی با صاحب این پرونده دارد؟")),
+                      h("div",{className:"ce-wide cr-relations"},
+                        h("h3",null,"روابط"),
+                        h("div",{className:"cr-row cr-head","aria-hidden":true},h("span",null,"پروندهٔ مرتبط"),h("span",null,"نوع رابطه")),
+                        ...(v.links.length?v.links:[{id:"",draft:""}]).map((link,index)=>{
+                          const rows=v.links.length?v.links:[link];
+                          const change=(key,value)=>put("links",rows.map((item,pos)=>pos===index?{...item,[key]:value}:item));
+                          const action=(caption,symbol,style,run,disabled=false)=>h("button",{type:"button",className:style,title:caption,"aria-label":caption,disabled,onClick:run},symbol);
+                          return h("div",{className:"cr-row",key:index},
+                            h("div",{className:"cr-person"},select(link.id,value=>change("id",value),{"":"انتخاب شخص",...names},"پروندهٔ مرتبط"),action("جست‌وجوی مشتری",h("svg",{width:17,height:17,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:2,"aria-hidden":true},h("circle",{cx:10,cy:10,r:6}),h("path",{d:"m15 15 6 6"})),"cr-find",()=>{setSearchText("");setSearchRow(index)})),
+                            h("div",{className:"cr-kind"},h("input",{"aria-label":"نوع رابطه",maxLength:48,value:link.draft??relText(link.kind),placeholder:"انتخاب یا نوشتن رابطه",onClick:()=>setSuggestionRow(index),onFocus:()=>setSuggestionRow(index),onBlur:event=>{if(!event.currentTarget.parentNode.contains(event.relatedTarget))setSuggestionRow(null)},onChange:event=>change("draft",event.target.value),onKeyDown:event=>{if(event.key==="Escape"&&suggestionRow===index){event.stopPropagation();setSuggestionRow(null)}}}),
+                              suggestionRow===index&&h("div",{className:"cr-options",onBlur:event=>{if(!event.currentTarget.parentNode.contains(event.relatedTarget))setSuggestionRow(null)}},[...new Set([...Object.values(pcKinds),...(ws.data.relationNames||[]),...ws.data.contacts.flatMap(person=>(person.links||[]).filter(item=>item.kind.startsWith("custom:")).map(item=>relText(item.kind)))])].map(name=>h("button",{key:name,type:"button",onMouseDown:event=>event.preventDefault(),onClick:()=>{change("draft",name);setSuggestionRow(null)}},name)))),
+                            h("div",{className:"cr-actions"},action("حذف همین رابطه","−","cr-minus",()=>{setSuggestionRow(null);put("links",v.links.filter((_,pos)=>pos!==index))},!v.links.length),action("افزودن رابطه در ردیف بعد","+","cr-plus",()=>{setSuggestionRow(null);put("links",[...rows.slice(0,index+1),{id:"",draft:""},...rows.slice(index+1)])})),
+                            searchRow===index&&h("dialog",{className:"cr-picker","aria-label":"جست‌وجوی مشتری",ref:dialog=>{if(dialog&&!dialog.open){dialog.showModal();dialog.querySelector("input")?.focus()}},onCancel:event=>{event.preventDefault();event.stopPropagation();setSearchRow(null)},onKeyDown:event=>{event.stopPropagation();if(event.key==="Enter"&&event.target.tagName==="INPUT")event.preventDefault()}},
+                              h("header",null,h("strong",null,"جست‌وجوی مشتری"),action("بستن","×","cr-close",()=>setSearchRow(null))),
+                              h("input",{type:"search","aria-label":"نام یا شماره تماس",placeholder:"نام یا شماره تماس",value:searchText,onChange:event=>setSearchText(event.target.value)}),
+                              h("div",{className:"cr-results"},matches.length?matches.map(person=>h("button",{key:person.id,type:"button",onClick:()=>{change("id",person.id);setSearchRow(null)}},person.name,h("small",{dir:"ltr"},person.phone))):"مشتری پیدا نشد.")));
+                        })),
                       ...pcSummary({ incoming: row?.incoming }, ws).map(
                         ([s, n]) => h("p", { key: s + n }, s + ": " + n),
                       ),
