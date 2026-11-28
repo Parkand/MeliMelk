@@ -298,6 +298,7 @@ function om({ section: t = "home" }) {
         ws: i,
         row: o.row,
         preset: o.preset,
+        onNew: o.k==="contacts"?async()=>{await v();u(current=>current===o?{type:"editor",k:"contacts",prev:o.prev,revision:(o.revision||0)+1}:current);y("ذخیره شد؛ پروندهٔ جدید آماده است.")}:undefined,
         onDone: T,
         close: p,
         nested: !!o.prev,

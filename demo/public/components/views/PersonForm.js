@@ -5,7 +5,7 @@
     const text = [pf.job && `حوزهٔ فعالیت: ${pf.job}`, pf.position && `سمت: ${pf.position}`, pf.company && `محل کار: ${pf.company}`].filter(Boolean).join(" • ");
     const facts = [
       ["نام نمایشی", v.name !== full && v.name], ["نام آشنا در دفتر", pf.alias], ["نقش‌ها",roles.map(k=>pcRoles[k]).filter(Boolean).join("، ")],
-      ["موبایل اصلی",v.phone], ["راه‌های تماس دیگر",(v.methods||[]).filter(m=>m.value).map(m=>[m.label || pcMethods[m.kind],m.value].filter(Boolean).join(": ")).join("؛ ")],
+      ["موبایل اصلی",v.phone], ["راه‌های تماس دیگر",[...(v.methods||[]),...(v.socialMethods||[])].filter((item,index,all)=>all.indexOf(item)===index).filter(m=>m.value).map(m=>[m.label || pcMethods[m.kind],m.value].filter(Boolean).join(": ")).join("؛ ")],
       ["ترجیح تماس",[pf.preferred,pf.time].filter(Boolean).join("، ")], ["محدوده",[pf.city,pf.area].filter(Boolean).join("، ")],
       ["تحصیلات",[pf.education,pf.major].filter(Boolean).join("، ")], ["جنسیت",pf.gender], ["شناسهٔ تکمیلی",pf.identifier], ["منبع آشنایی",v.source],
       ["روابط",(v.links||[]).filter(l=>names[l.id]).map(l=>[names[l.id],l.draft ?? relText(l.kind)].filter(Boolean).join(" — ")).join("؛ ")],
@@ -19,7 +19,11 @@
       !full && !text && h("p",null,"با تکمیل فرم، اطلاعات شخص اینجا نمایش داده می‌شود."),
       list);
   }
-function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
+function pcForm(props){
+  const [serial,advance]=O.useState(0);
+  return O.default.createElement(CustomerEntry,{...props,key:serial,row:serial?null:props.row,preset:serial?{}:props.preset,onNew:props.onNew||(()=>advance(value=>value+1))});
+}
+function CustomerEntry({ frame, row, ws, preset = {}, close, nested, onDone,onNew }) {
   const R = O.default,
     h = R.createElement,
     [v, set] = R.useState(() => ({
@@ -34,6 +38,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       profile: {},
       ...preset,
       ...row,
+      methods:[...(row?.methods??preset.methods??[]),...(row?.socialMethods??preset.socialMethods??[])],socialMethods:[],
     })),
     [base] = R.useState(v),
     [tab, T] = R.useState(0),
@@ -50,7 +55,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
     pf = v.profile || {},
     pr = (k, val) =>
       set((p) => ({ ...p, profile: { ...p.profile, [k]: val } })),
-    label = (s, input) => h("label", { key: s }, s, input),
+    label = (s, input) => h("label", { key: s },tab===1?h("span",{className:"ce-caption"},h(j,{name:({"تحصیلات":"contracts","رشتهٔ تحصیلی":"contracts","شغل":"tasks","سمت":"team","محل کار":"properties","شناسهٔ تکمیلی":"contracts","شهر":"properties","محله":"listings"})[s]||"contacts"}),s):s,input),
     field = (k, s, profile = false, type = "text", extra = {}) =>
       label(
         s,
@@ -155,6 +160,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
   async function save(e) {
     e.preventDefault();
     if (busy) return;
+    const another=e.nativeEvent?.submitter?.value==="new";
     tried(true);
     if (!v.name?.trim() || !v.phone?.trim()) {
       T(0);
@@ -172,6 +178,11 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
           ? "both"
           : roles.find((s) => s !== "referrer") || null;
       const { incoming, ...body } = v;
+      const contactRows=v.methods.filter(item=>item.value?.trim()||item.label?.trim());
+      if(contactRows.some(item=>!item.value?.trim())){T(2);E("مقدار راه ارتباطی را وارد کنید.");return}
+      const standard=item=>["mobile","land","email"].includes(item.kind);
+      body.methods=contactRows.filter(standard);
+      body.socialMethods=contactRows.filter(item=>!standard(item));
       body.links = links.map(({ draft, kind, id }) => ({
         id,
         kind: draft === undefined ? kind : relEncode(draft),
@@ -181,7 +192,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         row ? "PUT" : "POST",
         { ...body, category, profile: { ...pf, roles } },
       );
-      await onDone(result.id, {name:v.name.trim(), phone:v.phone.trim()});
+      if(another) await onNew(result.id); else await onDone(result.id, {name:v.name.trim(), phone:v.phone.trim()});
     } catch (ex) {
       maskanFeedback(E,ex.message);
     } finally {
@@ -197,6 +208,7 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       ["position", "سمت"],
       ["company", "محل کار"],
       ["identifier", "شناسهٔ تکمیلی"],
+      ["city","شهر"],["area","محله"],
     ],
     choice = (k, s, arr) =>
       label(
@@ -211,9 +223,9 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         (x) => row && x.contact_id === row.id,
       );
       return h(
-        "div",
+        "details",
         { key: k },
-        h("strong", null, s + " · " + rows.length),
+        h("summary", null, s + " · " + rows.length),
         ...rows.map((x) =>
           h(
             "p",
@@ -282,34 +294,14 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
         ),
         h(
           "section",
-          null,
+          {className:tab===4?"ce-follow-compact":undefined},
           ...(tab === 5 ? [personSummary(h,v,ws)] : tab === 0
             ? [
                 ...[["name", "نام نمایشی", "نام نمایشی را وارد کنید."], ["phone", "موبایل اصلی", "موبایل اصلی را وارد کنید."]].map(([key, caption, message]) => {
                   const bad = attempt && !v[key]?.trim();
                   return h("label", {key}, caption + " *", h("input", {type:key === "phone" ? "tel" : "text", dir:key === "phone" ? "ltr" : "rtl", value:v[key] || "", maxLength:240, "aria-required":true,"aria-invalid":bad,"aria-describedby":bad ? errorId : undefined,onChange:e=>put(key,e.target.value)}));
                 }),
-                h(
-                  "div",
-                  {className:"ce-wide"},
-                  h("strong", null, "نقش‌ها"),
-                  ...Object.entries(pcRoles).map(([k, s]) =>
-                    label(
-                      s,
-                      h("input", {
-                        type: "checkbox",
-                        checked: roles.includes(k),
-                        onChange: (e) =>
-                          pr(
-                            "roles",
-                            e.target.checked
-                              ? [...roles, k]
-                              : roles.filter((x) => x !== k),
-                          ),
-                      }),
-                    ),
-                  ),
-                ),
+                h("div",{className:"ce-wide ce-roles"},h("strong",null,"نقش‌ها"),...Object.entries(pcRoles).map(([key,name])=>h("button",{type:"button",key,"data-role":key,"aria-pressed":roles.includes(key),onClick:()=>pr("roles",roles.includes(key)?roles.filter(role=>role!==key):[...roles,key])},h(j,{name:({owner:"properties",customer:"contacts",partner:"team",referrer:"tasks"})[key]}),name))),
 
               ]
             : tab === 1
@@ -352,35 +344,19 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
                 ]
               : tab === 2
                 ? [
-                    h("div",{className:"ce-bar"},h("strong",null,"راه‌های تماس"),button("＋ افزودن",()=>put("methods",[...v.methods,{kind:"mobile",value:""}]))),
-                    ...list("methods", v.methods, (m, change) => [
-                      label(
-                        "نوع",
-                        select(m.kind, (x) => change("kind", x), pcMethods),
-                      ),
-                      label(
-                        "مقدار",
-                        h("input", {
-                          dir: "ltr",
-                          value: m.value,
-                          maxLength: 240,
-                          onChange: (e) => change("value", e.target.value),
-                        }),
-                      ),
-                      label(
-                        "برچسب",
-                        h("input", {
-                          value: m.label || "",
-                          maxLength: 60,
-                          onChange: (e) => change("label", e.target.value),
-                        }),
-                      ),
-                    ]),
+                    h("div",{className:"ce-wide cr-relations ce-methods"},h("h3",null,"راه‌های تماس"),h("div",{className:"ce-method-row cr-head","aria-hidden":true},h("span",null,"نوع"),h("span",null,"مقدار"),h("span",null,"برچسب")),
+                      ...(v.methods.length?v.methods:[{kind:"mobile",value:""}]).map((item,index,rows)=>{
+                        const change=(key,value)=>put("methods",rows.map((other,pos)=>pos===index?{...other,[key]:value}:other));
+                        const marks={mobile:"☎",land:"☏",email:"✉",telegram:"➤",whatsapp:"✆",instagram:"◎",rubika:"◈",bale:"ب",eitaa:"ا",linkedin:"in",soroush:"س",igap:"iG",signal:"◌",x:"𝕏",facebook:"f",youtube:"▶",website:"🌐",other:"⋯"};
+                        const choices=Object.fromEntries(Object.entries(pcMethods).map(([key,name])=>[key,marks[key]+"  "+name]));
+                        return h("div",{key:index,className:"cr-row ce-method-row"},select(item.kind,value=>change("kind",value),choices,"نوع راه ارتباطی"),
+                          h("input",{"aria-label":"مقدار راه ارتباطی",dir:"ltr",value:item.value||"",maxLength:240,placeholder:({mobile:"09…",land:"021…",email:"name@example.com",website:"https://…",whatsapp:"+98…"})[item.kind]||"@username / link",onChange:event=>change("value",event.target.value)}),
+                          h("input",{"aria-label":"برچسب",value:item.label||"",maxLength:60,placeholder:"اختیاری",onChange:event=>change("label",event.target.value)}),
+                          h("div",{className:"cr-actions"},h("button",{type:"button",className:"cr-minus",title:"حذف ردیف","aria-label":"حذف ردیف",disabled:!v.methods.length,onClick:()=>put("methods",rows.filter((_,pos)=>pos!==index))},"−"),h("button",{type:"button",className:"cr-plus",title:"افزودن ردیف","aria-label":"افزودن ردیف",onClick:()=>put("methods",[...rows.slice(0,index+1),{kind:"mobile",value:""},...rows.slice(index+1)])},"+")));
+                      })),
                     ...[
                       ["preferred", "روش تماس ترجیحی"],
                       ["time", "زمان مناسب تماس"],
-                      ["city", "شهر"],
-                      ["area", "محله"],
                     ].map(([k, s]) => field(k, s, true)),
                   ]
                 : tab === 3
@@ -449,12 +425,9 @@ function pcForm({ frame, row, ws, preset = {}, close, nested, onDone }) {
       h(
         "footer",
         null,
-        h(
-          "button",
-          { type: "submit", disabled: busy },
-          busy ? "در حال ذخیره…" : "✓ ذخیره و بستن",
-        ),
         button("انصراف", cancel),
+        h("button",{type:"submit",value:"new",className:"ce-save-new",disabled:busy},"ذخیره و جدید"),
+        h("button",{type:"submit",value:"close",className:"primary ce-save-close",disabled:busy},busy?"در حال ذخیره…":"✓ ذخیره و بستن"),
         h("div", {className:"ce-errors", id:errorId, role:"alert", dir:"rtl"},
           ...messages.map(text => h("span",{key:text},text))),
       ),
