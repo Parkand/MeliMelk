@@ -50,3 +50,8 @@ dialog.mm-shell.task22[open][data-size=wide] form.te-form>footer.mp-foot{overflo
 .task22 .te-next .pd-time{margin:0;min-width:0;display:flex;align-items:center;gap:.4rem}
 .task22 .te-next .pd-time select{flex:1;width:0}
 @media(min-width:581px){.te-edit [data-step="1"]>label:first-child{grid-column:auto}.task22 .te-next .pd{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:1rem}}
+.visit-form .te-body>.visit-pane{margin:0;gap:.55rem .85rem}
+.visit-form .visit-pane>label:first-child:not(.full),.visit-form .visit-pane>.pd-field:first-child{grid-column:auto}
+.visit-form .visit-pane .pd-time{display:flex;align-items:center;gap:.35rem;margin:0;min-width:0}
+.visit-form .visit-pane .pd-time select{flex:1;min-width:0}
+.visit-form .visit-pane textarea{height:4.6rem}
